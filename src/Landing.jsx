@@ -8,18 +8,8 @@
 import React from 'react';
 
 const tiles = [
-  {
-    href: '#/app',
-    eyebrow: 'the prototype',
-    title: 'touch the musa',
-    body: 'the consumer app — onboarding, mines, delivery',
-  },
-  {
-    href: '#/sim',
-    eyebrow: 'the simulator',
-    title: 'run the math',
-    body: 'personas, scenarios, weekly stress test',
-  },
+  { href: '#/app', title: 'app' },
+  { href: '#/sim', title: 'simulator' },
 ];
 
 export default function Landing() {
@@ -103,21 +93,15 @@ export default function Landing() {
             <a
               key={t.href}
               href={t.href}
-              className="landing-tile group block rounded-2xl border border-white/10 bg-surface px-7 py-10 sm:px-9 sm:py-12"
+              className="landing-tile group flex items-center justify-between rounded-2xl border border-white/10 bg-surface px-8 py-10 sm:px-10 sm:py-14"
               style={{ animationDelay: `${0.25 + i * 0.18}s` }}
             >
-              <div className="text-xs text-text-dim">{t.eyebrow}</div>
-              <div className="tile-title font-display italic text-4xl sm:text-5xl text-gold mt-4 leading-tight">
+              <span className="tile-title font-display italic text-4xl sm:text-5xl text-gold leading-none">
                 {t.title}
-              </div>
-              <div className="mt-6 flex items-end justify-between gap-6">
-                <p className="text-sm sm:text-base text-text/80 leading-relaxed max-w-[28ch]">
-                  {t.body}
-                </p>
-                <span className="tile-arrow text-gold text-2xl leading-none select-none" aria-hidden>
-                  →
-                </span>
-              </div>
+              </span>
+              <span className="tile-arrow text-gold text-2xl leading-none select-none" aria-hidden>
+                →
+              </span>
             </a>
           ))}
         </div>
