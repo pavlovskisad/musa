@@ -277,8 +277,8 @@ export default function App() {
   return (
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4"
-      style={{ background: '#0a0908' }}
+      className="w-full flex items-center justify-center p-4"
+      style={{ background: '#0a0908', minHeight: '100dvh' }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
@@ -1471,7 +1471,7 @@ export default function App() {
       `}</style>
 
       {/* Phone frame */}
-      <div className="relative" style={{ width: '390px', height: '844px', maxHeight: '95vh' }}>
+      <div className="relative" style={{ width: '390px', height: '844px', maxHeight: '95dvh' }}>
         <div
           className="absolute inset-0 rounded-[44px] overflow-hidden phone-frame flex flex-col"
           style={{ background: 'var(--bg)', color: 'var(--text)' }}

@@ -22,7 +22,7 @@ const tiles = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-between px-6 py-10 sm:py-16 bg-bg text-text">
+    <div className="w-full flex flex-col items-center justify-between px-6 py-10 sm:py-16 bg-bg text-text" style={{ minHeight: '100dvh' }}>
       <style>{`
         @keyframes landingBreath {
           0%, 100% { text-shadow: 0 0 18px rgba(201,169,97,0.18); opacity: 0.92; }

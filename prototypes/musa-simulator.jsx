@@ -646,7 +646,7 @@ export default function App() {
   }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.cumulativeProfit, inputs.goldPricePerGram]);
 
   return (
-    <div className="min-h-screen w-full p-4 md:p-6" style={{ background: '#0a0908', color: '#FAFAF7' }}>
+    <div className="w-full p-4 md:p-6" style={{ background: '#0a0908', color: '#FAFAF7', minHeight: '100dvh' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
 
