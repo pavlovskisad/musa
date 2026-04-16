@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="orb" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#f4de9d" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#e4c57e" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#c9a961" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#c9a961" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgvignette" cx="50%" cy="50%" r="65%">
+      <stop offset="0%"  stop-color="#161513" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0a0908" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgvignette)"/>
+
+  <!-- ambient particles, deterministic positions -->
+  <g fill="#c9a961" opacity="0.55">
+    <circle cx="120"  cy="90"  r="1.2"/>
+    <circle cx="220"  cy="510" r="1.4"/>
+    <circle cx="980"  cy="120" r="1.1"/>
+    <circle cx="1080" cy="470" r="1.6"/>
+    <circle cx="80"   cy="320" r="1"/>
+    <circle cx="1130" cy="280" r="1"/>
+    <circle cx="320"  cy="180" r="1.2"/>
+    <circle cx="900"  cy="540" r="1.3"/>
+    <circle cx="160"  cy="430" r="0.9"/>
+    <circle cx="1020" cy="350" r="1.1"/>
+  </g>
+
+  <!-- singularity -->
+  <circle cx="600" cy="290" r="220" fill="url(#orb)"/>
+  <circle cx="600" cy="290" r="14"  fill="#f8e9b5"/>
+
+  <!-- musa wordmark, small-caps tracked -->
+  <text x="600" y="455"
+        text-anchor="middle"
+        font-family="Geist, system-ui, sans-serif"
+        font-weight="500"
+        font-size="22"
+        letter-spacing="9"
+        fill="#c9a961">MUSA</text>
+
+  <!-- footer tagline -->
+  <text x="600" y="565"
+        text-anchor="middle"
+        font-family="'Geist Mono', ui-monospace, monospace"
+        font-size="16"
+        letter-spacing="6"
+        fill="rgba(232,230,224,0.62)">REAL GOLD · REAL MINES · DELIVERED</text>
+</svg>

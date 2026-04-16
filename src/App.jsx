@@ -1,4 +1,35 @@
-// Thin wrapper that re-exports the prototype as the app's default App.
-// The prototype is intentionally kept as a single file for easy handoff.
-// See CLAUDE.md § "Code conventions" before splitting.
-export { default } from '../prototypes/musa-prototype-v33.jsx';
+// Hash-based router for the pitch surface.
+//
+//   #/        → Landing chooser
+//   #/app     → consumer prototype (musa-prototype-v33)
+//   #/sim     → economic simulator (musa-simulator)
+//
+// Hash routing keeps Vercel happy without rewrite rules and avoids
+// 404-on-refresh. Three views, no react-router dep — see CLAUDE.md
+// § "What NOT to do" (no new deps without asking).
+
+import React, { useEffect, useState } from 'react';
+import Landing from './Landing.jsx';
+import Prototype from '../prototypes/musa-prototype-v33.jsx';
+import Simulator from '../prototypes/musa-simulator.jsx';
+
+const parseRoute = (hash) => {
+  const h = (hash || '').replace(/^#\/?/, '').split('?')[0].split('/')[0];
+  if (h === 'app') return 'app';
+  if (h === 'sim' || h === 'simulator') return 'sim';
+  return 'landing';
+};
+
+export default function App() {
+  const [route, setRoute] = useState(() => parseRoute(window.location.hash));
+
+  useEffect(() => {
+    const onHash = () => setRoute(parseRoute(window.location.hash));
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  if (route === 'app') return <Prototype />;
+  if (route === 'sim') return <Simulator />;
+  return <Landing />;
+}
