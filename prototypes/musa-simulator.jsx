@@ -503,6 +503,7 @@ export default function App() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [personaInfoOpen, setPersonaInfoOpen] = useState(false);
   const [bootInfoOpen, setBootInfoOpen] = useState(false);
+  const [revenueMultiple, setRevenueMultiple] = useState(15);
   const [goldUnit, setGoldUnit] = useState('g'); // 'g' | 'oz'
   const [priceSource, setPriceSource] = useState('default'); // 'default' | 'live' | 'failed'
   const tickRef = useRef(null);
@@ -638,12 +639,16 @@ export default function App() {
     const bootCapitalWithBuffer = bootCapital * 1.4;
     const bootSettled = state.cumulativeProfit > troughProfit && bootCapital > 0;
 
+    const annualRevenue = monthlyRevenue * 12;
+    const marketCap = annualRevenue * revenueMultiple;
+
     return {
       monthlyRevenue, monthlyCosts, monthlyProfit, breakevenWeek,
       ltv, goldKg, goldOz, goldValue,
       bootCapital, bootCapitalWithBuffer, bootSettled, troughWeek,
+      annualRevenue, marketCap,
     };
-  }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.cumulativeProfit, inputs.goldPricePerGram]);
+  }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.cumulativeProfit, inputs.goldPricePerGram, revenueMultiple]);
 
   return (
     <div className="w-full p-4 md:p-6" style={{ background: '#0a0908', color: '#FAFAF7', minHeight: '100dvh' }}>
@@ -883,6 +888,21 @@ export default function App() {
             value={derived.breakevenWeek ? `Week ${derived.breakevenWeek}` : '—'}
             tone={derived.breakevenWeek ? 'green' : 'default'}
           />
+          <div className="min-w-0">
+            <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-1.5 truncate">Market cap</div>
+            <div className="font-num tabular-nums truncate" style={{ color: 'var(--gold)', fontSize: 'clamp(14px, 3.5vw, 20px)', lineHeight: '1.2' }}>
+              {derived.marketCap > 0 ? fmtUSD(derived.marketCap, true) : '—'}
+            </div>
+            <div className="mt-2">
+              <input
+                type="range"
+                min={3} max={50} step={1} value={revenueMultiple}
+                onChange={e => setRevenueMultiple(parseFloat(e.target.value))}
+                style={{ width: '100%' }}
+              />
+              <div className="text-[9px] text-dim font-num mt-1">{revenueMultiple}× annual rev</div>
+            </div>
+          </div>
         </div>
 
         {/* Boot capital info popover */}
