@@ -418,6 +418,16 @@ function OnboardingScreen({ onContinue, onSkip }) {
         </div>
 
         <div className="relative" style={{ zIndex: 4 }}>
+          <h2
+            className="font-display text-app mb-6"
+            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+          >
+            the richest
+            <br />
+            <span className="italic text-gold" style={{ fontWeight: 400 }}>
+              man in history
+            </span>
+          </h2>
           <div className={`text-dim text-[13px] leading-relaxed italic mb-5 font-display float-lore-q ${contentFloated ? 'floated-lore-q' : ''}`} style={{ fontWeight: 300 }}>
             did you know that Musa is claimed to be the richest man in history?
           </div>
