@@ -182,7 +182,7 @@ export default function App() {
 
           <div className="flex-1 relative overflow-hidden">
             {screen === 'onboarding' && (
-              <OnboardingScreen key="onboarding" onContinue={login} />
+              <OnboardingScreen key="onboarding" onContinue={login} onSkip={() => setScreen('home')} />
             )}
             {screen === 'home' && (
               <HomeScreen
