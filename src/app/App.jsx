@@ -201,7 +201,7 @@ export default function App() {
                 totals={totals}
                 recentlyPurchased={recentlyPurchased}
                 onBuy={() => setScreen('browse')}
-                onHome={() => { window.location.hash = '#/'; }}
+                onHome={() => setScreen('onboarding')}
                 onSettings={() => setDevOpen(v => !v)}
                 onUnit={(id) => { setSelectedUnitId(id); setScreen('unitDetail'); }}
               />
@@ -210,7 +210,7 @@ export default function App() {
               <BrowseScreen
                 key="browse"
                 onBack={() => setScreen('home')}
-                onHome={() => { window.location.hash = '#/'; }}
+                onHome={() => setScreen('onboarding')}
                 onSelect={(tierId) => { setSelectedTier(tierId); setScreen('buy'); }}
               />
             )}
@@ -221,7 +221,7 @@ export default function App() {
                 amount={selectedAmount}
                 setAmount={setSelectedAmount}
                 onBack={() => setScreen('browse')}
-                onHome={() => { window.location.hash = '#/'; }}
+                onHome={() => setScreen('onboarding')}
                 onConfirm={() => startBuy(selectedTier, selectedAmount)}
               />
             )}
@@ -230,7 +230,7 @@ export default function App() {
                 key={`unitDetail-${selectedUnitId}`}
                 unit={selectedUnit}
                 onBack={() => setScreen('home')}
-                onHome={() => { window.location.hash = '#/'; }}
+                onHome={() => setScreen('onboarding')}
                 onExit={() => setScreen('exit')}
               />
             )}
@@ -239,7 +239,7 @@ export default function App() {
                 key="exit"
                 unit={selectedUnit}
                 onBack={() => setScreen('unitDetail')}
-                onHome={() => { window.location.hash = '#/'; }}
+                onHome={() => setScreen('onboarding')}
                 onConfirm={() => exitUnit(selectedUnitId)}
               />
             )}
