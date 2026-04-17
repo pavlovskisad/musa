@@ -434,7 +434,7 @@
         .scroll-hint {
           position: absolute;
           left: 50%;
-          bottom: 24px;
+          bottom: 8px;
           transform: translateX(-50%);
           animation: scrollHintBreath 2.6s ease-in-out infinite;
           transition: opacity 0.6s ease-out;

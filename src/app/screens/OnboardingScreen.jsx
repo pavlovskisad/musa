@@ -356,8 +356,8 @@ function OnboardingScreen({ onContinue }) {
         </div>
 
         <div className={`scroll-hint ${activeScreen > 0 ? 'hidden' : ''}`}>
-          <div className="text-[9px] uppercase tracking-[0.3em] text-dim mb-2">scroll to explore</div>
-          <ChevronDown size={20} strokeWidth={1.25} className="text-app" />
+          <div className="text-[9px] uppercase tracking-[0.3em] text-dim mb-1">more</div>
+          <ChevronDown size={16} strokeWidth={1.25} className="text-dim" />
         </div>
       </div>
 
