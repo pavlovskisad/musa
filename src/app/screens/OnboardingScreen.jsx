@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
-function OnboardingScreen({ onContinue, onSkip }) {
+function OnboardingScreen({ onContinue }) {
   const [splashActive, setSplashActive] = useState(true);
   const [activeScreen, setActiveScreen] = useState(0);
   const scrollRef = useRef(null);
@@ -353,18 +353,10 @@ function OnboardingScreen({ onContinue, onSkip }) {
           <p className="text-center text-[11px] text-dim mt-5">
             Real gold · real mines · delivered
           </p>
-          {onSkip && (
-            <button
-              onClick={onSkip}
-              className="press block mx-auto mt-4 text-[11px] text-dim"
-              style={{ opacity: 0.4 }}
-            >
-              skip login
-            </button>
-          )}
         </div>
 
         <div className={`scroll-hint ${activeScreen > 0 ? 'hidden' : ''}`}>
+          <div className="text-[9px] uppercase tracking-[0.3em] text-dim mb-2">scroll to explore</div>
           <ChevronDown size={20} strokeWidth={1.25} className="text-app" />
         </div>
       </div>

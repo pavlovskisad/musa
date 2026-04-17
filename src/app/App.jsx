@@ -193,7 +193,6 @@ export default function App() {
               <OnboardingScreen
                 key="onboarding"
                 onContinue={authenticated ? () => setScreen('home') : login}
-                onSkip={() => setScreen('home')}
               />
             )}
             {screen === 'home' && (
