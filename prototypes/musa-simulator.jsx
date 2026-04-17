@@ -738,13 +738,62 @@ export default function App() {
         }
         .flow-particles-slow { animation-duration: 2s; }
         .flow-particles-reverse { animation-direction: reverse; }
+
+        .musa-logo {
+          position: relative;
+          display: inline-block;
+          color: rgba(232, 218, 188, 0.7);
+          animation: musaLogoBreath 4.2s ease-in-out infinite;
+        }
+        .musa-logo-text {
+          position: relative;
+          z-index: 1;
+        }
+        .musa-logo-shimmer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          pointer-events: none;
+          color: rgba(255, 240, 200, 1);
+          background: linear-gradient(
+            100deg,
+            transparent 30%,
+            rgba(255, 240, 200, 1) 48%,
+            rgba(255, 240, 200, 1) 52%,
+            transparent 70%
+          );
+          background-size: 200% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: musaLogoShimmer 5.5s ease-in-out infinite;
+        }
+        @keyframes musaLogoBreath {
+          0%, 100% { text-shadow: 0 0 6px rgba(201,169,97,0.18), 0 0 14px rgba(201,169,97,0.08); }
+          50%      { text-shadow: 0 0 10px rgba(201,169,97,0.35), 0 0 22px rgba(201,169,97,0.18); }
+        }
+        @keyframes musaLogoShimmer {
+          0%   { background-position: 150% 0; }
+          15%  { background-position: -50% 0; }
+          100% { background-position: -50% 0; }
+        }
       `}</style>
 
       <div className="max-w-[1400px] mx-auto">
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div className="flex items-baseline gap-4">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-dim">musa</div>
+            <button
+              onClick={() => { window.location.hash = '#/'; }}
+              className="press"
+              style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0, font: 'inherit', color: 'inherit' }}
+            >
+              <div className="text-[10px] uppercase tracking-[0.4em] musa-logo">
+                <span className="musa-logo-text">musa</span>
+                <span className="musa-logo-shimmer">musa</span>
+              </div>
+            </button>
             <div className="font-display italic text-gold text-xl" style={{ fontWeight: 400 }}>simulator</div>
           </div>
           <div className="flex items-center gap-2">
