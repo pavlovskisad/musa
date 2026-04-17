@@ -6,7 +6,7 @@ import './styles/app.css';
 import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
-import { loadUnits, saveUnits, clearAll, setStorageUserId } from './lib/storage.js';
+import { loadUnits, saveUnits, clearAll, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi } from './lib/storage.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
@@ -24,7 +24,7 @@ import UnitDetailScreen from './screens/UnitDetailScreen.jsx';
 import ExitScreen from './screens/ExitScreen.jsx';
 
 export default function App() {
-  const { ready, authenticated, user, login, logout } = usePrivy();
+  const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
 
   const [timeMult, setTimeMult] = useState(1);
   const { simTime, setSimTime } = useSimTime(timeMult);
@@ -42,12 +42,15 @@ export default function App() {
   const [celebratingUnit, setCelebratingUnit] = useState(null);
   const celebratedIdsRef = useRef(new Set());
 
-  // Namespace storage by Privy user ID and skip onboarding if authenticated
+  // On auth: set user ID, get token, fetch units from API
   useEffect(() => {
     if (!ready) return;
     if (authenticated && user) {
       setStorageUserId(user.id);
-      setUnits(loadUnits());
+      getAccessToken().then(token => {
+        if (token) setAccessToken(token);
+        fetchUnits().then(u => setUnits(u));
+      });
       if (screen === 'onboarding') setScreen('home');
     }
   }, [ready, authenticated, user]);
@@ -105,6 +108,7 @@ export default function App() {
         exitedAt: null,
       };
       setUnits(prev => [unit, ...prev]);
+      createUnit(unit);
       setRecentlyPurchased(unit.id);
       setCreating(null);
       setScreen('home');
@@ -123,13 +127,15 @@ export default function App() {
     const refundGrams = undeliveredGrams * (1 - penaltyPct);
     const totalReceived = unit.gramsDelivered + refundGrams;
 
+    const exitTime = simTime.getTime();
     setUnits(prev =>
       prev.map(u =>
         u.id === unitId
-          ? { ...u, exitedAt: simTime.getTime(), gramsAtExit: totalReceived }
+          ? { ...u, exitedAt: exitTime, gramsAtExit: totalReceived }
           : u
       )
     );
+    exitUnitApi(unitId, exitTime, totalReceived);
     setScreen('home');
   };
 
