@@ -26,6 +26,8 @@ import ExitScreen from './screens/ExitScreen.jsx';
 export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
 
+  const userName = user?.email?.address?.split('@')[0] || null;
+
   const [timeMult, setTimeMult] = useState(1);
   const { simTime, setSimTime } = useSimTime(timeMult);
   const { goldPrice, setGoldPrice, priceSource, setPriceSource } = useGoldPrice();
@@ -200,6 +202,7 @@ export default function App() {
                 units={visibleUnits}
                 totals={totals}
                 recentlyPurchased={recentlyPurchased}
+                userName={userName}
                 onBuy={() => setScreen('browse')}
                 onHome={() => setScreen('onboarding')}
                 onSettings={() => setDevOpen(v => !v)}

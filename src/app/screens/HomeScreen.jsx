@@ -5,7 +5,7 @@ import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 
-function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onSettings }) {
+function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onSettings, userName }) {
   const hasUnits = units.length > 0;
   const { unit: goldUnit } = useGold();
 
@@ -34,7 +34,9 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Hero */}
       <div className="px-6 pt-6 pb-7">
-        <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Your gold</div>
+        <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">
+          {userName ? `musa ${userName}` : 'Your gold'}
+        </div>
         <div
           className="font-display font-num text-app"
           style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
