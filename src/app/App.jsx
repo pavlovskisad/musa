@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
 
 import './styles/app.css';
 
 import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
-import { loadUnits, saveUnits, clearAll } from './lib/storage.js';
+import { loadUnits, saveUnits, clearAll, setStorageUserId } from './lib/storage.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
@@ -23,12 +24,14 @@ import UnitDetailScreen from './screens/UnitDetailScreen.jsx';
 import ExitScreen from './screens/ExitScreen.jsx';
 
 export default function App() {
+  const { ready, authenticated, user, login, logout } = usePrivy();
+
   const [timeMult, setTimeMult] = useState(1);
   const { simTime, setSimTime } = useSimTime(timeMult);
   const { goldPrice, setGoldPrice, priceSource, setPriceSource } = useGoldPrice();
   const [goldUnit, setGoldUnit] = useState('g');
 
-  const [screen, setScreen] = useState('onboarding');
+  const [screen, setScreen] = useState(() => 'onboarding');
   const [devOpen, setDevOpen] = useState(false);
   const [units, setUnits] = useState(() => loadUnits());
   const [selectedTier, setSelectedTier] = useState(null);
@@ -38,6 +41,16 @@ export default function App() {
   const [creating, setCreating] = useState(null);
   const [celebratingUnit, setCelebratingUnit] = useState(null);
   const celebratedIdsRef = useRef(new Set());
+
+  // Namespace storage by Privy user ID and skip onboarding if authenticated
+  useEffect(() => {
+    if (!ready) return;
+    if (authenticated && user) {
+      setStorageUserId(user.id);
+      setUnits(loadUnits());
+      if (screen === 'onboarding') setScreen('home');
+    }
+  }, [ready, authenticated, user]);
 
   // Persist units to localStorage on change
   useEffect(() => { saveUnits(units); }, [units]);
@@ -129,6 +142,7 @@ export default function App() {
     setSelectedTier(null);
     setSelectedAmount(100);
     setCreating(null);
+    logout();
   };
 
   const selectedUnit = computedUnits.find(u => u.id === selectedUnitId);
@@ -168,7 +182,7 @@ export default function App() {
 
           <div className="flex-1 relative overflow-hidden">
             {screen === 'onboarding' && (
-              <OnboardingScreen key="onboarding" onContinue={() => setScreen('home')} />
+              <OnboardingScreen key="onboarding" onContinue={login} />
             )}
             {screen === 'home' && (
               <HomeScreen

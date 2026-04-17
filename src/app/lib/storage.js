@@ -1,9 +1,13 @@
-const STORAGE_KEY = 'musa_units';
-const SETTINGS_KEY = 'musa_settings';
+let userId = null;
+
+const unitsKey = () => userId ? `musa_units_${userId}` : 'musa_units';
+const settingsKey = () => userId ? `musa_settings_${userId}` : 'musa_settings';
+
+export const setStorageUserId = (id) => { userId = id; };
 
 export const loadUnits = () => {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(unitsKey());
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -12,15 +16,13 @@ export const loadUnits = () => {
 
 export const saveUnits = (units) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(units));
-  } catch {
-    // quota exceeded or private browsing — silent fail
-  }
+    localStorage.setItem(unitsKey(), JSON.stringify(units));
+  } catch {}
 };
 
 export const loadSettings = () => {
   try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+    const raw = localStorage.getItem(settingsKey());
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
@@ -29,17 +31,13 @@ export const loadSettings = () => {
 
 export const saveSettings = (settings) => {
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-  } catch {
-    // silent fail
-  }
+    localStorage.setItem(settingsKey(), JSON.stringify(settings));
+  } catch {}
 };
 
 export const clearAll = () => {
   try {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(SETTINGS_KEY);
-  } catch {
-    // silent fail
-  }
+    localStorage.removeItem(unitsKey());
+    localStorage.removeItem(settingsKey());
+  } catch {}
 };
