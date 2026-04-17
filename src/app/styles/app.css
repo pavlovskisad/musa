@@ -1,0 +1,1189 @@
+/* Extracted from musa-prototype-v33.jsx — all animation keyframes and utility classes */
+/* Dynamic vortex keyframes stay inline in ConnectTheDots.jsx */
+
+        
+        :root {
+          --gold: #C9A961;
+          --gold-dim: #8B7340;
+          --gold-bright: #E4C57E;
+          --bg: #0a0908;
+          --surface: #161513;
+          --surface-2: #1f1d1a;
+          --border: rgba(255,255,255,0.08);
+          --border-strong: rgba(255,255,255,0.14);
+          --text: #FAFAF7;
+          --text-dim: #8c8a82;
+        }
+
+        * { font-family: 'Geist', system-ui, sans-serif; }
+        .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-num { font-family: 'Geist Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+
+        .text-gold { color: var(--gold); }
+        .bg-gold { background-color: var(--gold); }
+        .border-gold { border-color: var(--gold); }
+        .bg-surface { background-color: var(--surface); }
+        .bg-surface-2 { background-color: var(--surface-2); }
+        .border-app { border-color: var(--border); }
+        .border-app-strong { border-color: var(--border-strong); }
+        .text-app { color: var(--text); }
+        .text-dim { color: var(--text-dim); }
+        .bg-app { background-color: var(--bg); }
+
+        .dot-grid {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+          background-size: 22px 22px;
+        }
+
+        .gold-glow {
+          box-shadow: 0 0 0 1px rgba(201,169,97,0.3), 0 12px 40px -8px rgba(201,169,97,0.25);
+        }
+
+        .scrollable::-webkit-scrollbar { display: none; }
+        .scrollable { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .phone-frame {
+          box-shadow:
+            0 40px 80px -20px rgba(0,0,0,0.6),
+            0 80px 120px -40px rgba(201,169,97,0.08);
+        }
+
+        button { font-family: inherit; }
+
+        /* === Animations === */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(24px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUpBig {
+          from { opacity: 0; transform: translateY(28px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+          from { opacity: 0; transform: scale(0.96) translateY(8px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .anim-fade { animation: fadeIn 0.4s ease-out both; }
+        .anim-slide-right { animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .anim-slide-up { animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .anim-slide-up-big { animation: slideInUpBig 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        @keyframes slideDownIn {
+          from { transform: translateY(-100%); opacity: 0; }
+          to   { transform: translateY(0); opacity: 1; }
+        }
+        .anim-slide-down { animation: slideDownIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .anim-pop { animation: popIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.18s; }
+        .delay-3 { animation-delay: 0.26s; }
+        .delay-4 { animation-delay: 0.5s; }
+
+        .progress-fill {
+          transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .press:active { transform: scale(0.98); }
+        .press-soft:active { transform: scale(0.99); }
+        .press, .press-soft { transition: transform 0.15s ease-out, border-color 0.2s, background-color 0.2s; }
+
+        /* === Mining shimmer (active mine cards) === */
+        @keyframes shimmerPass {
+          0%   { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+        .progress-shimmer {
+          position: absolute; inset: 0;
+          background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255,255,255,0.0) 30%,
+            rgba(255,255,255,0.55) 50%,
+            rgba(255,255,255,0.0) 70%,
+            transparent 100%);
+          animation: shimmerPass 2.6s linear infinite;
+          mix-blend-mode: overlay;
+        }
+        @keyframes pulseGold {
+          0%, 100% { opacity: 0.65; }
+          50%      { opacity: 1; }
+        }
+        .pulse-gold {
+          animation: pulseGold 2.2s ease-in-out infinite;
+        }
+        @keyframes pulseRing {
+          0%   { transform: scale(0.9); opacity: 0.7; }
+          100% { transform: scale(1.8); opacity: 0; }
+        }
+        .pulse-ring {
+          position: absolute;
+          width: 8px; height: 8px;
+          border-radius: 9999px;
+          background: var(--gold);
+          animation: pulseRing 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+
+        /* === Creation animation === */
+        @keyframes ringExpand {
+          0%   { transform: scale(0); opacity: 0; }
+          15%  { opacity: 1; }
+          60%  { opacity: 0.5; }
+          100% { transform: scale(2.4); opacity: 0; }
+        }
+        @keyframes scanLine {
+          0%   { transform: translateY(-110%); opacity: 0; }
+          15%  { opacity: 1; }
+          85%  { opacity: 1; }
+          100% { transform: translateY(110%); opacity: 0; }
+        }
+        @keyframes gridFadeIn {
+          0%   { opacity: 0; transform: scale(1.2); filter: blur(8px); }
+          50%  { opacity: 1; filter: blur(0px); }
+          100% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+        }
+        @keyframes coreReveal {
+          0%   { opacity: 0; transform: scale(0.4); }
+          50%  { opacity: 0; }
+          70%  { opacity: 1; transform: scale(1.05); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes textRise {
+          0%, 60% { opacity: 0; transform: translateY(20px); }
+          100%    { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shutterIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes shutterOut {
+          from { opacity: 1; }
+          to   { opacity: 0; }
+        }
+
+        .creation-overlay {
+          animation: shutterIn 0.25s ease-out both, shutterOut 0.3s ease-in 1.5s both;
+        }
+
+        .creation-grid {
+          animation: gridFadeIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .creation-ring {
+          position: absolute;
+          left: 50%; top: 50%;
+          width: 120px; height: 120px;
+          margin-left: -60px; margin-top: -60px;
+          border: 1px solid var(--gold);
+          border-radius: 9999px;
+        }
+        .creation-ring-1 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
+        .creation-ring-2 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+        .creation-ring-3 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+        .creation-scan {
+          position: absolute;
+          left: 0; right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, var(--gold), transparent);
+          box-shadow: 0 0 12px 2px rgba(201,169,97,0.6);
+          animation: scanLine 1.4s cubic-bezier(0.4, 0, 0.6, 1) 0.2s both;
+        }
+        .creation-core {
+          animation: coreReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .creation-text {
+          animation: textRise 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* === Celebration overlay === */
+        .celebration-overlay {
+          animation: shutterIn 0.35s ease-out both, shutterOut 0.4s ease-in 3.8s both;
+        }
+        .celebration-grid {
+          animation: gridFadeIn 2.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+          opacity: 0.25;
+        }
+        .celebration-ring {
+          position: absolute;
+          left: 50%; top: 50%;
+          width: 180px; height: 180px;
+          margin-left: -90px; margin-top: -90px;
+          border: 1px solid var(--gold);
+          border-radius: 9999px;
+          opacity: 0;
+        }
+        .celebration-ring-1 { animation: celebrationRing 3.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s infinite; }
+        .celebration-ring-2 { animation: celebrationRing 3.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s infinite; }
+        .celebration-ring-3 { animation: celebrationRing 3.4s cubic-bezier(0.16, 1, 0.3, 1) 0.9s infinite; }
+        @keyframes celebrationRing {
+          0%   { transform: scale(0.3); opacity: 0; }
+          20%  { opacity: 0.5; }
+          100% { transform: scale(2.8); opacity: 0; }
+        }
+        .celebration-text {
+          animation: celebrationRise 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+        @keyframes celebrationRise {
+          0%   { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === Ambient: active mine particles === */
+        @keyframes particleRise {
+          0%   { transform: translateY(0); opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { transform: translateY(-120px); opacity: 0; }
+        }
+        @keyframes particleRiseLg {
+          0%   { transform: translateY(0); opacity: 0; }
+          8%   { opacity: 1; }
+          92%  { opacity: 1; }
+          100% { transform: translateY(-520px); opacity: 0; }
+        }
+        @keyframes particleRiseOnboard {
+          0%   { transform: translateY(0); opacity: 0; }
+          15%  { opacity: 1; }
+          85%  { opacity: 1; }
+          100% { transform: translateY(-180px); opacity: 0; }
+        }
+        @keyframes particleRiseFar {
+          0%   { transform: translateY(0); opacity: 0; }
+          20%  { opacity: 0.35; }
+          80%  { opacity: 0.35; }
+          100% { transform: translateY(-90px); opacity: 0; }
+        }
+        @keyframes particleRiseClose {
+          0%   { transform: translateY(0); opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 1; }
+          100% { transform: translateY(-240px); opacity: 0; }
+        }
+        .ambient-particles {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          border-radius: inherit;
+        }
+        .particle {
+          position: absolute;
+          bottom: -4px;
+          width: 2px;
+          height: 2px;
+          border-radius: 9999px;
+          background: var(--gold);
+          box-shadow: 0 0 4px rgba(201,169,97,0.6);
+          animation: particleRise 9s linear infinite;
+        }
+        .particle-lg {
+          animation: particleRiseLg 14s linear infinite;
+        }
+        .particle-onboard {
+          animation: particleRiseOnboard 11s linear infinite;
+        }
+        /* Drift-only particle for onboarding full-height field.
+           Rises only 60px from wherever it starts, so it feels local. */
+        @keyframes particleDriftLocal {
+          0%   { transform: translateY(0); opacity: 0; }
+          15%  { opacity: 1; }
+          85%  { opacity: 1; }
+          100% { transform: translateY(-60px); opacity: 0; }
+        }
+        .particle-drift {
+          animation: particleDriftLocal 9s linear infinite;
+        }
+        .particle-far {
+          width: 1px;
+          height: 1px;
+          background: rgba(201,169,97,0.6);
+          box-shadow: 0 0 2px rgba(201,169,97,0.3);
+          animation: particleRiseFar 16s linear infinite;
+        }
+        .particle-close {
+          width: 3px;
+          height: 3px;
+          background: var(--gold);
+          box-shadow: 0 0 6px rgba(201,169,97,0.9), 0 0 12px rgba(201,169,97,0.4);
+          animation: particleRiseClose 8s linear infinite;
+        }
+
+        /* === River particle (connect-the-dots screen) ===
+           Slow fullscreen rise from bottom edge to above the top edge,
+           with subtle horizontal drift for organic motion. Each particle's
+           duration, delay, and drift (--drift-x) vary independently. */
+        @keyframes particleRiver {
+          0%   {
+            transform: translate(0, 0);
+            opacity: 0;
+          }
+          8%   { opacity: var(--pop, 0.7); }
+          92%  { opacity: var(--pop, 0.7); }
+          100% {
+            transform: translate(var(--drift-x, 0), -110vh);
+            opacity: 0;
+          }
+        }
+        .particle-river {
+          position: absolute;
+          bottom: -10px;
+          width: 1.5px;
+          height: 1.5px;
+          border-radius: 9999px;
+          background: var(--gold);
+          box-shadow: 0 0 4px rgba(201,169,97,0.55);
+          animation: particleRiver linear infinite;
+          will-change: transform, opacity;
+        }
+
+        /* === Vortex particles (connect-the-dots screen) ===
+           Each particle has its own unique @keyframes block (vortex0..vortexN)
+           injected dynamically below — see the OnboardingScreen render. The
+           base style only sets visual properties; animation comes from the
+           per-particle inline style. */
+        .particle-vortex {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 2px;
+          height: 2px;
+          margin-left: -1px;
+          margin-top: -1px;
+          border-radius: 9999px;
+          background: var(--gold);
+          box-shadow: 0 0 4px rgba(201,169,97,0.7);
+          opacity: 0;
+          will-change: transform, opacity;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+        }
+
+        /* === Splash screen: spark → dot → expand outward === */
+        @keyframes splashGlowPulse {
+          0%   { transform: scale(0.3); opacity: 0; }
+          30%  { opacity: 1; }
+          100% { transform: scale(1); opacity: 0.9; }
+        }
+        @keyframes splashDotExpand {
+          0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+          10%  { transform: translate(-50%, -50%) scale(0.05); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+        }
+        @keyframes splashFadeOut {
+          0%   { opacity: 1; }
+          100% { opacity: 0; pointer-events: none; }
+        }
+
+        .splash-glow {
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 60px; height: 60px;
+          margin-left: -30px; margin-top: -30px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(201,169,97,0.5) 0%, rgba(201,169,97,0.15) 35%, transparent 65%);
+          animation: splashGlowPulse 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .splash-dot {
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 40px; height: 40px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(201,169,97,0.6) 0%, rgba(201,169,97,0.2) 40%, transparent 70%);
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0;
+          animation: splashDotExpand 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.4s forwards;
+        }
+        .splash-overlay-exit {
+          animation: splashFadeOut 0.8s ease-out 2.4s forwards;
+        }
+
+        /* === Refined entrance animations for onboarding content === */
+        @keyframes onboardLabelIn {
+          0%   { opacity: 0; transform: translateY(-8px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes onboardHeadlineIn {
+          0%   { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+          60%  { filter: blur(0); }
+          100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes onboardSubtitleIn {
+          0%   { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 0.7; transform: translateY(0); }
+        }
+        @keyframes onboardButtonIn {
+          0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .onboard-label-in    { animation: onboardLabelIn 0.8s ease-out 2.4s both; }
+        .onboard-headline-in { animation: onboardHeadlineIn 1.2s ease-out 2.5s both; }
+        .onboard-subtitle-in { animation: onboardSubtitleIn 1s ease-out 2.9s both; }
+        .onboard-button-in   { animation: onboardButtonIn 1.1s ease-out 3.1s both; }
+
+        /* === Scroll hint — subtle "more below" cue on first viewport === */
+        @keyframes scrollHintBreath {
+          0%, 100% { opacity: 0.25; transform: translate(-50%, 0); }
+          50%      { opacity: 0.6;  transform: translate(-50%, 6px); }
+        }
+        .scroll-hint {
+          position: absolute;
+          left: 50%;
+          bottom: 18px;
+          transform: translateX(-50%);
+          animation: scrollHintBreath 2.6s ease-in-out infinite;
+          transition: opacity 0.6s ease-out;
+          pointer-events: none;
+          z-index: 5;
+        }
+        .scroll-hint.hidden {
+          opacity: 0 !important;
+          animation: none;
+        }
+
+        /* === Connect-the-dots circle (screen 5) ===
+           Arc + fill are JS-driven, triggered on each "eat" event.
+           Each eat flashes both arcs drawing in parallel (one full sweep
+           in ~400ms), then they fade out over ~500ms, ready for next bite. */
+        @keyframes arcFlash {
+          0%   { stroke-dashoffset: 320; opacity: 0; }
+          10%  { opacity: 1; }
+          45%  { stroke-dashoffset: 0; opacity: 1; }
+          75%  { stroke-dashoffset: 0; opacity: 1; }
+          100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+        /* Endpoint dots (USER, MINERS) — brighten when the arc arrives,
+           matching the arc's draw completion at ~45% of the flash cycle.
+           Uses transform-origin per-element to scale from the dot's center. */
+        @keyframes endpointFlashUser {
+          0%, 40% { fill: rgba(232, 218, 188, 0.9); transform: scale(1); }
+          48%     { fill: rgba(255, 248, 220, 1);   transform: scale(1.6); }
+          75%     { fill: rgba(232, 218, 188, 0.9); transform: scale(1); }
+          100%    { fill: rgba(232, 218, 188, 0.9); transform: scale(1); }
+        }
+        @keyframes endpointFlashMiner {
+          0%, 40% { fill: #C9A961;  transform: scale(1); }
+          48%     { fill: #F4DE9D;  transform: scale(1.6); }
+          75%     { fill: #C9A961;  transform: scale(1); }
+          100%    { fill: #C9A961;  transform: scale(1); }
+        }
+        .endpoint-user {
+          transform-origin: 110px 10px;
+        }
+        .endpoint-miner {
+          transform-origin: 110px 210px;
+        }
+        /* Endpoint labels (you / miners) — brighten alongside the dots
+           when the arc arrives. Color shift + slight letter-spacing
+           expansion for a "word lighting up" feel. */
+        @keyframes labelFlashUser {
+          0%, 40% {
+            color: rgba(164, 158, 144, 0.7);
+            letter-spacing: 0.3em;
+            text-shadow: none;
+          }
+          48% {
+            color: rgba(255, 248, 220, 1);
+            letter-spacing: 0.42em;
+            text-shadow: 0 0 8px rgba(232, 218, 188, 0.6);
+          }
+          75% {
+            color: rgba(164, 158, 144, 0.7);
+            letter-spacing: 0.3em;
+            text-shadow: none;
+          }
+        }
+        @keyframes labelFlashMiner {
+          0%, 40% {
+            color: rgba(164, 158, 144, 0.7);
+            letter-spacing: 0.3em;
+            text-shadow: none;
+          }
+          48% {
+            color: #F4DE9D;
+            letter-spacing: 0.42em;
+            text-shadow: 0 0 8px rgba(201, 169, 97, 0.7);
+          }
+          75% {
+            color: rgba(164, 158, 144, 0.7);
+            letter-spacing: 0.3em;
+            text-shadow: none;
+          }
+        }
+        /* musa logo pulse — peaks at the start of the pulse cycle,
+           synced with the singularity bite at the center. Labels/dots
+           peak later (at 48%, when arcs arrive) — this creates a
+           ripple from center outward. */
+        @keyframes musaLogoPulse {
+          0%      { transform: scale(1); filter: brightness(1); }
+          10%     { transform: scale(1.15); filter: brightness(1.4); }
+          35%     { transform: scale(1); filter: brightness(1); }
+          100%    { transform: scale(1); filter: brightness(1); }
+        }
+        .connect-fill {
+          opacity: 0;
+          transform: scale(0.9);
+          transform-origin: center;
+          transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+        }
+        .connect-fill-on {
+          opacity: 0.55;
+          transform: scale(1);
+        }
+        .connect-fill-punch {
+          opacity: 0.95 !important;
+          transform: scale(1.08) !important;
+          transition: opacity 0.1s ease-out, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+
+        /* Singularity glow — dim baseline hot core that blinks brighter
+           each time a vortex particle reaches it (an "eat" event). The
+           blinks are driven by JS — see OnboardingScreen's useEffect. */
+        .singularity-glow {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 48px;
+          height: 48px;
+          margin-left: -24px;
+          margin-top: -24px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(255, 240, 200, 0.95) 0%,
+            rgba(232, 198, 120, 0.6) 25%,
+            rgba(201, 169, 97, 0.3) 50%,
+            rgba(201, 169, 97, 0.08) 75%,
+            transparent 100%
+          );
+          filter: blur(3px);
+          pointer-events: none;
+          opacity: 0;
+          transform: scale(0.75);
+          transition: opacity 0.18s ease-out, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease-out;
+          will-change: transform, opacity, filter;
+        }
+        .singularity-glow-on {
+          opacity: 0.55;
+          transform: scale(0.9);
+        }
+        .singularity-glow-eat {
+          opacity: 1 !important;
+          transform: scale(1.15) !important;
+          filter: blur(4px) brightness(1.4) !important;
+        }
+
+        /* === Grain delivery (screen 4 — from mine to your wallet) ===
+           Grains fall from above, accumulate into a soft pile at the bottom.
+           Animations only run when the parent has .grains-on class. */
+        .grains-stage {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+        .grain {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(232,205,140,1) 0%, rgba(201,169,97,0.85) 50%, rgba(201,169,97,0) 100%);
+          box-shadow: 0 0 6px rgba(201,169,97,0.6);
+          opacity: 0;
+          top: 0;
+          /* per-grain left, --dur, and animation-delay are set inline */
+        }
+        .grains-on .grain {
+          animation: grainFall var(--dur, 2.6s) cubic-bezier(0.4, 0.5, 0.5, 1) infinite;
+        }
+        @keyframes grainFall {
+          0%   { top: 0;    transform: scale(0.6); opacity: 0; }
+          10%  { top: 8%;   transform: scale(1);   opacity: 1; }
+          85%  { top: 85%;  transform: scale(1);   opacity: 1; }
+          95%  { top: 92%;  transform: scale(0.7); opacity: 0.4; }
+          100% { top: 95%;  transform: scale(0.4); opacity: 0; }
+        }
+
+        /* The pile — soft glowing mound at the bottom that grows over time */
+        .grain-pile {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          width: 200px;
+          height: 30px;
+          margin-left: -100px;
+          border-radius: 50%;
+          background: radial-gradient(ellipse at center, rgba(201,169,97,0.55) 0%, rgba(201,169,97,0.22) 40%, rgba(201,169,97,0.05) 70%, transparent 90%);
+          filter: blur(4px);
+          opacity: 0;
+          transform: scaleY(0.3) scaleX(0.5);
+          transform-origin: bottom center;
+          transition: opacity 1.2s ease-out, transform 4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .grains-on .grain-pile {
+          opacity: 0.85;
+          transform: scaleY(1) scaleX(1);
+          animation: pileBreath 5s ease-in-out infinite 1.5s;
+        }
+        @keyframes pileBreath {
+          0%, 100% { filter: blur(4px) brightness(1); }
+          50%      { filter: blur(5px) brightness(1.15); }
+        }
+
+        /* === Safe and sound (screen 5) ===
+           A small pile of gold under a soft glowing protective dome.
+           Dome breathes slowly. Faint concentric rings pulse outward
+           occasionally, suggesting safety/containment without alarm. */
+        .vault-stage {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+        .vault-pile {
+          position: absolute;
+          left: 50%;
+          top: 58%;
+          width: 140px;
+          height: 22px;
+          margin-left: -70px;
+          border-radius: 50%;
+          background: radial-gradient(ellipse at center, rgba(201,169,97,0.65) 0%, rgba(201,169,97,0.28) 40%, rgba(201,169,97,0.06) 70%, transparent 90%);
+          filter: blur(3px);
+          opacity: 0;
+          transition: opacity 1.4s ease-out 0.3s;
+        }
+        .vault-on .vault-pile {
+          opacity: 0.9;
+          animation: pileBreath 5s ease-in-out infinite 1.5s;
+        }
+        .vault-dome {
+          position: absolute;
+          left: 50%;
+          top: 58%;
+          width: 220px;
+          height: 220px;
+          margin-left: -110px;
+          margin-top: -180px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 70%, rgba(201,169,97,0.18) 0%, rgba(201,169,97,0.08) 35%, rgba(201,169,97,0.02) 60%, transparent 80%);
+          filter: blur(8px);
+          opacity: 0;
+          transform: scale(0.85);
+          transition: opacity 1.4s ease-out 0.6s, transform 2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+        }
+        .vault-on .vault-dome {
+          opacity: 1;
+          transform: scale(1);
+          animation: domeBreath 6s ease-in-out infinite 2s;
+        }
+        @keyframes domeBreath {
+          0%, 100% { filter: blur(8px) brightness(1);    transform: scale(1); }
+          50%      { filter: blur(9px) brightness(1.18); transform: scale(1.03); }
+        }
+        .vault-ring {
+          position: absolute;
+          left: 50%;
+          top: 58%;
+          border: 1px solid rgba(201,169,97,0.18);
+          border-radius: 50%;
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.4);
+        }
+        .vault-on .vault-ring {
+          animation: vaultRingPulse 6s ease-out infinite;
+        }
+        @keyframes vaultRingPulse {
+          0%   { opacity: 0;    transform: translate(-50%, -50%) scale(0.4); }
+          15%  { opacity: 0.5;  }
+          80%  { opacity: 0;    transform: translate(-50%, -50%) scale(2.4); }
+          100% { opacity: 0;    transform: translate(-50%, -50%) scale(2.4); }
+        }
+
+        /* === musa logo on screen 1 — soft warm glow + occasional shimmer sweep === */
+        .musa-logo {
+          position: relative;
+          display: inline-block;
+          color: rgba(232, 218, 188, 0.7);
+        }
+        .musa-logo-text {
+          position: relative;
+          z-index: 1;
+        }
+
+        /* === musa↔touch morph (screen 5 center) ===
+           Wrapper has fixed width. Both words absolute-positioned with
+           full-width text-align center so they share identical visual
+           centering regardless of letter count. */
+        .musa-morph {
+          position: relative;
+          display: inline-block;
+          width: 80px;
+          height: 1em;
+          text-align: center;
+        }
+        .musa-morph .musa-word-musa,
+        .musa-morph .musa-word-touch,
+        .musa-morph .musa-logo-shimmer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          text-align: center;
+        }
+        .musa-morph .musa-word-touch {
+          z-index: 1;
+          animation: morphTouch 11s steps(1, end) infinite;
+        }
+        .musa-morph .musa-word-musa {
+          z-index: 1;
+          animation: morphMusa 11s steps(1, end) infinite;
+        }
+        @keyframes morphMusa {
+          0%, 49%   { opacity: 1; }
+          50%, 99%  { opacity: 0; }
+          100%      { opacity: 1; }
+        }
+        @keyframes morphTouch {
+          0%, 49%   { opacity: 0; }
+          50%, 99%  { opacity: 1; }
+          100%      { opacity: 0; }
+        }
+        /* Shimmer sweeps timed to the morph crossover */
+        .musa-morph .musa-logo-shimmer {
+          z-index: 2;
+          animation: morphShimmerMusa 11s ease-in-out infinite;
+        }
+        .musa-morph .musa-shimmer-touch {
+          animation: morphShimmerTouch 11s ease-in-out infinite;
+        }
+        @keyframes morphShimmerMusa {
+          0%        { background-position: 150% 0; opacity: 1; }
+          42%       { background-position: 150% 0; opacity: 1; }
+          50%       { background-position: -50% 0; opacity: 1; }
+          51%, 100% { background-position: -50% 0; opacity: 0; }
+        }
+        @keyframes morphShimmerTouch {
+          0%, 92%   { background-position: 150% 0; opacity: 0; }
+          93%       { background-position: 150% 0; opacity: 1; }
+          100%      { background-position: -50% 0; opacity: 1; }
+        }
+        @keyframes musaLogoBreath {
+          0%, 100% { text-shadow: 0 0 6px rgba(201,169,97,0.18), 0 0 14px rgba(201,169,97,0.08); }
+          50%      { text-shadow: 0 0 10px rgba(201,169,97,0.35), 0 0 22px rgba(201,169,97,0.18); }
+        }
+        .musa-logo {
+          animation: musaLogoBreath 4.2s ease-in-out infinite;
+        }
+        /* Shimmer sweep — a bright copy of the text masked by a moving gradient */
+        .musa-logo-shimmer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          pointer-events: none;
+          color: rgba(255, 240, 200, 1);
+          background: linear-gradient(
+            100deg,
+            transparent 30%,
+            rgba(255, 240, 200, 1) 48%,
+            rgba(255, 240, 200, 1) 52%,
+            transparent 70%
+          );
+          background-size: 200% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: musaLogoShimmer 5.5s ease-in-out infinite;
+        }
+        @keyframes musaLogoShimmer {
+          0%   { background-position: 150% 0; }
+          15%  { background-position: -50% 0; }
+          100% { background-position: -50% 0; }
+        }
+
+        /* === musa ↔ touch morph (screen 5) ===
+           11s super-cycle = two shimmer sweeps. Each sweep transforms one word
+           into the other: sweep 1 musa→touch, sweep 2 touch→musa.
+           The crossfade happens during the bright shimmer band's pass (3-9% of
+           each shimmer cycle, which is 1.5-5% of the super-cycle). */
+        .musa-morph {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 12px;
+        }
+        .musa-morph .musa-word-musa,
+        .musa-morph .musa-word-touch {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          text-align: center;
+          white-space: nowrap;
+        }
+        .musa-morph .musa-word-musa {
+          animation: morphMusa 11s linear infinite;
+        }
+        .musa-morph .musa-word-touch {
+          animation: morphTouch 11s linear infinite;
+        }
+        @keyframes morphMusa {
+          0%, 4%   { opacity: 1; }   /* musa visible at start */
+          6%       { opacity: 0; }   /* swap to touch under shimmer band */
+          50%, 54% { opacity: 0; }   /* touch is showing */
+          56%      { opacity: 1; }   /* swap back to musa under second shimmer */
+          100%     { opacity: 1; }
+        }
+        @keyframes morphTouch {
+          0%, 4%   { opacity: 0; }
+          6%       { opacity: 1; }
+          50%, 54% { opacity: 1; }
+          56%      { opacity: 0; }
+          100%     { opacity: 0; }
+        }
+        /* Shimmer sweeps — slightly different cycle than the word morph
+           so the bright band passes during each transformation moment.
+           Each shimmer is 5.5s; two shimmers = 11s super-cycle. */
+        .musa-morph .musa-logo-shimmer:not(.musa-shimmer-touch) {
+          animation: musaLogoShimmer 11s linear infinite;
+        }
+        .musa-morph .musa-shimmer-touch {
+          animation: musaShimmerTouchAlt 11s linear infinite;
+        }
+        @keyframes musaShimmerTouchAlt {
+          0%   { background-position: 150% 0; opacity: 0; }
+          50%  { background-position: 150% 0; opacity: 1; }
+          57%  { background-position: -50% 0; opacity: 1; }
+          100% { background-position: -50% 0; opacity: 0; }
+        }
+
+        /* === Tier columns (screen 4) — base + bonus stacked vertically === */
+        .tier-bonus,
+        .tier-base {
+          transition: height 1.4s cubic-bezier(0.34, 1.25, 0.64, 1);
+        }
+        @keyframes tierBonusShine {
+          0%, 100% {
+            box-shadow: 0 0 16px rgba(201,169,97,0.5);
+          }
+          50% {
+            box-shadow: 0 0 28px rgba(201,169,97,0.75);
+          }
+        }
+        .tier-bonus {
+          animation: tierBonusShine 3.6s ease-in-out infinite;
+        }
+        @keyframes tierPctShine {
+          0%, 100% {
+            text-shadow: 0 0 12px rgba(201,169,97,0.6), 0 0 24px rgba(201,169,97,0.3);
+          }
+          50% {
+            text-shadow: 0 0 18px rgba(201,169,97,0.85), 0 0 36px rgba(201,169,97,0.45);
+          }
+        }
+        .tier-pct {
+          animation: tierPctShine 3.6s ease-in-out infinite;
+        }
+
+        /* === Snap-screen button — drifts in when its screen becomes active.
+           Each screen has its own button instance; only the active one is visible. */
+        .snap-button {
+          transition: transform 0.7s cubic-bezier(0.34, 1.25, 0.64, 1),
+                      opacity 0.5s ease-out;
+        }
+        .snap-button-hidden {
+          transform: translateY(80px);
+          opacity: 0;
+          pointer-events: none;
+        }
+        .snap-button-in {
+          transform: translateY(0);
+          opacity: 1;
+        }
+
+        /* === Lore text — drifts up into position when its screen is active === */
+        .float-lore-q,
+        .float-lore-a {
+          transition: transform 0.9s cubic-bezier(0.34, 1.25, 0.64, 1),
+                      opacity 0.6s ease-out;
+        }
+        .float-lore-q { transition-delay: 0.10s; }
+        .float-lore-a { transition-delay: 0.22s; }
+        /* Inactive (waiting) state */
+        .float-lore-q,
+        .float-lore-a {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        /* Active state */
+        .floated-lore-q,
+        .floated-lore-a {
+          transform: translateY(0);
+          opacity: 1;
+        }
+
+        /* === Radar pulse — multiple fixed-size rings, each fades in/out in a
+           wave sequence. No transform scaling (which wasn't working). Each ring
+           is a different fixed size, and they pulse opacity at staggered delays
+           so they appear to emanate from the center outward. */
+        @keyframes radarRingFade {
+          0%   { opacity: 0; }
+          10%  { opacity: 0.7; }
+          60%  { opacity: 0.2; }
+          100% { opacity: 0; }
+        }
+        @keyframes radarCenterPulse {
+          0%, 100% { opacity: 0.15; }
+          50%      { opacity: 0.35; }
+        }
+        .radar-stage {
+          width: 0;
+          height: 0;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.7s ease-out;
+        }
+        .radar-stage.radar-on {
+          opacity: 1;
+        }
+        .radar-center {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 4px;
+          margin-left: -2px;
+          margin-top: -2px;
+          border-radius: 50%;
+          background: rgba(201,169,97,0.5);
+          animation: radarCenterPulse 2.5s ease-in-out infinite;
+        }
+        .radar-ring {
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-radius: 50%;
+          border: 1.5px solid rgba(201,169,97,0.7);
+          opacity: 0;
+          /* Each ring: 6s cycle, opacity fades in/out. Delays staggered so
+             smaller rings start first (closer to "source"), larger ones follow. */
+          animation: radarRingFade 6s cubic-bezier(0.22, 0.6, 0.36, 1) infinite;
+        }
+        .p1  { left: 8%;  animation-delay: 0s;    }
+        .p2  { left: 17%; animation-delay: -2.1s; width: 1.5px; height: 1.5px; opacity: 0.7; }
+        .p3  { left: 26%; animation-delay: -4.4s; }
+        .p4  { left: 34%; animation-delay: -6.8s; width: 2.5px; height: 2.5px; }
+        .p5  { left: 43%; animation-delay: -1.2s; width: 1.5px; height: 1.5px; opacity: 0.8; }
+        .p6  { left: 52%; animation-delay: -3.7s; }
+        .p7  { left: 60%; animation-delay: -5.9s; width: 2.5px; height: 2.5px; }
+        .p8  { left: 68%; animation-delay: -7.6s; width: 1.5px; height: 1.5px; opacity: 0.75; }
+        .p9  { left: 76%; animation-delay: -0.8s; }
+        .p10 { left: 84%; animation-delay: -3.2s; width: 1.5px; height: 1.5px; opacity: 0.8; }
+        .p11 { left: 91%; animation-delay: -5.4s; }
+        /* Extra positions for denser onboarding field */
+        .p12 { left: 4%;  animation-delay: -1.6s; width: 1.5px; height: 1.5px; opacity: 0.75; }
+        .p13 { left: 12%; animation-delay: -5.3s; width: 2.5px; height: 2.5px; }
+        .p14 { left: 21%; animation-delay: -8.2s; }
+        .p15 { left: 30%; animation-delay: -0.4s; width: 1.5px; height: 1.5px; opacity: 0.7; }
+        .p16 { left: 38%; animation-delay: -3.1s; }
+        .p17 { left: 47%; animation-delay: -7.2s; width: 2.5px; height: 2.5px; }
+        .p18 { left: 56%; animation-delay: -2.6s; width: 1.5px; height: 1.5px; opacity: 0.8; }
+        .p19 { left: 64%; animation-delay: -6.0s; }
+        .p20 { left: 72%; animation-delay: -1.9s; width: 1.5px; height: 1.5px; opacity: 0.75; }
+        .p21 { left: 80%; animation-delay: -8.6s; }
+        .p22 { left: 88%; animation-delay: -4.7s; width: 2.5px; height: 2.5px; }
+        .p23 { left: 96%; animation-delay: -2.3s; width: 1.5px; height: 1.5px; opacity: 0.7; }
+
+        /* === Ambient: construction === */
+        @keyframes surveyBreath {
+          0%, 100% { opacity: 0.25; }
+          50%      { opacity: 0.45; }
+        }
+        @keyframes radarPulse {
+          0%   { transform: scale(0.15); opacity: 0; }
+          15%  { opacity: 0.9; }
+          100% { transform: scale(1); opacity: 0; }
+        }
+        .ambient-sweep {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          border-radius: inherit;
+        }
+        .ambient-sweep::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(201,169,97,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(201,169,97,0.05) 1px, transparent 1px);
+          background-size: 22px 22px;
+          mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.8), transparent 75%);
+          -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.8), transparent 75%);
+          animation: surveyBreath 6s ease-in-out infinite;
+        }
+        .radar {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 56px;
+          height: 56px;
+          margin-left: -28px;
+          margin-top: -28px;
+          pointer-events: none;
+        }
+        .radar-lg {
+          width: 120px;
+          height: 120px;
+          margin-left: -60px;
+          margin-top: -60px;
+        }
+        .radar-lg .radar-ring {
+          animation-duration: 5.5s;
+        }
+        .radar-lg .radar-ring-2 { animation-delay: -1.85s; }
+        .radar-lg .radar-ring-3 { animation-delay: -3.7s; }
+        .radar-ring {
+          position: absolute;
+          inset: 0;
+          border-radius: 9999px;
+          border: 1px solid var(--gold);
+          animation: radarPulse 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        .radar-ring-2 { animation-delay: -1.5s; }
+        .radar-ring-3 { animation-delay: -3.0s; }
+        .radar-core {
+          position: absolute;
+          left: 50%; top: 50%;
+          width: 4px; height: 4px;
+          margin-left: -2px; margin-top: -2px;
+          border-radius: 9999px;
+          background: var(--gold);
+          box-shadow: 0 0 6px rgba(201,169,97,0.8);
+          opacity: 0.7;
+        }
+
+        /* Ambient breath on the surface colour itself */
+        @keyframes surfaceBreath {
+          0%, 100% { background-color: #161513; }
+          50%      { background-color: #1a1815; }
+        }
+        .surface-breath {
+          animation: surfaceBreath 6s ease-in-out infinite;
+        }
+
+        /* === Completed unit card — solid gold ingot with shimmer === */
+        .unit-card-complete {
+          background: linear-gradient(135deg, #d4b06a 0%, #e8cc8a 35%, #c9a961 70%, #a98942 100%);
+          border-color: rgba(232, 204, 138, 0.6);
+          box-shadow:
+            0 0 24px rgba(201,169,97,0.25),
+            inset 0 1px 0 rgba(255,255,255,0.25),
+            inset 0 -1px 0 rgba(0,0,0,0.15);
+        }
+        .unit-card-complete-shimmer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          background: linear-gradient(
+            105deg,
+            transparent 30%,
+            rgba(255, 250, 230, 0.6) 48%,
+            rgba(255, 255, 255, 0.85) 50%,
+            rgba(255, 250, 230, 0.6) 52%,
+            transparent 70%
+          );
+          background-size: 250% 100%;
+          background-position: 150% 0;
+          animation: unitCompleteShimmer 4.5s ease-in-out infinite;
+          mix-blend-mode: overlay;
+        }
+        @keyframes unitCompleteShimmer {
+          0%   { background-position: 150% 0; }
+          25%  { background-position: -50% 0; }
+          100% { background-position: -50% 0; }
+        }
+
+        /* === Safe and sound (screen 6) — entire screen as gold ingot ===
+           The gold background lives on an inner layer (.vault-screen-bg)
+           that slides up from below when the screen activates, with a small
+           delay. This keeps it from peeking through the snap-scroll seam
+           on the previous screen, AND adds a satisfying entrance reveal. */
+        .vault-screen {
+          color: #1a1208;
+          /* Container stays transparent — only the inner bg layer carries gold */
+        }
+        .vault-screen-bg {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #d4b06a 0%, #e8cc8a 35%, #c9a961 70%, #a98942 100%);
+          transform: translateY(100%);
+          transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+          z-index: 0;
+        }
+        .vault-screen-bg-in {
+          transform: translateY(0);
+        }
+        .vault-screen-shimmer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          background: linear-gradient(
+            105deg,
+            transparent 30%,
+            rgba(255, 250, 230, 0.5) 48%,
+            rgba(255, 255, 255, 0.7) 50%,
+            rgba(255, 250, 230, 0.5) 52%,
+            transparent 70%
+          );
+          background-size: 250% 100%;
+          background-position: 150% 0;
+          mix-blend-mode: overlay;
+        }
+        .vault-screen-shimmer-on {
+          animation: vaultScreenShimmer 7s ease-in-out infinite 0.9s;
+        }
+        @keyframes vaultScreenShimmer {
+          0%   { background-position: 150% 0; }
+          25%  { background-position: -50% 0; }
+          100% { background-position: -50% 0; }
+        }
+
+        /* Shield pop-in — fires when screen 6 (safe-and-sound) becomes active.
+           Subtle scale-from-small + opacity fade with elastic curve so it
+           feels like a stamp pressing onto the bar. */
+        .vault-shield {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        .vault-shield-on {
+          animation: shieldPopIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 1.05s forwards;
+        }
+        @keyframes shieldPopIn {
+          0%   { opacity: 0; transform: scale(0.5); }
+          60%  { opacity: 1; transform: scale(1.08); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Checkmark draws after the shield lands */
+        .vault-shield-check {
+          stroke-dasharray: 60;
+          stroke-dashoffset: 60;
+        }
+        .vault-shield-on .vault-shield-check {
+          animation: shieldCheckDraw 0.5s cubic-bezier(0.4, 0.6, 0.3, 1) 1.75s forwards;
+        }
+        @keyframes shieldCheckDraw {
+          to { stroke-dashoffset: 0; }
+        }

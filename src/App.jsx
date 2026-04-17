@@ -1,16 +1,12 @@
 // Hash-based router for the pitch surface.
 //
 //   #/        → Landing chooser
-//   #/app     → consumer prototype (musa-prototype-v33)
-//   #/sim     → economic simulator (musa-simulator)
-//
-// Hash routing keeps Vercel happy without rewrite rules and avoids
-// 404-on-refresh. Three views, no react-router dep — see CLAUDE.md
-// § "What NOT to do" (no new deps without asking).
+//   #/app     → consumer app (modular, src/app/)
+//   #/sim     → economic simulator (single-file, prototypes/)
 
 import React, { useEffect, useState } from 'react';
 import Landing from './Landing.jsx';
-import Prototype from '../prototypes/musa-prototype-v33.jsx';
+import MusaApp from './app/App.jsx';
 import Simulator from '../prototypes/musa-simulator.jsx';
 
 const parseRoute = (hash) => {
@@ -29,7 +25,7 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  if (route === 'app') return <Prototype />;
+  if (route === 'app') return <MusaApp />;
   if (route === 'sim') return <Simulator />;
   return <Landing />;
 }
