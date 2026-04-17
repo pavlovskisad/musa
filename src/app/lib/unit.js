@@ -15,8 +15,8 @@ export const computeUnit = (unit, now) => {
   const ms = now.getTime() - unit.purchasedAt;
   const daysElapsed = Math.max(0, ms / 86400000);
   const constructionDays = CONSTRUCTION_DAYS;
-  const deliveryDays = tier.lockMonths * 30;
-  const totalDays = constructionDays + deliveryDays;
+  const totalDays = tier.lockMonths * 30;
+  const deliveryDays = totalDays - constructionDays;
 
   if (unit.exitedAt) {
     const exitedDaysElapsed = (unit.exitedAt - unit.purchasedAt) / 86400000;

@@ -312,11 +312,12 @@ function stepSimulation(state, inputs) {
 
   // ==== 4. GOLD DELIVERY ==================================
   // Each week, deliver a fraction of the outstanding committed grams based on
-  // average tenor. With a blended mix across 6/12/24 month tiers and a ~4-week
-  // construction window, average delivery tenor is ~14 months (~60 weeks).
-  // Weekly delivery rate = outstanding committed / 60.
+  // average tenor. Construction is included in the lock period, so actual
+  // delivery window = lock minus construction. Blended across 6/12/24 month
+  // tiers: (22+48+100)/3 ≈ 57 weeks. Round to 56.
+  // Weekly delivery rate = outstanding committed / 56.
   const undeliveredGrams = Math.max(0, next.totalGoldGramsCommitted - next.totalGoldGramsDelivered);
-  const weeklyDeliveryRate = 1 / 60;
+  const weeklyDeliveryRate = 1 / 56;
   const gramsDeliveredThisWeek = undeliveredGrams * weeklyDeliveryRate;
   next.totalGoldGramsDelivered += gramsDeliveredThisWeek;
 
