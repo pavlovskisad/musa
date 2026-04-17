@@ -323,7 +323,7 @@ function OnboardingScreen({ onContinue }) {
 
       {/* === SCREEN 1 — Mine real gold === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative"
+        className="h-full flex flex-col relative"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -343,19 +343,20 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
-          <div className="flex justify-center mb-8 onboard-label-in">
-            <button
-              onClick={() => { window.location.hash = '#/'; }}
-              className="press"
-              style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0, font: 'inherit', color: 'inherit' }}
-            >
-              <div className="text-[10px] uppercase tracking-[0.4em] musa-logo">
-                <span className="musa-logo-text">musa</span>
-                <span className="musa-logo-shimmer">musa</span>
-              </div>
-            </button>
-          </div>
+        <div className="px-6 pt-4 pb-2 flex justify-center onboard-label-in" style={{ zIndex: 4 }}>
+          <button
+            onClick={() => { window.location.hash = '#/'; }}
+            className="press"
+            style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0, font: 'inherit', color: 'inherit' }}
+          >
+            <div className="text-[10px] uppercase tracking-[0.4em] musa-logo">
+              <span className="musa-logo-text">musa</span>
+              <span className="musa-logo-shimmer">musa</span>
+            </div>
+          </button>
+        </div>
+
+        <div className="relative px-8" style={{ zIndex: 4 }}>
           <h1
             className="font-display text-app mb-6 onboard-headline-in"
             style={{ fontWeight: 300, fontSize: '64px', lineHeight: '0.92' }}
