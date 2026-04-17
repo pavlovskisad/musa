@@ -188,7 +188,11 @@ export default function App() {
 
           <div className="flex-1 relative overflow-hidden">
             {screen === 'onboarding' && (
-              <OnboardingScreen key="onboarding" onContinue={login} onSkip={() => setScreen('home')} />
+              <OnboardingScreen
+                key="onboarding"
+                onContinue={authenticated ? () => setScreen('home') : login}
+                onSkip={() => setScreen('home')}
+              />
             )}
             {screen === 'home' && (
               <HomeScreen
@@ -197,7 +201,7 @@ export default function App() {
                 totals={totals}
                 recentlyPurchased={recentlyPurchased}
                 onBuy={() => setScreen('browse')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => { window.location.hash = '#/'; }}
                 onSettings={() => setDevOpen(v => !v)}
                 onUnit={(id) => { setSelectedUnitId(id); setScreen('unitDetail'); }}
               />
@@ -206,7 +210,7 @@ export default function App() {
               <BrowseScreen
                 key="browse"
                 onBack={() => setScreen('home')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => { window.location.hash = '#/'; }}
                 onSelect={(tierId) => { setSelectedTier(tierId); setScreen('buy'); }}
               />
             )}
@@ -217,7 +221,7 @@ export default function App() {
                 amount={selectedAmount}
                 setAmount={setSelectedAmount}
                 onBack={() => setScreen('browse')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => { window.location.hash = '#/'; }}
                 onConfirm={() => startBuy(selectedTier, selectedAmount)}
               />
             )}
@@ -226,7 +230,7 @@ export default function App() {
                 key={`unitDetail-${selectedUnitId}`}
                 unit={selectedUnit}
                 onBack={() => setScreen('home')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => { window.location.hash = '#/'; }}
                 onExit={() => setScreen('exit')}
               />
             )}
@@ -235,7 +239,7 @@ export default function App() {
                 key="exit"
                 unit={selectedUnit}
                 onBack={() => setScreen('unitDetail')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => { window.location.hash = '#/'; }}
                 onConfirm={() => exitUnit(selectedUnitId)}
               />
             )}
