@@ -275,6 +275,37 @@ function OnboardingScreen({ onContinue }) {
         scrollBehavior: 'smooth',
       }}
     >
+      {/* === DOT PAGINATION === */}
+      <div
+        className="onboard-dots"
+        style={{
+          position: 'fixed',
+          right: '14px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 40,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '10px',
+        }}
+      >
+        {[0, 1, 2, 3, 4, 5, 6].map(i => (
+          <span
+            key={i}
+            className="onboard-dot"
+            style={{
+              width: activeScreen === i ? '6px' : '4px',
+              height: activeScreen === i ? '6px' : '4px',
+              borderRadius: '50%',
+              background: activeScreen === i ? '#c9a961' : 'rgba(232, 218, 188, 0.25)',
+              transition: 'all 0.4s ease-out',
+              animationDelay: `${i * 0.3}s`,
+            }}
+          />
+        ))}
+      </div>
+
       {/* === SPLASH OVERLAY === */}
       {splashActive && (
         <div

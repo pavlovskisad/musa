@@ -449,6 +449,15 @@
           animation: none;
         }
 
+        /* === Onboarding dot pagination — wave breath === */
+        @keyframes dotWave {
+          0%, 100% { opacity: 0.25; transform: scale(1); }
+          50%      { opacity: 0.6; transform: scale(1.4); }
+        }
+        .onboard-dot {
+          animation: dotWave 3s ease-in-out infinite;
+        }
+
         /* === Connect-the-dots circle (screen 5) ===
            Arc + fill are JS-driven, triggered on each "eat" event.
            Each eat flashes both arcs drawing in parallel (one full sweep
