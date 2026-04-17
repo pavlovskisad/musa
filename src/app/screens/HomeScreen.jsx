@@ -35,7 +35,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
       {/* Hero */}
       <div className="px-6 pt-6 pb-7">
         <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">
-          {userName ? `musa ${userName}` : 'Your gold'}
+          {userName ? `musa ${userName}'s gold` : 'Your gold'}
         </div>
         <div
           className="font-display font-num text-app"
