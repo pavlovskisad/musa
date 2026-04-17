@@ -314,10 +314,16 @@ function OnboardingScreen({ onContinue, onSkip }) {
 
         <div className="relative" style={{ zIndex: 4 }}>
           <div className="flex justify-center mb-8 onboard-label-in">
-            <div className="text-[10px] uppercase tracking-[0.4em] musa-logo">
-              <span className="musa-logo-text">musa</span>
-              <span className="musa-logo-shimmer">musa</span>
-            </div>
+            <button
+              onClick={() => { window.location.hash = '#/'; }}
+              className="press"
+              style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0, font: 'inherit', color: 'inherit' }}
+            >
+              <div className="text-[10px] uppercase tracking-[0.4em] musa-logo">
+                <span className="musa-logo-text">musa</span>
+                <span className="musa-logo-shimmer">musa</span>
+              </div>
+            </button>
           </div>
           <h1
             className="font-display text-app mb-6 onboard-headline-in"
