@@ -12,12 +12,66 @@ const STATS = [
   { key: 'pending', label: 'Pending' },
 ];
 
+const DIGIT_HEIGHT = 60;
+const DIGITS = '0123456789';
+
+function RollingChar({ char, index }) {
+  const isDigit = char >= '0' && char <= '9';
+  if (!isDigit) {
+    return (
+      <span style={{ display: 'inline-block', width: char === '.' ? '0.35em' : '0.6em', textAlign: 'center' }}>
+        {char}
+      </span>
+    );
+  }
+  const digit = parseInt(char, 10);
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        height: `${DIGIT_HEIGHT}px`,
+        overflow: 'hidden',
+        verticalAlign: 'top',
+      }}
+    >
+      <span
+        style={{
+          display: 'block',
+          transform: `translateY(${-digit * DIGIT_HEIGHT}px)`,
+          transition: `transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.03}s`,
+          willChange: 'transform',
+        }}
+      >
+        {DIGITS.split('').map(d => (
+          <span
+            key={d}
+            style={{ display: 'block', height: `${DIGIT_HEIGHT}px`, lineHeight: `${DIGIT_HEIGHT}px` }}
+            aria-hidden={d !== char}
+          >
+            {d}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function RollingCounter({ value }) {
+  const chars = value.split('');
+  return (
+    <span style={{ display: 'inline-flex' }}>
+      {chars.map((ch, i) => (
+        <RollingChar key={`${i}-${chars.length}`} char={ch} index={i} />
+      ))}
+    </span>
+  );
+}
+
 function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, onClaimAll, userName }) {
   const hasUnits = units.length > 0;
   const { unit: goldUnit } = useGold();
   const [claimingAll, setClaimingAll] = React.useState(false);
   const [activeStat, setActiveStat] = React.useState('mined');
-  const [transitioning, setTransitioning] = React.useState(false);
   const canClaimAll = totals.totalClaimable > 1e-9;
 
   const statValues = {
@@ -27,20 +81,13 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     pending: totals.pendingGrams,
   };
 
-  const switchStat = (key) => {
-    if (key === activeStat) return;
-    setTransitioning(true);
-    setTimeout(() => {
-      setActiveStat(key);
-      setTransitioning(false);
-    }, 150);
-  };
-
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
     setClaimingAll(true);
     try { await onClaimAll(); } finally { setClaimingAll(false); }
   };
+
+  const displayValue = formatGold(statValues[activeStat], goldUnit);
 
   return (
     <div className="h-full flex flex-col anim-fade">
@@ -82,22 +129,14 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           )}
         </div>
 
-        {/* Big counter with transition */}
-        <div style={{ position: 'relative', overflow: 'hidden', height: '60px' }}>
+        {/* Big rolling counter */}
+        <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
           <div
-            style={{
-              transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
-              opacity: transitioning ? 0 : 1,
-              transform: transitioning ? 'translateY(8px)' : 'translateY(0)',
-            }}
+            className="font-display font-num text-app"
+            style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
           >
-            <div
-              className="font-display font-num text-app"
-              style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-            >
-              {formatGold(statValues[activeStat], goldUnit)}
-              <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
-            </div>
+            <RollingCounter value={displayValue} />
+            <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
           </div>
         </div>
 
@@ -111,7 +150,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           {STATS.map(s => (
             <button
               key={s.key}
-              onClick={() => switchStat(s.key)}
+              onClick={() => setActiveStat(s.key)}
               className={`press-soft h-7 px-3 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
                 activeStat === s.key
                   ? 'border-gold text-gold'
@@ -166,7 +205,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Bottom CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pb-10 pt-10 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 px-6 pb-6 pt-10 pointer-events-none"
         style={{ background: 'linear-gradient(to top, var(--bg) 55%, rgba(10,9,8,0.85) 85%, transparent)' }}
       >
         <button
