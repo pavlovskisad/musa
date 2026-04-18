@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy, useSendTransaction } from '@privy-io/react-auth';
 
 import './styles/app.css';
 
@@ -26,8 +26,7 @@ import ExitScreen from './screens/ExitScreen.jsx';
 
 export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
-  const { wallets } = useWallets();
-  const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
+  const { sendTransaction } = useSendTransaction();
 
   const userName = user?.email?.address?.split('@')[0] || null;
 
@@ -129,9 +128,9 @@ export default function App() {
 
   const claimUnit = async (unitId) => {
     const unit = units.find(u => u.id === unitId);
-    if (!unit || unit.positionId == null || !embeddedWallet) return;
+    if (!unit || unit.positionId == null) return;
     try {
-      await claimPosition(embeddedWallet, unit.positionId);
+      await claimPosition(sendTransaction, unit.positionId);
       fetchUnits().then(u => setUnits(u));
     } catch (err) {
       console.error('Claim failed:', err);
@@ -140,9 +139,9 @@ export default function App() {
 
   const exitUnit = async (unitId) => {
     const unit = computedUnits.find(u => u.id === unitId);
-    if (!unit || unit.positionId == null || !embeddedWallet) return;
+    if (!unit || unit.positionId == null) return;
     try {
-      await exitPositionEarly(embeddedWallet, unit.positionId);
+      await exitPositionEarly(sendTransaction, unit.positionId);
       const exitTime = simTime.getTime();
       const pctElapsed = unit.deliveryElapsed ? unit.deliveryElapsed / unit.deliveryDays : 0;
       const penaltyPct = getExitPenaltyPct(pctElapsed);
