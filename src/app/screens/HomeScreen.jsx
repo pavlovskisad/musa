@@ -41,18 +41,29 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
       </div>
 
       {/* Hero */}
-      <div className="px-6 pt-6 pb-7">
-        <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">
+      <div className="px-6 pt-4 pb-4">
+        <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-2">
           {userName ? `musa ${userName}'s gold` : 'Your gold'}
         </div>
-        <div
-          className="font-display font-num text-app"
-          style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-        >
-          {formatGold(totals.totalGrams, goldUnit)}
-          <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+        <div className="flex items-end justify-between">
+          <div
+            className="font-display font-num text-app"
+            style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+          >
+            {formatGold(totals.totalGrams, goldUnit)}
+            <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+          </div>
+          {canClaimAll && (
+            <button
+              onClick={handleClaimAll}
+              disabled={claimingAll}
+              className="press h-8 px-4 rounded-full border border-gold text-gold text-[10px] font-medium tracking-wide disabled:opacity-40 flex-shrink-0 mb-1"
+            >
+              {claimingAll ? 'Claiming…' : 'Claim all'}
+            </button>
+          )}
         </div>
-        <div className="text-sm text-dim font-num mt-3 flex items-center gap-3">
+        <div className="text-sm text-dim font-num mt-2 flex items-center gap-3">
           <span>{formatUSD(totals.totalValueUSD)}</span>
           {totals.totalClaimed > 0 && (
             <>
@@ -67,15 +78,6 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
             </>
           )}
         </div>
-        {canClaimAll && (
-          <button
-            onClick={handleClaimAll}
-            disabled={claimingAll}
-            className="press mt-4 h-10 px-6 rounded-full border border-gold text-gold text-xs font-medium tracking-wide disabled:opacity-40"
-          >
-            {claimingAll ? 'Claiming…' : `Claim ${formatGold(totals.totalClaimable, goldUnit, 4)}${goldUnitLabel(goldUnit)}`}
-          </button>
-        )}
       </div>
 
       {/* Divider */}
@@ -83,7 +85,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Units */}
       <div className="flex-1 overflow-auto scrollable">
-        <div className="px-6 pt-5 pb-36">
+        <div className="px-6 pt-5 pb-28">
           {!hasUnits ? (
             <div className="h-full flex flex-col items-center justify-center text-center pt-16">
               <div
@@ -120,8 +122,8 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Bottom CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pb-12 pt-14 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, var(--bg) 50%, rgba(10,9,8,0.85) 80%, transparent)' }}
+        className="absolute bottom-0 left-0 right-0 px-6 pb-10 pt-10 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, var(--bg) 55%, rgba(10,9,8,0.85) 85%, transparent)' }}
       >
         <button
           onClick={onBuy}
