@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { usePrivy, useSendTransaction, useWallets } from '@privy-io/react-auth';
+import { usePrivy, useSendTransaction, useWallets, useCreateWallet } from '@privy-io/react-auth';
 
 import './styles/app.css';
 
@@ -28,6 +28,7 @@ export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
   const { sendTransaction } = useSendTransaction();
   const { wallets } = useWallets();
+  const { createWallet } = useCreateWallet();
   const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
 
   const userName = user?.email?.address?.split('@')[0] || null;
@@ -48,7 +49,7 @@ export default function App() {
   const [celebratingUnit, setCelebratingUnit] = useState(null);
   const celebratedIdsRef = useRef(new Set());
 
-  // On auth: set user ID, get token, fetch units from API
+  // On auth: set user ID, get token, ensure wallet exists, fetch units
   useEffect(() => {
     if (!ready) return;
     if (authenticated && user) {
@@ -60,6 +61,12 @@ export default function App() {
       if (screen === 'onboarding') setScreen('home');
     }
   }, [ready, authenticated, user]);
+
+  // Ensure embedded wallet exists — createOnLogin doesn't always fire
+  useEffect(() => {
+    if (!ready || !authenticated || embeddedWallet) return;
+    createWallet().catch(() => {});
+  }, [ready, authenticated, embeddedWallet]);
 
   // Persist units to localStorage on change
   useEffect(() => { saveUnits(units); }, [units]);
