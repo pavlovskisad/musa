@@ -42,26 +42,26 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Hero */}
       <div className="px-6 pt-4 pb-4">
-        <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-2">
-          {userName ? `musa ${userName}'s gold` : 'Your gold'}
-        </div>
-        <div className="flex items-end justify-between">
-          <div
-            className="font-display font-num text-app"
-            style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-          >
-            {formatGold(totals.totalGrams, goldUnit)}
-            <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
+            {userName ? `${userName}'s total mined` : 'Total mined'}
           </div>
           {canClaimAll && (
             <button
               onClick={handleClaimAll}
               disabled={claimingAll}
-              className="press h-8 px-4 rounded-full border border-gold text-gold text-[10px] font-medium tracking-wide disabled:opacity-40 flex-shrink-0 mb-1"
+              className="press h-7 px-3.5 rounded-full border border-gold text-gold text-[10px] font-medium tracking-wide disabled:opacity-40 flex-shrink-0"
             >
               {claimingAll ? 'Claiming…' : 'Claim all'}
             </button>
           )}
+        </div>
+        <div
+          className="font-display font-num text-app"
+          style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+        >
+          {formatGold(totals.totalGrams, goldUnit)}
+          <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
         </div>
         <div className="text-sm text-dim font-num mt-2 flex items-center gap-3">
           <span>{formatUSD(totals.totalValueUSD)}</span>
