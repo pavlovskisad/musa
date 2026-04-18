@@ -8,6 +8,7 @@ import "../test/MockPAXG.sol";
 contract DeployTestnet is Script {
     function run() external {
         uint256 deployerKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        address deployer = vm.addr(deployerKey);
         vm.startBroadcast(deployerKey);
 
         // Deploy mock PAXG on testnet (use real PAXG address on mainnet)
@@ -17,7 +18,7 @@ contract DeployTestnet is Script {
         Musa musa = new Musa(address(paxg));
 
         // Mint some PAXG to deployer and seed the reserve
-        paxg.mint(msg.sender, 100e18);
+        paxg.mint(deployer, 100e18);
         paxg.approve(address(musa), 100e18);
         musa.deposit(100e18);
 
