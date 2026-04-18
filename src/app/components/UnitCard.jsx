@@ -55,6 +55,9 @@ function UnitCard({ unit, onClick, highlight }) {
             {formatGold(unit.gramsDelivered, goldUnit, 6)}{goldUnitLabel(goldUnit)}
           </div>
           <div className={`text-[10px] font-num mt-0.5 ${isComplete ? 'text-black opacity-50' : 'text-dim'}`}>of {formatGold(unit.gramsTotal, goldUnit, 3)}{goldUnitLabel(goldUnit)}</div>
+          {(unit.gramsClaimed || 0) > 0 && (
+            <div className="text-[9px] font-num mt-0.5 text-gold">{formatGold(unit.gramsClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</div>
+          )}
         </div>
       </div>
       <div className="relative h-[3px] rounded-full overflow-hidden z-10" style={{ background: isComplete ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.06)' }}>

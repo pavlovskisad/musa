@@ -109,6 +109,9 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
             </div>
             <div className="text-xs text-dim font-num mt-3">
               of {formatGold(unit.gramsTotal, goldUnit, 3)}{goldUnitLabel(goldUnit)} · {formatUSD(unit.gramsDelivered * price)}
+              {(unit.gramsClaimed || 0) > 0 && (
+                <span className="text-gold ml-2">· {formatGold(unit.gramsClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</span>
+              )}
             </div>
 
             <div className="relative mt-5 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
