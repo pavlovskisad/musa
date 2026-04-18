@@ -35,13 +35,15 @@ describe('computeUnit', () => {
     exitedAt: null,
   };
 
-  it('returns constructing status during first 30 days', () => {
-    const now = new Date('2025-01-15');
-    const result = computeUnit(baseUnit, now);
+  it('returns constructing status during construction period', () => {
+    const purchaseTime = new Date('2025-01-01T00:00:00Z').getTime();
+    const now = new Date(purchaseTime + 30_000);
+    const result = computeUnit({ ...baseUnit, purchasedAt: purchaseTime }, now);
     expect(result.computedStatus).toBe('constructing');
     expect(result.gramsDelivered).toBe(0);
     expect(result.pctDelivered).toBe(0);
-    expect(result.daysToFirstDelivery).toBeCloseTo(16, 0);
+    expect(result.constructionPct).toBeGreaterThan(0);
+    expect(result.constructionPct).toBeLessThan(1);
   });
 
   it('returns active status after construction ends', () => {
@@ -74,8 +76,9 @@ describe('computeUnit', () => {
   });
 
   it('tracks construction progress correctly', () => {
-    const now = new Date('2025-01-16');
-    const result = computeUnit(baseUnit, now);
-    expect(result.constructionPct).toBeCloseTo(15 / CONSTRUCTION_DAYS, 1);
+    const purchaseTime = new Date('2025-01-01T00:00:00Z').getTime();
+    const now = new Date(purchaseTime + 30_000);
+    const result = computeUnit({ ...baseUnit, purchasedAt: purchaseTime }, now);
+    expect(result.constructionPct).toBeCloseTo(0.5, 1);
   });
 });

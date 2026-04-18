@@ -10,8 +10,7 @@ import Row from '../components/Row.jsx';
 function ExitScreen({ unit, onBack, onHome, onConfirm }) {
   const tier = TIERS[unit.tier];
   const { price, unit: goldUnit } = useGold();
-  const totalDeliveryDays = tier.lockMonths * 30;
-  const pctElapsed = unit.deliveryElapsed ? unit.deliveryElapsed / totalDeliveryDays : 0;
+  const pctElapsed = unit.deliveryElapsed ? unit.deliveryElapsed / unit.deliveryDays : 0;
   const penaltyPct = getExitPenaltyPct(pctElapsed);
 
   const undeliveredGrams = Math.max(0, unit.gramsTotal - unit.gramsDelivered);

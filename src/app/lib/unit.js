@@ -1,6 +1,6 @@
 import { TIERS } from './tiers.js';
 
-export const CONSTRUCTION_DAYS = 30;
+export const CONSTRUCTION_DAYS = 1 / 1440;
 export const PROCESSING_FEE = 0.02;
 
 export const getExitPenaltyPct = (pctElapsed) => {
@@ -24,6 +24,7 @@ export const computeUnit = (unit, now) => {
       ...unit,
       computedStatus: 'exited',
       daysElapsed: exitedDaysElapsed,
+      deliveryDays,
       gramsDelivered: unit.gramsAtExit || 0,
       pctDelivered: 0,
     };
@@ -34,6 +35,7 @@ export const computeUnit = (unit, now) => {
       ...unit,
       computedStatus: 'constructing',
       daysElapsed,
+      deliveryDays,
       constructionPct: daysElapsed / constructionDays,
       daysToFirstDelivery: constructionDays - daysElapsed,
       gramsDelivered: 0,
@@ -51,6 +53,7 @@ export const computeUnit = (unit, now) => {
     ...unit,
     computedStatus: pctDelivered >= 1 ? 'completed' : 'active',
     daysElapsed,
+    deliveryDays,
     deliveryElapsed,
     pctDelivered,
     gramsDelivered,

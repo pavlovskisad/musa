@@ -12,7 +12,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
   const { price, unit: goldUnit } = useGold();
   const faceValue = amount * (1 + tier.discount);
   const grams = faceValue / price;
-  const dailyGrams = grams / (tier.lockMonths * 30);
+  const dailyGrams = grams / (tier.lockMonths * 30 - CONSTRUCTION_DAYS);
 
   return (
     <div className="h-full flex flex-col anim-slide-right">
@@ -92,9 +92,9 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
 
             <div className="mt-4 pt-4 border-t border-app space-y-2.5">
               <Row label="Discount on spot" value={`${(tier.discount * 100).toFixed(1)}%`} accent />
-              <Row label="Construction" value={`${CONSTRUCTION_DAYS} days`} />
+              <Row label="Construction" value="< 1 min" />
               <Row label="Daily rate" value={`+${formatGold(dailyGrams, goldUnit, 5)}${goldUnitLabel(goldUnit)}`} />
-              <Row label="First gold" value={`Day ${CONSTRUCTION_DAYS}`} />
+              <Row label="First gold" value="Almost immediately" />
             </div>
           </div>
         </div>

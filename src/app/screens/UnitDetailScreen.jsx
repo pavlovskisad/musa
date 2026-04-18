@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react';
 import { TIERS } from '../lib/tiers.js';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
-import { CONSTRUCTION_DAYS } from '../lib/unit.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import Particles from '../components/Particles.jsx';
 import Radar from '../components/Radar.jsx';
@@ -16,7 +15,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
   const isConstructing = status === 'constructing';
   const isActive = status === 'active';
   const isComplete = status === 'completed';
-  const dailyRate = unit.gramsTotal / (tier.lockMonths * 30);
+  const dailyRate = unit.gramsTotal / unit.deliveryDays;
 
   return (
     <div className="h-full flex flex-col anim-slide-right relative">
@@ -63,18 +62,12 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
               <div>
                 <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Construction</div>
                 <div
-                  className="font-display font-num text-app"
-                  style={{ fontWeight: 300, fontSize: '52px', lineHeight: '1' }}
+                  className="font-display text-app"
+                  style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
                 >
-                  {Math.ceil(unit.daysToFirstDelivery)}
-                  <span
-                    className="text-lg text-dim ml-2"
-                    style={{ fontFamily: "'Fraunces', serif" }}
-                  >
-                    days
-                  </span>
+                  Preparing...
                 </div>
-                <div className="text-xs text-dim mt-3">until first delivery</div>
+                <div className="text-xs text-dim mt-3">Mining begins momentarily</div>
               </div>
               <div className="relative" style={{ width: '100px', height: '100px' }}>
                 <Radar large />
