@@ -97,9 +97,9 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
             <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Mined</div>
             <div
               className={`font-display font-num text-app ${isActive ? 'pulse-gold' : ''}`}
-              style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+              style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
             >
-              {formatGold(unit.gramsDelivered, goldUnit, 7)}
+              {formatGold(unit.gramsDelivered, goldUnit, 6)}
               <span
                 className="text-2xl text-dim ml-2"
                 style={{ fontFamily: "'Fraunces', serif" }}
@@ -143,7 +143,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
             className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
             style={{ opacity: claiming ? 0.6 : 1 }}
           >
-            {claiming ? 'Claiming...' : `Claim ${formatGold(claimable, goldUnit, 4)}${goldUnitLabel(goldUnit)}`}
+            {claiming ? 'Claiming...' : `Claim ${formatGold(claimable, goldUnit, 6)}${goldUnitLabel(goldUnit)}`}
           </button>
         </div>
       )}
