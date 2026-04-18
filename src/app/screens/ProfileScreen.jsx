@@ -54,7 +54,7 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
             className="font-display font-num text-app"
             style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
           >
-            {paxgBalance != null ? formatGold(paxgBalance, goldUnit, 4) : '—'}
+            {paxgBalance != null ? formatGold(paxgBalance, goldUnit, 6) : '—'}
             <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
           </div>
           {paxgBalance != null && (
@@ -66,8 +66,8 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
         <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5 mb-6">
           <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Mining stats</div>
           <Row label="Active mines" value={`${mineCount}`} />
-          <Row label="Total mined" value={`${formatGold(totals.totalGrams, goldUnit, 4)}${goldUnitLabel(goldUnit)}`} />
-          <Row label="Claimed" value={`${formatGold(totals.totalClaimed, goldUnit, 4)}${goldUnitLabel(goldUnit)}`} />
+          <Row label="Total mined" value={`${formatGold(totals.totalGrams, goldUnit, 6)}${goldUnitLabel(goldUnit)}`} />
+          <Row label="Claimed" value={`${formatGold(totals.totalClaimed, goldUnit, 6)}${goldUnitLabel(goldUnit)}`} />
           <Row label="Pending" value={`${formatGold(totals.pendingGrams, goldUnit, 3)}${goldUnitLabel(goldUnit)}`} />
           {maxDaysRemaining > 0 && (
             <Row label="Full vest" value={`${Math.ceil(maxDaysRemaining)} days`} />
