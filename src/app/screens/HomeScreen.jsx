@@ -13,56 +13,70 @@ const STATS = [
 ];
 
 const DIGIT_HEIGHT = 60;
-const DIGITS = '0123456789';
 
 function RollingChar({ char, index }) {
-  const isDigit = char >= '0' && char <= '9';
-  if (!isDigit) {
+  if (char === '.') {
     return (
-      <span style={{ display: 'inline-block', width: char === '.' ? '0.35em' : '0.6em', textAlign: 'center' }}>
-        {char}
-      </span>
+      <span style={{
+        display: 'inline-block',
+        verticalAlign: 'top',
+        lineHeight: `${DIGIT_HEIGHT}px`,
+      }}>.</span>
     );
   }
-  const digit = parseInt(char, 10);
+
+  const isBlank = char === ' ';
+  const target = isBlank ? 10 : parseInt(char, 10);
+
   return (
-    <span
-      style={{
-        display: 'inline-block',
-        height: `${DIGIT_HEIGHT}px`,
-        overflow: 'hidden',
-        verticalAlign: 'top',
-      }}
-    >
-      <span
-        style={{
-          display: 'block',
-          transform: `translateY(${-digit * DIGIT_HEIGHT}px)`,
-          transition: `transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.03}s`,
-          willChange: 'transform',
-        }}
-      >
-        {DIGITS.split('').map(d => (
-          <span
-            key={d}
-            style={{ display: 'block', height: `${DIGIT_HEIGHT}px`, lineHeight: `${DIGIT_HEIGHT}px` }}
-            aria-hidden={d !== char}
-          >
-            {d}
-          </span>
+    <span style={{
+      display: 'inline-block',
+      height: `${DIGIT_HEIGHT}px`,
+      overflow: 'hidden',
+      verticalAlign: 'top',
+      textAlign: 'center',
+    }}>
+      <span style={{
+        display: 'block',
+        transform: `translateY(${-target * DIGIT_HEIGHT}px)`,
+        transition: `transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.04}s`,
+        willChange: 'transform',
+      }}>
+        {'0123456789'.split('').map(d => (
+          <span key={d} style={{
+            display: 'block',
+            height: `${DIGIT_HEIGHT}px`,
+            lineHeight: `${DIGIT_HEIGHT}px`,
+          }}>{d}</span>
         ))}
+        <span style={{
+          display: 'block',
+          height: `${DIGIT_HEIGHT}px`,
+          lineHeight: `${DIGIT_HEIGHT}px`,
+        }}>{'\u00A0'}</span>
       </span>
     </span>
   );
 }
 
-function RollingCounter({ value }) {
-  const chars = value.split('');
+function RollingCounter({ value, maxIntDigits }) {
+  if (value === '—') return <span>—</span>;
+  const [intPart, decPart = ''] = value.split('.');
+  const paddedInt = intPart.padStart(maxIntDigits, ' ');
+
   return (
     <span style={{ display: 'inline-flex' }}>
-      {chars.map((ch, i) => (
-        <RollingChar key={`${i}-${chars.length}`} char={ch} index={i} />
+      {paddedInt.split('').map((ch, i) => (
+        <RollingChar key={`i${i}`} char={ch} index={i} />
       ))}
+      {decPart && (
+        <>
+          <RollingChar key="dot" char="." index={paddedInt.length} />
+          {decPart.split('').map((ch, i) => (
+            <RollingChar key={`d${i}`} char={ch} index={paddedInt.length + 1 + i} />
+          ))}
+        </>
+      )}
     </span>
   );
 }
@@ -81,13 +95,22 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     pending: totals.pendingGrams,
   };
 
+  const maxIntRef = React.useRef(1);
+  const currentMax = Math.max(
+    ...Object.values(statValues).map(v => {
+      const s = formatGold(v, goldUnit);
+      return s === '—' ? 1 : s.split('.')[0].length;
+    })
+  );
+  if (currentMax > maxIntRef.current) maxIntRef.current = currentMax;
+
+  const displayValue = formatGold(statValues[activeStat], goldUnit);
+
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
     setClaimingAll(true);
     try { await onClaimAll(); } finally { setClaimingAll(false); }
   };
-
-  const displayValue = formatGold(statValues[activeStat], goldUnit);
 
   return (
     <div className="h-full flex flex-col anim-fade">
@@ -132,10 +155,10 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         {/* Big rolling counter */}
         <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
           <div
-            className="font-display font-num text-app"
+            className="font-display text-app"
             style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
           >
-            <RollingCounter value={displayValue} />
+            <RollingCounter value={displayValue} maxIntDigits={maxIntRef.current} />
             <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
           </div>
         </div>
@@ -168,7 +191,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Units */}
       <div className="flex-1 overflow-auto scrollable">
-        <div className="px-6 pt-5 pb-28">
+        <div className="px-6 pt-5 pb-24">
           {!hasUnits ? (
             <div className="h-full flex flex-col items-center justify-center text-center pt-16">
               <div
@@ -205,8 +228,8 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Bottom CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pb-6 pt-10 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, var(--bg) 55%, rgba(10,9,8,0.85) 85%, transparent)' }}
+        className="absolute bottom-0 left-0 right-0 px-6 pt-8 pointer-events-none"
+        style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0.5rem))', background: 'linear-gradient(to top, var(--bg) 60%, rgba(10,9,8,0.85) 88%, transparent)' }}
       >
         <button
           onClick={onBuy}
