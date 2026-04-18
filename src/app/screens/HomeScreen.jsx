@@ -46,6 +46,12 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
         <div className="text-sm text-dim font-num mt-3 flex items-center gap-3">
           <span>{formatUSD(totals.totalValueUSD)}</span>
+          {totals.totalClaimed > 0 && (
+            <>
+              <span className="text-dim opacity-40">·</span>
+              <span className="text-gold">{formatGold(totals.totalClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</span>
+            </>
+          )}
           {totals.pendingGrams > 0.0001 && (
             <>
               <span className="text-dim opacity-40">·</span>

@@ -78,11 +78,12 @@ export default function App() {
 
   const totals = useMemo(() => {
     const totalGrams = computedUnits.reduce((s, u) => s + (u.gramsDelivered || 0), 0);
+    const totalClaimed = computedUnits.reduce((s, u) => s + (u.gramsClaimed || 0), 0);
     const pendingGrams = computedUnits
       .filter(u => u.computedStatus !== 'exited' && u.computedStatus !== 'completed')
       .reduce((s, u) => s + (u.gramsTotal - (u.gramsDelivered || 0)), 0);
     const totalValueUSD = totalGrams * goldPrice;
-    return { totalGrams, pendingGrams, totalValueUSD };
+    return { totalGrams, totalClaimed, pendingGrams, totalValueUSD };
   }, [computedUnits, goldPrice]);
 
   const visibleUnits = computedUnits
