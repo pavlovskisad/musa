@@ -46,14 +46,18 @@ export const saveUnits = (units) => {
 
 export const createUnit = async (unit) => {
   saveUnits([unit, ...loadUnits()]);
-  if (!isOnline()) return;
+  if (!isOnline()) return null;
   try {
-    await fetch('/api/units', {
+    const res = await fetch('/api/units', {
       method: 'POST',
       headers: headers(),
       body: JSON.stringify(unit),
     });
-  } catch {}
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 };
 
 export const exitUnit = async (unitId, exitedAt, gramsAtExit) => {

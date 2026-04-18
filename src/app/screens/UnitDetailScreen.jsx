@@ -8,7 +8,7 @@ import Particles from '../components/Particles.jsx';
 import Radar from '../components/Radar.jsx';
 import Row from '../components/Row.jsx';
 
-function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
+function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
   const tier = TIERS[unit.tier];
   const { price, unit: goldUnit } = useGold();
   const status = unit.computedStatus;
@@ -16,6 +16,15 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
   const isActive = status === 'active';
   const isComplete = status === 'completed';
   const dailyRate = unit.gramsTotal / unit.deliveryDays;
+  const [claiming, setClaiming] = React.useState(false);
+  const claimable = Math.max(0, (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0));
+  const canClaim = (isActive || isComplete) && unit.positionId != null && claimable > 1e-9;
+
+  const handleClaim = async () => {
+    if (!onClaim || claiming) return;
+    setClaiming(true);
+    try { await onClaim(); } finally { setClaiming(false); }
+  };
 
   return (
     <div className="h-full flex flex-col anim-slide-right relative">
@@ -126,6 +135,19 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
 
       <div className="relative flex-1" />
 
+      {canClaim && (
+        <div className="relative px-6 pb-3">
+          <button
+            onClick={handleClaim}
+            disabled={claiming}
+            className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
+            style={{ opacity: claiming ? 0.6 : 1 }}
+          >
+            {claiming ? 'Claiming...' : `Claim ${formatGold(claimable, goldUnit, 4)}${goldUnitLabel(goldUnit)}`}
+          </button>
+        </div>
+      )}
+
       {tier.cancellable && isActive && (
         <div className="relative p-6 pb-12">
           <button
@@ -137,7 +159,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
         </div>
       )}
 
-      {isComplete && (
+      {isComplete && !canClaim && (
         <div className="relative p-6 pb-12">
           <div className="text-center text-[11px] text-gold uppercase tracking-[0.3em]">
             All gold delivered
@@ -145,7 +167,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit }) {
         </div>
       )}
 
-      {!tier.cancellable && isActive && (
+      {!tier.cancellable && isActive && !canClaim && (
         <div className="relative p-6 pb-12">
           <div className="text-center text-[10px] text-dim">
             Spark mines complete on schedule. No early exit.

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 
 import './styles/app.css';
 
@@ -7,6 +7,7 @@ import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
 import { loadUnits, saveUnits, clearAll, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi } from './lib/storage.js';
+import { claimPosition, exitPositionEarly } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
@@ -25,6 +26,8 @@ import ExitScreen from './screens/ExitScreen.jsx';
 
 export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
+  const { wallets } = useWallets();
+  const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
 
   const userName = user?.email?.address?.split('@')[0] || null;
 
@@ -93,51 +96,68 @@ export default function App() {
     }
   }, [computedUnits, celebratingUnit]);
 
-  const startBuy = (tierId, amount) => {
+  const startBuy = async (tierId, amount) => {
     setCreating({ tierId, amount });
-    setTimeout(() => {
-      const tier = TIERS[tierId];
-      const faceValue = amount * (1 + tier.discount);
-      const grams = faceValue / goldPrice;
-      const unit = {
-        id: Math.random().toString(36).slice(2, 9),
-        tier: tierId,
-        pricePaid: amount,
-        faceValue,
-        gramsTotal: grams,
-        goldPriceAtPurchase: goldPrice,
-        purchasedAt: simTime.getTime(),
-        exitedAt: null,
-      };
-      setUnits(prev => [unit, ...prev]);
-      createUnit(unit);
-      setRecentlyPurchased(unit.id);
-      setCreating(null);
-      setScreen('home');
-      setTimeout(() => setRecentlyPurchased(null), 2500);
-    }, 1800);
+    const tier = TIERS[tierId];
+    const faceValue = amount * (1 + tier.discount);
+    const grams = faceValue / goldPrice;
+    const unit = {
+      id: Math.random().toString(36).slice(2, 9),
+      tier: tierId,
+      pricePaid: amount,
+      faceValue,
+      gramsTotal: grams,
+      goldPriceAtPurchase: goldPrice,
+      purchasedAt: simTime.getTime(),
+      exitedAt: null,
+    };
+    // Optimistic UI — show immediately while on-chain tx confirms
+    setUnits(prev => [unit, ...prev]);
+    const result = await createUnit(unit);
+    if (result?.positionId != null) {
+      setUnits(prev => prev.map(u =>
+        u.id === unit.id
+          ? { ...u, positionId: result.positionId, txHash: result.txHash, walletAddress: result.walletAddress }
+          : u
+      ));
+    }
+    setRecentlyPurchased(unit.id);
+    setCreating(null);
+    setScreen('home');
+    setTimeout(() => setRecentlyPurchased(null), 2500);
   };
 
-  const exitUnit = (unitId) => {
-    const unit = computedUnits.find(u => u.id === unitId);
-    if (!unit) return;
-    const tier = TIERS[unit.tier];
-    const pctElapsed = unit.deliveryElapsed ? unit.deliveryElapsed / unit.deliveryDays : 0;
-    const penaltyPct = getExitPenaltyPct(pctElapsed);
-    const undeliveredGrams = Math.max(0, unit.gramsTotal - unit.gramsDelivered);
-    const refundGrams = undeliveredGrams * (1 - penaltyPct);
-    const totalReceived = unit.gramsDelivered + refundGrams;
+  const claimUnit = async (unitId) => {
+    const unit = units.find(u => u.id === unitId);
+    if (!unit || unit.positionId == null || !embeddedWallet) return;
+    try {
+      await claimPosition(embeddedWallet, unit.positionId);
+      fetchUnits().then(u => setUnits(u));
+    } catch (err) {
+      console.error('Claim failed:', err);
+    }
+  };
 
-    const exitTime = simTime.getTime();
-    setUnits(prev =>
-      prev.map(u =>
-        u.id === unitId
-          ? { ...u, exitedAt: exitTime, gramsAtExit: totalReceived }
-          : u
-      )
-    );
-    exitUnitApi(unitId, exitTime, totalReceived);
-    setScreen('home');
+  const exitUnit = async (unitId) => {
+    const unit = computedUnits.find(u => u.id === unitId);
+    if (!unit || unit.positionId == null || !embeddedWallet) return;
+    try {
+      await exitPositionEarly(embeddedWallet, unit.positionId);
+      const exitTime = simTime.getTime();
+      const pctElapsed = unit.deliveryElapsed ? unit.deliveryElapsed / unit.deliveryDays : 0;
+      const penaltyPct = getExitPenaltyPct(pctElapsed);
+      const undeliveredGrams = Math.max(0, unit.gramsTotal - unit.gramsDelivered);
+      const refundGrams = undeliveredGrams * (1 - penaltyPct);
+      const totalReceived = unit.gramsDelivered + refundGrams;
+
+      setUnits(prev => prev.map(u =>
+        u.id === unitId ? { ...u, exitedAt: exitTime, gramsAtExit: totalReceived } : u
+      ));
+      exitUnitApi(unitId, exitTime, totalReceived);
+      setScreen('home');
+    } catch (err) {
+      console.error('Exit failed:', err);
+    }
   };
 
   const resetAll = () => {
@@ -233,6 +253,7 @@ export default function App() {
                 onBack={() => setScreen('home')}
                 onHome={() => setScreen('onboarding')}
                 onExit={() => setScreen('exit')}
+                onClaim={() => claimUnit(selectedUnitId)}
               />
             )}
             {screen === 'exit' && selectedUnit && (
