@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Wallet } from 'lucide-react';
+import { ArrowLeft, Wallet, Copy, Check } from 'lucide-react';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD, GRAMS_PER_TROY_OZ } from '../lib/gold.js';
 import { readPaxgBalance } from '../lib/chain.js';
@@ -8,6 +8,14 @@ import Row from '../components/Row.jsx';
 
 function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, goldPrice, priceSource }) {
   const [paxgBalance, setPaxgBalance] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  const copyAddress = () => {
+    if (!walletAddress) return;
+    navigator.clipboard.writeText(walletAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (!walletAddress) return;
@@ -34,18 +42,22 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
 
       <div className="flex-1 overflow-auto scrollable px-6 pb-12">
         {/* Wallet address */}
-        <div className="flex items-center gap-3 mb-6">
+        <button onClick={copyAddress} className="press flex items-center gap-3 mb-6 w-full text-left">
           <div
-            className="w-10 h-10 rounded-full border border-app flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-app flex items-center justify-center flex-shrink-0"
             style={{ background: 'rgba(201,169,97,0.08)' }}
           >
             <Wallet size={16} className="text-gold" />
           </div>
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="text-xs text-dim">Wallet</div>
             <div className="text-sm font-num text-app">{truncAddr}</div>
           </div>
-        </div>
+          {copied
+            ? <Check size={14} className="text-gold flex-shrink-0" />
+            : <Copy size={14} className="text-dim flex-shrink-0" />
+          }
+        </button>
 
         {/* PAXG balance */}
         <div className="mb-6">
