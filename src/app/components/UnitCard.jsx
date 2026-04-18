@@ -52,7 +52,7 @@ function UnitCard({ unit, onClick, highlight }) {
         </div>
         <div className="text-right">
           <div className={`text-base font-num ${isActive ? 'pulse-gold' : ''} ${isComplete ? 'text-black' : 'text-app'}`}>
-            {formatGold(unit.gramsDelivered, goldUnit)}{goldUnitLabel(goldUnit)}
+            {formatGold(unit.gramsDelivered, goldUnit, 6)}{goldUnitLabel(goldUnit)}
           </div>
           <div className={`text-[10px] font-num mt-0.5 ${isComplete ? 'text-black opacity-50' : 'text-dim'}`}>of {formatGold(unit.gramsTotal, goldUnit, 3)}{goldUnitLabel(goldUnit)}</div>
         </div>

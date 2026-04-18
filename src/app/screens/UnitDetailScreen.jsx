@@ -99,7 +99,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
               className={`font-display font-num text-app ${isActive ? 'pulse-gold' : ''}`}
               style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
             >
-              {formatGold(unit.gramsDelivered, goldUnit)}
+              {formatGold(unit.gramsDelivered, goldUnit, 7)}
               <span
                 className="text-2xl text-dim ml-2"
                 style={{ fontFamily: "'Fraunces', serif" }}
