@@ -203,6 +203,7 @@ export default function App() {
                   setTimeMult={setTimeMult}
                   simTime={simTime}
                   onReset={resetAll}
+                  onLogout={() => { logout(); setScreen('onboarding'); setDevOpen(false); }}
                   goldUnit={goldUnit}
                   setGoldUnit={setGoldUnit}
                   goldPrice={goldPrice}

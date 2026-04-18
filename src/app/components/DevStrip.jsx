@@ -3,7 +3,7 @@ import { RotateCcw } from 'lucide-react';
 import { TIME_SPEEDS } from '../lib/tiers.js';
 import { GRAMS_PER_TROY_OZ } from '../lib/gold.js';
 
-function DevStrip({ timeMult, setTimeMult, simTime, onReset, goldUnit, setGoldUnit, goldPrice, priceSource }) {
+function DevStrip({ timeMult, setTimeMult, simTime, onReset, onLogout, goldUnit, setGoldUnit, goldPrice, priceSource }) {
   return (
     <div
       className="flex-shrink-0 px-3 pt-2 pb-2 flex items-center gap-1.5 border-b border-app"
@@ -56,6 +56,13 @@ function DevStrip({ timeMult, setTimeMult, simTime, onReset, goldUnit, setGoldUn
           oz
         </button>
       </div>
+      <button
+        onClick={onLogout}
+        className="press h-6 px-2 rounded-full border border-app text-[9px] font-num text-dim"
+        style={{ background: 'rgba(255,255,255,0.03)' }}
+      >
+        Log out
+      </button>
       <button
         onClick={onReset}
         className="press w-6 h-6 rounded-full border border-app flex items-center justify-center"
