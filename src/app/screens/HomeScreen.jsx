@@ -37,7 +37,6 @@ function RollingChar({ char, index }) {
       overflow: 'hidden',
       verticalAlign: 'top',
       textAlign: 'center',
-      fontFamily: MONO,
     }}>
       <span style={{
         display: 'block',
@@ -50,6 +49,7 @@ function RollingChar({ char, index }) {
             display: 'block',
             height: `${DIGIT_HEIGHT}px`,
             lineHeight: `${DIGIT_HEIGHT}px`,
+            fontFamily: MONO,
           }}>{d}</span>
         ))}
         <span style={{
