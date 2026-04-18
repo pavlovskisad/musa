@@ -356,7 +356,7 @@ function OnboardingScreen({ onContinue }) {
           </button>
         </div>
 
-        <div className="relative px-8" style={{ zIndex: 4 }}>
+        <div className="relative px-8 pt-14" style={{ zIndex: 4 }}>
           <h1
             className="font-display text-app mb-6 onboard-headline-in"
             style={{ fontWeight: 300, fontSize: '64px', lineHeight: '0.92' }}
