@@ -66,8 +66,8 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
             className="font-display font-num text-app"
             style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
           >
-            {paxgBalance != null ? formatGold(paxgBalance, goldUnit, 6) : '—'}
-            <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+            {paxgBalance != null ? paxgBalance.toFixed(6) : '—'}
+            <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>PAXG</span>
           </div>
           {paxgBalance != null && (
             <div className="text-xs text-dim font-num mt-2">{formatUSD(paxgBalance * goldPrice)}</div>
