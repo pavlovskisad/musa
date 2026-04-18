@@ -6,14 +6,13 @@ import './styles/app.css';
 import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
-import { loadUnits, saveUnits, clearAll, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi } from './lib/storage.js';
+import { loadUnits, saveUnits, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi } from './lib/storage.js';
 import { claimPosition, exitPositionEarly } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
 import { useSimTime } from './hooks/useSimTime.js';
 
-import DevStrip from './components/DevStrip.jsx';
 import CreationOverlay from './components/CreationOverlay.jsx';
 import CelebrationOverlay from './components/CelebrationOverlay.jsx';
 
@@ -23,6 +22,7 @@ import BrowseScreen from './screens/BrowseScreen.jsx';
 import BuyScreen from './screens/BuyScreen.jsx';
 import UnitDetailScreen from './screens/UnitDetailScreen.jsx';
 import ExitScreen from './screens/ExitScreen.jsx';
+import ProfileScreen from './screens/ProfileScreen.jsx';
 
 export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
@@ -33,13 +33,11 @@ export default function App() {
 
   const userName = user?.email?.address?.split('@')[0] || null;
 
-  const [timeMult, setTimeMult] = useState(1);
-  const { simTime, setSimTime } = useSimTime(timeMult);
-  const { goldPrice, setGoldPrice, priceSource, setPriceSource } = useGoldPrice();
+  const { simTime } = useSimTime(1);
+  const { goldPrice, priceSource } = useGoldPrice();
   const [goldUnit, setGoldUnit] = useState('g');
 
   const [screen, setScreen] = useState(() => 'onboarding');
-  const [devOpen, setDevOpen] = useState(false);
   const [units, setUnits] = useState(() => loadUnits());
   const [selectedTier, setSelectedTier] = useState(null);
   const [selectedAmount, setSelectedAmount] = useState(100);
@@ -83,7 +81,11 @@ export default function App() {
       .filter(u => u.computedStatus !== 'exited' && u.computedStatus !== 'completed')
       .reduce((s, u) => s + (u.gramsTotal - (u.gramsDelivered || 0)), 0);
     const totalValueUSD = totalGrams * goldPrice;
-    return { totalGrams, totalClaimed, pendingGrams, totalValueUSD };
+    const maxDaysRemaining = computedUnits
+      .filter(u => u.computedStatus === 'active' || u.computedStatus === 'constructing')
+      .reduce((m, u) => Math.max(m, u.daysRemaining || 0), 0);
+    const mineCount = computedUnits.filter(u => u.computedStatus !== 'exited').length;
+    return { totalGrams, totalClaimed, pendingGrams, totalValueUSD, maxDaysRemaining, mineCount };
   }, [computedUnits, goldPrice]);
 
   const visibleUnits = computedUnits
@@ -182,18 +184,6 @@ export default function App() {
     }
   };
 
-  const resetAll = () => {
-    setUnits([]);
-    clearAll();
-    setSimTime(new Date());
-    setScreen('onboarding');
-    setSelectedUnitId(null);
-    setSelectedTier(null);
-    setSelectedAmount(100);
-    setCreating(null);
-    logout();
-  };
-
   const selectedUnit = computedUnits.find(u => u.id === selectedUnitId);
 
   return (
@@ -207,29 +197,6 @@ export default function App() {
           className="absolute inset-0 rounded-[44px] overflow-hidden phone-frame flex flex-col"
           style={{ background: 'var(--bg)', color: 'var(--text)' }}
         >
-          {devOpen && (
-            <>
-              <div
-                className="absolute inset-0 z-40"
-                style={{ background: 'rgba(0,0,0,0.4)' }}
-                onClick={() => setDevOpen(false)}
-              />
-              <div className="absolute top-0 left-0 right-0 z-50 anim-slide-down">
-                <DevStrip
-                  timeMult={timeMult}
-                  setTimeMult={setTimeMult}
-                  simTime={simTime}
-                  onReset={resetAll}
-                  onLogout={() => { logout(); setScreen('onboarding'); setDevOpen(false); }}
-                  goldUnit={goldUnit}
-                  setGoldUnit={setGoldUnit}
-                  goldPrice={goldPrice}
-                  priceSource={priceSource}
-                />
-              </div>
-            </>
-          )}
-
           <div className="flex-1 relative overflow-hidden">
             {screen === 'onboarding' && (
               <OnboardingScreen
@@ -246,7 +213,7 @@ export default function App() {
                 userName={userName}
                 onBuy={() => setScreen('browse')}
                 onHome={() => setScreen('onboarding')}
-                onSettings={() => setDevOpen(v => !v)}
+                onProfile={() => setScreen('profile')}
                 onUnit={(id) => { setSelectedUnitId(id); setScreen('unitDetail'); }}
               />
             )}
@@ -286,6 +253,22 @@ export default function App() {
                 onBack={() => setScreen('unitDetail')}
                 onHome={() => setScreen('onboarding')}
                 onConfirm={() => exitUnit(selectedUnitId)}
+              />
+            )}
+
+            {screen === 'profile' && (
+              <ProfileScreen
+                key="profile"
+                totals={totals}
+                mineCount={totals.mineCount}
+                maxDaysRemaining={totals.maxDaysRemaining}
+                walletAddress={embeddedWallet?.address}
+                goldUnit={goldUnit}
+                setGoldUnit={setGoldUnit}
+                goldPrice={goldPrice}
+                priceSource={priceSource}
+                onBack={() => setScreen('home')}
+                onLogout={() => { logout(); setScreen('onboarding'); }}
               />
             )}
 

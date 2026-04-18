@@ -1,11 +1,11 @@
 import React from 'react';
-import { ArrowLeft, Plus, Sparkles, Settings } from 'lucide-react';
+import { ArrowLeft, Plus, Sparkles, User } from 'lucide-react';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 
-function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onSettings, userName }) {
+function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, userName }) {
   const hasUnits = units.length > 0;
   const { unit: goldUnit } = useGold();
 
@@ -23,12 +23,12 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </button>
         <MusaLogo />
         <button
-          onClick={onSettings}
+          onClick={onProfile}
           className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
           style={{ background: 'rgba(255,255,255,0.03)' }}
-          aria-label="Settings"
+          aria-label="Profile"
         >
-          <Settings size={14} className="text-dim" />
+          <User size={14} className="text-dim" />
         </button>
       </div>
 

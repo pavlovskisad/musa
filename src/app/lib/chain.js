@@ -22,6 +22,15 @@ export const readMusa = () => {
 
 // --- Read helpers ---
 
+const ERC20_BALANCE_ABI = ['function balanceOf(address) view returns (uint256)'];
+
+export async function readPaxgBalance(walletAddress) {
+  if (!readProvider || !PAXG_ADDRESS || !walletAddress) return 0;
+  const paxg = new Contract(PAXG_ADDRESS, ERC20_BALANCE_ABI, readProvider);
+  const wei = await paxg.balanceOf(walletAddress);
+  return weiToGrams(wei);
+}
+
 export async function readClaimableGrams(positionId) {
   const musa = readMusa();
   if (!musa) return 0;
