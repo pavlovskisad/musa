@@ -13,6 +13,7 @@ const STATS = [
 ];
 
 const DIGIT_HEIGHT = 60;
+const MONO = '"Geist Mono", ui-monospace, monospace';
 
 function RollingChar({ char, index }) {
   if (char === '.') {
@@ -21,6 +22,7 @@ function RollingChar({ char, index }) {
         display: 'inline-block',
         verticalAlign: 'top',
         lineHeight: `${DIGIT_HEIGHT}px`,
+        fontFamily: MONO,
       }}>.</span>
     );
   }
@@ -35,6 +37,7 @@ function RollingChar({ char, index }) {
       overflow: 'hidden',
       verticalAlign: 'top',
       textAlign: 'center',
+      fontFamily: MONO,
     }}>
       <span style={{
         display: 'block',
