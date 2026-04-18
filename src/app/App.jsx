@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { usePrivy, useSendTransaction } from '@privy-io/react-auth';
+import { usePrivy, useSendTransaction, useWallets } from '@privy-io/react-auth';
 
 import './styles/app.css';
 
@@ -27,6 +27,8 @@ import ExitScreen from './screens/ExitScreen.jsx';
 export default function App() {
   const { ready, authenticated, user, login, logout, getAccessToken } = usePrivy();
   const { sendTransaction } = useSendTransaction();
+  const { wallets } = useWallets();
+  const embeddedWallet = wallets.find(w => w.walletClientType === 'privy');
 
   const userName = user?.email?.address?.split('@')[0] || null;
 
@@ -110,6 +112,8 @@ export default function App() {
       purchasedAt: simTime.getTime(),
       exitedAt: null,
     };
+    // Pass wallet address from frontend so backend has a fallback
+    if (embeddedWallet?.address) unit.walletAddress = embeddedWallet.address;
     // Optimistic UI — show immediately while on-chain tx confirms
     setUnits(prev => [unit, ...prev]);
     const result = await createUnit(unit);

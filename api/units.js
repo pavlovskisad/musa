@@ -28,20 +28,29 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { id, tier, pricePaid, faceValue, gramsTotal, goldPriceAtPurchase, purchasedAt } = req.body;
+    const { id, tier, pricePaid, faceValue, gramsTotal, goldPriceAtPurchase, purchasedAt, walletAddress: clientWallet } = req.body;
     if (!id || !tier || !pricePaid || !faceValue || !gramsTotal || !goldPriceAtPurchase || !purchasedAt) {
       return res.status(400).json({ error: 'Missing fields' });
     }
 
-    // Look up user's wallet address from Privy — check all possible locations
-    const user = await privy.getUser(userId);
-    const accounts = user?.linkedAccounts || [];
-    const embedded = accounts.find(a => a.type === 'wallet' && a.walletClientType === 'privy');
-    const anyWallet = accounts.find(a => a.type === 'wallet' || a.type === 'smart_wallet');
-    const walletAddress = embedded?.address || anyWallet?.address || user?.wallet?.address;
+    // Look up user's wallet address from Privy, fall back to client-provided address
+    let walletAddress = null;
+    try {
+      const user = await privy.getUser(userId);
+      const accounts = user?.linkedAccounts || [];
+      const embedded = accounts.find(a => a.type === 'wallet' && a.walletClientType === 'privy');
+      const anyWallet = accounts.find(a => a.type === 'wallet' || a.type === 'smart_wallet');
+      walletAddress = embedded?.address || anyWallet?.address || user?.wallet?.address;
+      if (!walletAddress) {
+        console.warn('Privy getUser found no wallet. linkedAccounts:', JSON.stringify(accounts.map(a => ({ type: a.type, walletClientType: a.walletClientType }))));
+      }
+    } catch (err) {
+      console.warn('Privy getUser failed:', err.message);
+    }
+    // Accept client-provided address as fallback (embedded wallet known client-side)
+    if (!walletAddress && clientWallet) walletAddress = clientWallet;
     if (!walletAddress) {
-      console.error('No wallet found on user. linkedAccounts:', JSON.stringify(accounts.map(a => ({ type: a.type, walletClientType: a.walletClientType }))));
-      return res.status(400).json({ error: 'No wallet on user — check Privy dashboard: disable Smart Wallets, ensure embedded wallets are enabled' });
+      return res.status(400).json({ error: 'No wallet found — try logging out and back in' });
     }
 
     // Update user row with wallet address (first time we see it)
