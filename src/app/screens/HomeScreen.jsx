@@ -156,7 +156,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
           <div
             className="font-num text-app"
-            style={{ fontSize: '60px', lineHeight: '1' }}
+            style={{ fontSize: '60px', lineHeight: '1', fontFamily: "'Geist Mono', ui-monospace, monospace" }}
           >
             <RollingCounter value={displayValue} maxIntDigits={maxIntRef.current} />
             <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
