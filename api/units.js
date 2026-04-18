@@ -20,6 +20,7 @@ export default async function handler(req, res) {
       purchasedAt: Number(row.purchased_at),
       exitedAt: row.exited_at ? Number(row.exited_at) : null,
       gramsAtExit: row.grams_at_exit ? Number(row.grams_at_exit) : null,
+      gramsClaimed: Number(row.grams_claimed || 0),
       positionId: row.position_id != null ? Number(row.position_id) : null,
       txHash: row.tx_hash || null,
       walletAddress: row.wallet_address || null,

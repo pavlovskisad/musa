@@ -90,6 +90,17 @@ export const exitUnit = async (unitId, exitedAt, gramsAtExit) => {
   } catch {}
 };
 
+export const claimUnit = async (unitId, gramsClaimed) => {
+  if (!isOnline()) return;
+  try {
+    await fetch(`/api/units/${unitId}/claim`, {
+      method: 'PATCH',
+      headers: headers(),
+      body: JSON.stringify({ gramsClaimed }),
+    });
+  } catch {}
+};
+
 // --- Settings (local only for now) ---
 
 export const loadSettings = () => {

@@ -6,7 +6,7 @@ import './styles/app.css';
 import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
-import { loadUnits, saveUnits, clearAll, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi } from './lib/storage.js';
+import { loadUnits, saveUnits, clearAll, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi } from './lib/storage.js';
 import { claimPosition, exitPositionEarly } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
@@ -144,11 +144,16 @@ export default function App() {
   };
 
   const claimUnit = async (unitId) => {
-    const unit = units.find(u => u.id === unitId);
-    if (!unit || unit.positionId == null) return;
+    const computed = computedUnits.find(u => u.id === unitId);
+    if (!computed || computed.positionId == null) return;
+    const claimable = Math.max(0, (computed.gramsDelivered || 0) - (computed.gramsClaimed || 0));
+    if (claimable < 1e-9) return;
     try {
-      await claimPosition(sendTransaction, unit.positionId);
-      fetchUnits().then(u => setUnits(u));
+      await claimPosition(sendTransaction, computed.positionId);
+      setUnits(prev => prev.map(u =>
+        u.id === unitId ? { ...u, gramsClaimed: (u.gramsClaimed || 0) + claimable } : u
+      ));
+      claimUnitApi(unitId, claimable);
     } catch (err) {
       console.error('Claim failed:', err);
     }
