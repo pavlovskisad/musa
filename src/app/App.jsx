@@ -80,12 +80,15 @@ export default function App() {
     const pendingGrams = computedUnits
       .filter(u => u.computedStatus !== 'exited' && u.computedStatus !== 'completed')
       .reduce((s, u) => s + (u.gramsTotal - (u.gramsDelivered || 0)), 0);
+    const totalClaimable = computedUnits
+      .filter(u => u.computedStatus !== 'exited' && u.positionId != null)
+      .reduce((s, u) => s + Math.max(0, (u.gramsDelivered || 0) - (u.gramsClaimed || 0)), 0);
     const totalValueUSD = totalGrams * goldPrice;
     const maxDaysRemaining = computedUnits
       .filter(u => u.computedStatus === 'active' || u.computedStatus === 'constructing')
       .reduce((m, u) => Math.max(m, u.daysRemaining || 0), 0);
     const mineCount = computedUnits.filter(u => u.computedStatus !== 'exited').length;
-    return { totalGrams, totalClaimed, pendingGrams, totalValueUSD, maxDaysRemaining, mineCount };
+    return { totalGrams, totalClaimed, totalClaimable, pendingGrams, totalValueUSD, maxDaysRemaining, mineCount };
   }, [computedUnits, goldPrice]);
 
   const visibleUnits = computedUnits
@@ -162,6 +165,26 @@ export default function App() {
     }
   };
 
+  const claimAll = async () => {
+    const claimable = computedUnits.filter(u =>
+      u.computedStatus !== 'exited' && u.positionId != null &&
+      (u.gramsDelivered || 0) - (u.gramsClaimed || 0) > 1e-9
+    );
+    for (const unit of claimable) {
+      const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
+      try {
+        await claimPosition(sendTransaction, unit.positionId);
+        setUnits(prev => prev.map(u =>
+          u.id === unit.id ? { ...u, gramsClaimed: (u.gramsClaimed || 0) + amount } : u
+        ));
+        claimUnitApi(unit.id, amount);
+      } catch (err) {
+        console.error(`Claim failed for ${unit.id}:`, err);
+        break;
+      }
+    }
+  };
+
   const exitUnit = async (unitId) => {
     const unit = computedUnits.find(u => u.id === unitId);
     if (!unit || unit.positionId == null) return;
@@ -174,10 +197,15 @@ export default function App() {
       const refundGrams = undeliveredGrams * (1 - penaltyPct);
       const totalReceived = unit.gramsDelivered + refundGrams;
 
+      // Contract transfers vested + refund - previouslyClaimed in one shot,
+      // so mark all delivered gold as claimed too.
+      const newClaimed = unit.gramsDelivered - (unit.gramsClaimed || 0);
+
       setUnits(prev => prev.map(u =>
-        u.id === unitId ? { ...u, exitedAt: exitTime, gramsAtExit: totalReceived } : u
+        u.id === unitId ? { ...u, exitedAt: exitTime, gramsAtExit: totalReceived, gramsClaimed: (u.gramsClaimed || 0) + newClaimed } : u
       ));
       exitUnitApi(unitId, exitTime, totalReceived);
+      if (newClaimed > 0) claimUnitApi(unitId, newClaimed);
       setScreen('home');
     } catch (err) {
       console.error('Exit failed:', err);
@@ -214,6 +242,7 @@ export default function App() {
                 onBuy={() => setScreen('browse')}
                 onHome={() => setScreen('onboarding')}
                 onProfile={() => setScreen('profile')}
+                onClaimAll={claimAll}
                 onUnit={(id) => { setSelectedUnitId(id); setScreen('unitDetail'); }}
               />
             )}

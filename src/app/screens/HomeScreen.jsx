@@ -5,9 +5,17 @@ import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 
-function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, userName }) {
+function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, onClaimAll, userName }) {
   const hasUnits = units.length > 0;
   const { unit: goldUnit } = useGold();
+  const [claimingAll, setClaimingAll] = React.useState(false);
+  const canClaimAll = totals.totalClaimable > 1e-9;
+
+  const handleClaimAll = async () => {
+    if (!onClaimAll || claimingAll) return;
+    setClaimingAll(true);
+    try { await onClaimAll(); } finally { setClaimingAll(false); }
+  };
 
   return (
     <div className="h-full flex flex-col anim-fade">
@@ -59,6 +67,15 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
             </>
           )}
         </div>
+        {canClaimAll && (
+          <button
+            onClick={handleClaimAll}
+            disabled={claimingAll}
+            className="press mt-4 h-10 px-6 rounded-full border border-gold text-gold text-xs font-medium tracking-wide disabled:opacity-40"
+          >
+            {claimingAll ? 'Claiming…' : `Claim ${formatGold(totals.totalClaimable, goldUnit, 4)}${goldUnitLabel(goldUnit)}`}
+          </button>
+        )}
       </div>
 
       {/* Divider */}
