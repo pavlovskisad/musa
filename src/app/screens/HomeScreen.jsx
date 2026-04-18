@@ -5,11 +5,36 @@ import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 
+const STATS = [
+  { key: 'mined', label: 'Mined' },
+  { key: 'claimed', label: 'Claimed' },
+  { key: 'unclaimed', label: 'Unclaimed' },
+  { key: 'pending', label: 'Pending' },
+];
+
 function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, onClaimAll, userName }) {
   const hasUnits = units.length > 0;
   const { unit: goldUnit } = useGold();
   const [claimingAll, setClaimingAll] = React.useState(false);
+  const [activeStat, setActiveStat] = React.useState('mined');
+  const [transitioning, setTransitioning] = React.useState(false);
   const canClaimAll = totals.totalClaimable > 1e-9;
+
+  const statValues = {
+    mined: totals.totalGrams,
+    claimed: totals.totalClaimed,
+    unclaimed: totals.totalClaimable,
+    pending: totals.pendingGrams,
+  };
+
+  const switchStat = (key) => {
+    if (key === activeStat) return;
+    setTransitioning(true);
+    setTimeout(() => {
+      setActiveStat(key);
+      setTransitioning(false);
+    }, 150);
+  };
 
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
@@ -19,7 +44,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
   return (
     <div className="h-full flex flex-col anim-fade">
-      {/* Header (back to onboarding, musa logo, settings) */}
+      {/* Header */}
       <div className="px-6 pt-4 pb-2 flex items-center justify-between">
         <button
           onClick={onHome}
@@ -44,7 +69,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
       <div className="px-6 pt-4 pb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
-            {userName ? `${userName}'s total mined` : 'Total mined'}
+            {userName ? `musa ${userName}'s gold` : 'Your gold'}
           </div>
           {canClaimAll && (
             <button
@@ -56,27 +81,46 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
             </button>
           )}
         </div>
-        <div
-          className="font-display font-num text-app"
-          style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-        >
-          {formatGold(totals.totalGrams, goldUnit)}
-          <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+
+        {/* Big counter with transition */}
+        <div style={{ position: 'relative', overflow: 'hidden', height: '60px' }}>
+          <div
+            style={{
+              transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
+              opacity: transitioning ? 0 : 1,
+              transform: transitioning ? 'translateY(8px)' : 'translateY(0)',
+            }}
+          >
+            <div
+              className="font-display font-num text-app"
+              style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+            >
+              {formatGold(statValues[activeStat], goldUnit)}
+              <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+            </div>
+          </div>
         </div>
-        <div className="text-sm text-dim font-num mt-2 flex items-center gap-3">
-          <span>{formatUSD(totals.totalValueUSD)}</span>
-          {totals.totalClaimed > 0 && (
-            <>
-              <span className="text-dim opacity-40">·</span>
-              <span className="text-gold">{formatGold(totals.totalClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</span>
-            </>
-          )}
-          {totals.pendingGrams > 0.0001 && (
-            <>
-              <span className="text-dim opacity-40">·</span>
-              <span className="text-gold">+{formatGold(totals.pendingGrams, goldUnit, 3)}{goldUnitLabel(goldUnit)} pending</span>
-            </>
-          )}
+
+        {/* USD value */}
+        <div className="text-sm text-dim font-num mt-2 mb-3">
+          {formatUSD(totals.totalValueUSD)}
+        </div>
+
+        {/* Stat pills */}
+        <div className="flex gap-2">
+          {STATS.map(s => (
+            <button
+              key={s.key}
+              onClick={() => switchStat(s.key)}
+              className={`press-soft h-7 px-3 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
+                activeStat === s.key
+                  ? 'border-gold text-gold'
+                  : 'border-app text-dim'
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
       </div>
 
