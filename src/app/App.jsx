@@ -113,14 +113,20 @@ export default function App() {
     // Optimistic UI — show immediately while on-chain tx confirms
     setUnits(prev => [unit, ...prev]);
     const result = await createUnit(unit);
-    if (result?.positionId != null) {
+    if (result?.ok && result.positionId != null) {
       setUnits(prev => prev.map(u =>
         u.id === unit.id
           ? { ...u, positionId: result.positionId, txHash: result.txHash, walletAddress: result.walletAddress }
           : u
       ));
+      setRecentlyPurchased(unit.id);
+    } else if (!result?.ok) {
+      // Backend rejected the buy — roll back the optimistic unit so localStorage
+      // doesn't get stranded with a unit that doesn't exist on-chain / in DB.
+      setUnits(prev => prev.filter(u => u.id !== unit.id));
+      console.error('Buy failed:', result?.error, result?.detail);
+      alert(`Buy failed: ${result?.error || 'Unknown error'}${result?.detail ? `\n\n${result.detail}` : ''}`);
     }
-    setRecentlyPurchased(unit.id);
     setCreating(null);
     setScreen('home');
     setTimeout(() => setRecentlyPurchased(null), 2500);
