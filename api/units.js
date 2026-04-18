@@ -33,11 +33,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing fields' });
     }
 
-    // Look up user's embedded wallet address from Privy
+    // Look up user's wallet address from Privy — check all possible locations
     const user = await privy.getUser(userId);
-    const embedded = user?.linkedAccounts?.find(a => a.type === 'wallet' && a.walletClientType === 'privy');
-    const walletAddress = embedded?.address || user?.wallet?.address;
-    if (!walletAddress) return res.status(400).json({ error: 'No wallet on user' });
+    const accounts = user?.linkedAccounts || [];
+    const embedded = accounts.find(a => a.type === 'wallet' && a.walletClientType === 'privy');
+    const anyWallet = accounts.find(a => a.type === 'wallet' || a.type === 'smart_wallet');
+    const walletAddress = embedded?.address || anyWallet?.address || user?.wallet?.address;
+    if (!walletAddress) {
+      console.error('No wallet found on user. linkedAccounts:', JSON.stringify(accounts.map(a => ({ type: a.type, walletClientType: a.walletClientType }))));
+      return res.status(400).json({ error: 'No wallet on user — check Privy dashboard: disable Smart Wallets, ensure embedded wallets are enabled' });
+    }
 
     // Update user row with wallet address (first time we see it)
     await sql`UPDATE users SET wallet_address = ${walletAddress} WHERE privy_did = ${userId} AND wallet_address IS NULL`;
