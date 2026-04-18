@@ -7,7 +7,7 @@ import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
 import { loadUnits, saveUnits, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi } from './lib/storage.js';
-import { claimPosition, exitPositionEarly } from './lib/chain.js';
+import { claimPosition, claimAllPositions, exitPositionEarly } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
@@ -170,18 +170,20 @@ export default function App() {
       u.computedStatus !== 'exited' && u.positionId != null &&
       (u.gramsDelivered || 0) - (u.gramsClaimed || 0) > 1e-9
     );
-    for (const unit of claimable) {
-      const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
-      try {
-        await claimPosition(sendTransaction, unit.positionId);
+    if (claimable.length === 0) return;
+
+    const positionIds = claimable.map(u => u.positionId);
+    try {
+      await claimAllPositions(sendTransaction, positionIds);
+      for (const unit of claimable) {
+        const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
         setUnits(prev => prev.map(u =>
           u.id === unit.id ? { ...u, gramsClaimed: (u.gramsClaimed || 0) + amount } : u
         ));
         claimUnitApi(unit.id, amount);
-      } catch (err) {
-        console.error(`Claim failed for ${unit.id}:`, err);
-        break;
       }
+    } catch (err) {
+      console.error('Claim all failed:', err);
     }
   };
 

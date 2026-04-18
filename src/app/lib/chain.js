@@ -58,6 +58,14 @@ export async function claimPosition(sendTransaction, positionId) {
   );
 }
 
+export async function claimAllPositions(sendTransaction, positionIds) {
+  const data = musaIface.encodeFunctionData('claimAll', [positionIds]);
+  return sendTransaction(
+    { to: MUSA_ADDRESS, data, chainId: CHAIN_ID },
+    { sponsor: true }
+  );
+}
+
 export async function exitPositionEarly(sendTransaction, positionId) {
   const data = musaIface.encodeFunctionData('exitEarly', [positionId]);
   return sendTransaction(

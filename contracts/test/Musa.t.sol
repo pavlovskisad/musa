@@ -331,6 +331,86 @@ contract MusaTest is Test {
         musa.deposit(0);
     }
 
+    // ── Claim all ──────────────────────────────────────────────────────
+
+    function test_claimAll_multiplePositions() public {
+        musa.createPosition(alice, Musa.Tier.Spark, TEN_GRAMS, 1500e18);
+        musa.createPosition(alice, Musa.Tier.Flow, TEN_GRAMS, 1500e18);
+
+        vm.warp(block.timestamp + 90 days);
+
+        uint256[] memory ids = new uint256[](2);
+        ids[0] = 0;
+        ids[1] = 1;
+
+        vm.prank(alice);
+        musa.claimAll(ids);
+
+        assertGt(paxg.balanceOf(alice), 0);
+        assertEq(musa.claimableGrams(0), 0);
+        assertEq(musa.claimableGrams(1), 0);
+    }
+
+    function test_claimAll_skipsSettled() public {
+        musa.createPosition(alice, Musa.Tier.Spark, TEN_GRAMS, 1500e18);
+        musa.createPosition(alice, Musa.Tier.Flow, TEN_GRAMS, 1500e18);
+
+        // Fully vest and claim position 0
+        vm.warp(block.timestamp + 180 days);
+        vm.prank(alice);
+        musa.claim(0);
+        uint256 afterFirst = paxg.balanceOf(alice);
+
+        // claimAll with both — should only claim from position 1
+        uint256[] memory ids = new uint256[](2);
+        ids[0] = 0;
+        ids[1] = 1;
+
+        vm.prank(alice);
+        musa.claimAll(ids);
+
+        assertGt(paxg.balanceOf(alice), afterFirst);
+    }
+
+    function test_claimAll_rejectsNonOwner() public {
+        musa.createPosition(alice, Musa.Tier.Flow, TEN_GRAMS, 1500e18);
+        vm.warp(block.timestamp + 90 days);
+
+        uint256[] memory ids = new uint256[](1);
+        ids[0] = 0;
+
+        vm.prank(bob);
+        vm.expectRevert("not owner");
+        musa.claimAll(ids);
+    }
+
+    function test_claimAll_singleTransfer() public {
+        musa.createPosition(alice, Musa.Tier.Spark, TEN_GRAMS, 1500e18);
+        musa.createPosition(alice, Musa.Tier.Flow, TEN_GRAMS, 1500e18);
+        musa.createPosition(alice, Musa.Tier.Vein, TEN_GRAMS, 1500e18);
+
+        vm.warp(block.timestamp + 90 days);
+
+        uint256 claimable0 = musa.claimableGrams(0);
+        uint256 claimable1 = musa.claimableGrams(1);
+        uint256 claimable2 = musa.claimableGrams(2);
+        uint256 totalClaimable = claimable0 + claimable1 + claimable2;
+        assertGt(totalClaimable, 0);
+
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = 0;
+        ids[1] = 1;
+        ids[2] = 2;
+
+        vm.prank(alice);
+        musa.claimAll(ids);
+
+        // All claimed in one shot
+        assertEq(musa.claimableGrams(0), 0);
+        assertEq(musa.claimableGrams(1), 0);
+        assertEq(musa.claimableGrams(2), 0);
+    }
+
     // ── Vein tier (24-month lock) ─────────────────────────────────────
 
     function test_veinFullDelivery() public {

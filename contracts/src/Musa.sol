@@ -144,6 +144,32 @@ contract Musa is Ownable, ReentrancyGuard, Pausable {
         emit GramsClaimed(positionId, pos.owner, claimable, paxgAmount);
     }
 
+    /// @notice Claim vested PAXG from multiple positions in one transaction.
+    function claimAll(uint256[] calldata positionIds) external nonReentrant whenNotPaused {
+        uint256 totalPaxg;
+        for (uint256 i; i < positionIds.length; i++) {
+            Position storage pos = positions[positionIds[i]];
+            require(msg.sender == pos.owner, "not owner");
+            if (pos.settled || pos.exitedAt != 0) continue;
+
+            uint256 vested = _vestedGrams(pos);
+            uint256 claimable = vested - pos.gramsClaimed;
+            if (claimable == 0) continue;
+
+            pos.gramsClaimed = vested;
+            totalGramsClaimed += claimable;
+            if (vested >= pos.gramsTotal) pos.settled = true;
+
+            uint256 paxgAmount = _gramsToPaxg(claimable);
+            totalPaxg += paxgAmount;
+            emit GramsClaimed(positionIds[i], pos.owner, claimable, paxgAmount);
+        }
+        if (totalPaxg > 0) {
+            require(paxg.balanceOf(address(this)) >= totalPaxg, "insufficient reserve");
+            paxg.safeTransfer(msg.sender, totalPaxg);
+        }
+    }
+
     /// @notice Exit a cancellable position early. Penalty applied to undelivered gold.
     /// @dev SECURITY: penalty is stepped (not user-controlled), no oracle dependency,
     ///      no MEV concern — exit amount is deterministic based on block.timestamp.

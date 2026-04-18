@@ -25,6 +25,19 @@
   },
   {
     "type": "function",
+    "name": "claimAll",
+    "inputs": [
+      {
+        "name": "positionIds",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "claimableGrams",
     "inputs": [
       {
