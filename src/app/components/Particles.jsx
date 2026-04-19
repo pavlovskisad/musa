@@ -1,7 +1,7 @@
 const TIER_CONFIG = {
-  spark: { count: 6, close: 0, far: 2 },
-  flow:  { count: 11, close: 1, far: 3 },
-  vein:  { count: 16, close: 3, far: 4 },
+  spark: { count: 4, close: 0, far: 1 },
+  flow:  { count: 8, close: 2, far: 3 },
+  vein:  { count: 14, close: 5, far: 6 },
 };
 
 const POSITIONS = [
