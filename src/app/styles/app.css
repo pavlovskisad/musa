@@ -1216,7 +1216,7 @@
           background: linear-gradient(to bottom, rgba(10, 9, 8, 0.35), transparent);
           pointer-events: none;
         }
-        /* Wandering spirit glow — drifts across the hero on an irregular path */
+        /* Wandering spirit glow — drifts, pauses, drifts again */
         .hero-ambient-glow {
           position: absolute;
           width: 180px;
@@ -1228,40 +1228,40 @@
           border-radius: 50%;
           background: radial-gradient(circle, rgba(201, 169, 97, 0.35) 0%, rgba(201, 169, 97, 0.12) 35%, transparent 65%);
           filter: blur(16px);
-          animation: spiritX 8s ease-in-out infinite, spiritY 11s ease-in-out infinite, spiritBreath 4s ease-in-out infinite;
+          animation: spiritX 17s ease-in-out infinite, spiritY 23s ease-in-out infinite, spiritBreath 4s ease-in-out infinite;
           pointer-events: none;
           will-change: transform, opacity;
         }
         @keyframes spiritX {
-          0%   { left: 15%; }
-          30%  { left: 65%; }
-          55%  { left: 40%; }
-          80%  { left: 75%; }
-          100% { left: 15%; }
+          0%, 12%  { left: 20%; }
+          30%, 42% { left: 60%; }
+          58%, 68% { left: 35%; }
+          82%, 90% { left: 70%; }
+          100%     { left: 20%; }
         }
         @keyframes spiritY {
-          0%   { top: 35%; }
-          25%  { top: 70%; }
-          50%  { top: 30%; }
-          75%  { top: 60%; }
-          100% { top: 35%; }
+          0%, 15%  { top: 40%; }
+          28%, 40% { top: 65%; }
+          52%, 62% { top: 30%; }
+          78%, 88% { top: 55%; }
+          100%     { top: 40%; }
         }
         @keyframes spiritBreath {
           0%, 100% { opacity: 0.5; }
           50%      { opacity: 1; }
         }
-        /* Spirit burst — quick soft pulse that fills the hero then fades */
+        /* Spirit burst — quick warm pulse that fills the hero */
         .hero-spirit-burst {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: radial-gradient(ellipse 80% 70% at 50% 60%, rgba(201, 169, 97, 0.16) 0%, rgba(201, 169, 97, 0.05) 40%, transparent 70%);
+          background: radial-gradient(ellipse 90% 80% at 50% 55%, rgba(201, 169, 97, 0.25) 0%, rgba(201, 169, 97, 0.08) 45%, transparent 75%);
           opacity: 0;
           animation: spiritBurst 10s ease-out infinite;
         }
         @keyframes spiritBurst {
           0%, 74%, 100% { opacity: 0; }
-          76%  { opacity: 1; }
-          82%  { opacity: 0.15; }
-          86%  { opacity: 0; }
+          75.5% { opacity: 1; }
+          80%   { opacity: 0.25; }
+          85%   { opacity: 0; }
         }
