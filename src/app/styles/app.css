@@ -1216,31 +1216,49 @@
           background: linear-gradient(to bottom, rgba(10, 9, 8, 0.35), transparent);
           pointer-events: none;
         }
-        /* Slow breathing radial glow behind the hero counter */
+        /* Slow breathing radial glow that drifts around the hero — the "musa spirit" */
         .hero-ambient-glow {
           position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse 70% 60% at 30% 80%, rgba(201, 169, 97, 0.12) 0%, transparent 65%);
-          animation: heroBreath 8s ease-in-out infinite;
+          width: 140px;
+          height: 140px;
+          top: 50%;
+          left: 30%;
+          margin-left: -70px;
+          margin-top: -70px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(201, 169, 97, 0.18) 0%, rgba(201, 169, 97, 0.06) 40%, transparent 70%);
+          filter: blur(20px);
+          animation: spiritWander 18s ease-in-out infinite, spiritBreath 5s ease-in-out infinite;
           pointer-events: none;
+          will-change: transform, opacity;
         }
-        @keyframes heroBreath {
-          0%, 100% { opacity: 0.5; transform: scale(1); }
-          50%      { opacity: 1;   transform: scale(1.08); }
+        @keyframes spiritWander {
+          0%   { transform: translate(0, 0); }
+          20%  { transform: translate(80px, -20px); }
+          40%  { transform: translate(140px, 10px); }
+          60%  { transform: translate(60px, 25px); }
+          80%  { transform: translate(-30px, 5px); }
+          100% { transform: translate(0, 0); }
         }
-        /* Drifting particles inside the hero — small, slow, ambient */
-        @keyframes heroDrift {
-          0%   { transform: translate(0, 0); opacity: 0; }
-          15%  { opacity: var(--pop, 0.5); }
-          85%  { opacity: var(--pop, 0.5); }
-          100% { transform: translate(var(--dx, 0px), -40px); opacity: 0; }
+        @keyframes spiritBreath {
+          0%, 100% { opacity: 0.4; }
+          50%      { opacity: 0.85; }
         }
-        .hero-particle {
+        /* Occasional shimmer flashes — brief bright points that catch the eye */
+        .hero-shimmer {
           position: absolute;
-          width: 2px;
-          height: 2px;
-          border-radius: 9999px;
-          background: var(--gold);
-          box-shadow: 0 0 4px rgba(201, 169, 97, 0.5);
-          animation: heroDrift var(--dur, 12s) linear infinite;
+          width: 3px;
+          height: 3px;
+          border-radius: 50%;
+          background: rgba(228, 197, 126, 0.9);
+          box-shadow: 0 0 8px 2px rgba(228, 197, 126, 0.4);
+          opacity: 0;
+          pointer-events: none;
+          animation: shimmerFlash var(--shimmer-dur, 6s) ease-in-out infinite;
+          animation-delay: var(--shimmer-delay, 0s);
+        }
+        @keyframes shimmerFlash {
+          0%, 88%, 100% { opacity: 0; transform: scale(0.5); }
+          92%  { opacity: 0.9; transform: scale(1.2); }
+          96%  { opacity: 0.4; transform: scale(0.8); }
         }

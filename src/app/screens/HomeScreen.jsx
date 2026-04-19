@@ -95,21 +95,19 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   const [displayMode, setDisplayMode] = React.useState('gold'); // 'gold' | 'usd'
   const canClaimAll = totals.totalClaimable > 1e-9;
 
-  // Seeded ambient particles for the hero glass — deterministic across renders
-  const heroParticles = React.useMemo(() => {
-    let seed = 23;
+  // Seeded shimmer positions — sparse, deterministic
+  const heroShimmers = React.useMemo(() => {
+    let seed = 37;
     const rand = () => {
       seed = (seed * 9301 + 49297) % 233280;
       return seed / 233280;
     };
-    return Array.from({ length: 10 }, (_, i) => ({
+    return Array.from({ length: 5 }, (_, i) => ({
       id: i,
-      left: rand() * 100,
-      top: 30 + rand() * 70,
-      dur: 10 + rand() * 8,
-      delay: -rand() * 12,
-      dx: (rand() - 0.5) * 24,
-      pop: 0.35 + rand() * 0.35,
+      left: 10 + rand() * 80,
+      top: 20 + rand() * 70,
+      dur: 5 + rand() * 6,
+      delay: rand() * -10,
     }));
   }, []);
 
@@ -188,23 +186,20 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Floating hero glass overlay — mines scroll under this */}
       <div className="hero-glass absolute top-0 left-0 right-0 z-10">
-        {/* Ambient breathing glow */}
+        {/* Wandering spirit glow */}
         <div className="hero-ambient-glow" />
 
-        {/* Drifting gold particles */}
+        {/* Occasional subtle shimmers */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {heroParticles.map(p => (
+          {heroShimmers.map(s => (
             <span
-              key={p.id}
-              className="hero-particle"
+              key={s.id}
+              className="hero-shimmer"
               style={{
-                left: `${p.left}%`,
-                top: `${p.top}%`,
-                animationDuration: `${p.dur}s`,
-                animationDelay: `${p.delay}s`,
-                '--dx': `${p.dx}px`,
-                '--pop': p.pop,
-                '--dur': `${p.dur}s`,
+                left: `${s.left}%`,
+                top: `${s.top}%`,
+                '--shimmer-dur': `${s.dur}s`,
+                '--shimmer-delay': `${s.delay}s`,
               }}
             />
           ))}
