@@ -178,16 +178,13 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
           {reserveBalance != null && outstandingGrams != null && (
             <div className="flex items-center justify-between mt-3 text-[10px] font-num">
               <span className="text-dim">
-                Reserve <span className="text-app">{reserveBalance.toFixed(4)}</span> PAXG
+                Reserve <span className="text-app">{(reserveBalance * GRAMS_PER_TROY_OZ).toFixed(2)}</span>g
               </span>
               <span className="text-dim">
-                Owed <span className="text-app">{outstandingGrams.toFixed(4)}</span> g
+                Owed <span className="text-app">{outstandingGrams.toFixed(2)}</span>g
               </span>
             </div>
           )}
-          <div className="text-[10px] text-dim mt-2">
-            PAXG reserve vs. outstanding obligations
-          </div>
         </div>
 
         {/* Stats */}
