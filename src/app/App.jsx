@@ -84,11 +84,28 @@ export default function App() {
       .filter(u => u.computedStatus !== 'exited' && u.positionId != null)
       .reduce((s, u) => s + Math.max(0, (u.gramsDelivered || 0) - (u.gramsClaimed || 0)), 0);
     const totalValueUSD = totalGrams * goldPrice;
+    const totalInvested = computedUnits
+      .filter(u => u.computedStatus !== 'exited')
+      .reduce((s, u) => s + (u.pricePaid || 0), 0);
+    const totalGramsCommitted = computedUnits
+      .filter(u => u.computedStatus !== 'exited')
+      .reduce((s, u) => s + (u.gramsTotal || 0), 0);
+    const fullyVestedValueUSD = totalGramsCommitted * goldPrice;
+    const minedValueUSD = totalGrams * goldPrice;
+    const minedCostBasis = computedUnits
+      .filter(u => u.computedStatus !== 'exited' && u.gramsTotal > 0)
+      .reduce((s, u) => s + (u.pricePaid || 0) * ((u.gramsDelivered || 0) / u.gramsTotal), 0);
+    const fullyVestedPnL = fullyVestedValueUSD - totalInvested;
+    const minedPnL = minedValueUSD - minedCostBasis;
     const maxDaysRemaining = computedUnits
       .filter(u => u.computedStatus === 'active' || u.computedStatus === 'constructing')
       .reduce((m, u) => Math.max(m, u.daysRemaining || 0), 0);
     const mineCount = computedUnits.filter(u => u.computedStatus !== 'exited').length;
-    return { totalGrams, totalClaimed, totalClaimable, pendingGrams, totalValueUSD, maxDaysRemaining, mineCount };
+    return {
+      totalGrams, totalClaimed, totalClaimable, pendingGrams, totalValueUSD,
+      totalInvested, totalGramsCommitted, fullyVestedValueUSD, fullyVestedPnL, minedPnL,
+      maxDaysRemaining, mineCount,
+    };
   }, [computedUnits, goldPrice]);
 
   const visibleUnits = computedUnits

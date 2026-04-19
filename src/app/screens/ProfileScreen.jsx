@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Wallet, Copy, Check } from 'lucide-react';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD, GRAMS_PER_TROY_OZ } from '../lib/gold.js';
-import { readPaxgBalance } from '../lib/chain.js';
+import { readPaxgBalance, readSolvencyRatio } from '../lib/chain.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import Row from '../components/Row.jsx';
 
+const formatSignedUSD = (v) => `${v >= 0 ? '+' : '−'}${formatUSD(Math.abs(v))}`;
+
 function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, goldPrice, priceSource }) {
   const [paxgBalance, setPaxgBalance] = useState(null);
+  const [solvency, setSolvency] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const copyAddress = () => {
@@ -21,6 +24,33 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
     if (!walletAddress) return;
     readPaxgBalance(walletAddress).then(setPaxgBalance).catch(() => setPaxgBalance(null));
   }, [walletAddress]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchSolvency = () => {
+      readSolvencyRatio()
+        .then(r => { if (!cancelled) setSolvency(r); })
+        .catch(() => { if (!cancelled) setSolvency(null); });
+    };
+    fetchSolvency();
+    const interval = setInterval(fetchSolvency, 15000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
+  const hasInvestment = totals.totalInvested > 0;
+  const minedPnLPct = totals.minedPnL && totals.totalInvested > 0
+    ? (totals.minedPnL / totals.totalInvested) * 100
+    : 0;
+  const fullyVestedPnLPct = totals.fullyVestedPnL && totals.totalInvested > 0
+    ? (totals.fullyVestedPnL / totals.totalInvested) * 100
+    : 0;
+
+  // Solvency: 1.0 = 100%. Cap visual at 1.5 (150%) — anything above that pegs full.
+  const solvencyPct = solvency != null && Number.isFinite(solvency) ? solvency * 100 : null;
+  const solvencyBarWidth = solvency != null
+    ? Math.min(100, Math.max(0, (solvency / 1.5) * 100))
+    : 0;
+  const solvencyHealthy = solvency != null && solvency >= 1;
 
   const truncAddr = walletAddress
     ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
@@ -72,6 +102,74 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
           {paxgBalance != null && (
             <div className="text-xs text-dim font-num mt-2">{formatUSD(paxgBalance * goldPrice)}</div>
           )}
+        </div>
+
+        {/* Investment */}
+        {hasInvestment && (
+          <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5 mb-6">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Investment</div>
+            <Row label="Total invested" value={formatUSD(totals.totalInvested)} />
+            <Row
+              label="Mined value"
+              value={
+                <span>
+                  <span className="text-app">{formatUSD(totals.totalGrams * goldPrice)}</span>
+                  <span className={`ml-2 text-xs ${totals.minedPnL >= 0 ? 'text-gold' : 'text-dim'}`}>
+                    {formatSignedUSD(totals.minedPnL)} ({minedPnLPct >= 0 ? '+' : ''}{minedPnLPct.toFixed(1)}%)
+                  </span>
+                </span>
+              }
+            />
+            <Row
+              label="Fully vested"
+              value={
+                <span>
+                  <span className="text-app">{formatUSD(totals.fullyVestedValueUSD)}</span>
+                  <span className={`ml-2 text-xs ${totals.fullyVestedPnL >= 0 ? 'text-gold' : 'text-dim'}`}>
+                    {formatSignedUSD(totals.fullyVestedPnL)} ({fullyVestedPnLPct >= 0 ? '+' : ''}{fullyVestedPnLPct.toFixed(1)}%)
+                  </span>
+                </span>
+              }
+            />
+          </div>
+        )}
+
+        {/* Solvency */}
+        <div className="bg-surface border border-app rounded-2xl p-5 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-dim">Reserve solvency</div>
+            <div className="flex items-center gap-2">
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: solvency == null ? 'var(--text-dim)' : solvencyHealthy ? 'var(--gold)' : '#d97757',
+                }}
+              />
+              <span className="text-[9px] text-dim uppercase tracking-widest">
+                {solvency == null ? 'Loading' : solvencyHealthy ? 'Healthy' : 'Underfunded'}
+              </span>
+            </div>
+          </div>
+          <div className="text-lg font-num text-app mb-3">
+            {solvency == null
+              ? '—'
+              : solvency > 100
+                ? '∞'
+                : `${solvencyPct.toFixed(1)}%`}
+          </div>
+          <div className="relative h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <div
+              className="h-full"
+              style={{
+                width: `${solvencyBarWidth}%`,
+                background: solvencyHealthy ? 'var(--gold)' : '#d97757',
+                transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+            />
+          </div>
+          <div className="text-[10px] text-dim mt-2">
+            PAXG reserve vs. outstanding obligations
+          </div>
         </div>
 
         {/* Stats */}
