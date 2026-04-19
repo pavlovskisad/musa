@@ -16,18 +16,21 @@ const DIGIT_HEIGHT = 60;
 const MONO = '"Geist Mono", ui-monospace, monospace';
 
 function RollingChar({ char, index }) {
-  if (char === '.') {
+  const isDigit = char >= '0' && char <= '9';
+  const isBlank = char === ' ';
+
+  // Static glyph for non-digit characters (., $, ,)
+  if (!isDigit && !isBlank) {
     return (
       <span style={{
         display: 'inline-block',
         verticalAlign: 'top',
         lineHeight: `${DIGIT_HEIGHT}px`,
         fontFamily: MONO,
-      }}>.</span>
+      }}>{char}</span>
     );
   }
 
-  const isBlank = char === ' ';
   const target = isBlank ? 10 : parseInt(char, 10);
 
   return (
@@ -86,9 +89,10 @@ function RollingCounter({ value, maxIntDigits }) {
 
 function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, onProfile, onClaimAll, userName }) {
   const hasUnits = units.length > 0;
-  const { unit: goldUnit } = useGold();
+  const { unit: goldUnit, price: goldPrice } = useGold();
   const [claimingAll, setClaimingAll] = React.useState(false);
   const [activeStat, setActiveStat] = React.useState('mined');
+  const [displayMode, setDisplayMode] = React.useState('gold'); // 'gold' | 'usd'
   const canClaimAll = totals.totalClaimable > 1e-9;
 
   // Seeded ambient particles for the hero glass — deterministic across renders
@@ -116,16 +120,28 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     pending: totals.pendingGrams,
   };
 
-  const maxIntRef = React.useRef(1);
-  const currentMax = Math.max(
+  // Track max integer-part length per display mode — only ever grows so digit
+  // slots stay stable when switching between stat tabs within the same mode.
+  const maxIntGoldRef = React.useRef(1);
+  const maxIntUsdRef = React.useRef(2);
+
+  const goldMax = Math.max(
     ...Object.values(statValues).map(v => {
       const s = formatGold(v, goldUnit);
       return s === '—' ? 1 : s.split('.')[0].length;
     })
   );
-  if (currentMax > maxIntRef.current) maxIntRef.current = currentMax;
+  const usdMax = Math.max(
+    ...Object.values(statValues).map(v => formatUSD(v * goldPrice).split('.')[0].length)
+  );
+  if (goldMax > maxIntGoldRef.current) maxIntGoldRef.current = goldMax;
+  if (usdMax > maxIntUsdRef.current) maxIntUsdRef.current = usdMax;
 
-  const displayValue = formatGold(statValues[activeStat], goldUnit);
+  const isUsd = displayMode === 'usd';
+  const displayValue = isUsd
+    ? formatUSD(statValues[activeStat] * goldPrice)
+    : formatGold(statValues[activeStat], goldUnit);
+  const maxIntDigits = isUsd ? maxIntUsdRef.current : maxIntGoldRef.current;
 
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
@@ -137,7 +153,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     <div className="h-full relative anim-fade overflow-hidden">
       {/* Scrollable area fills the whole screen — content padded so it starts below the floating hero */}
       <div className="absolute inset-0 overflow-auto scrollable">
-        <div className="px-6 pb-32" style={{ paddingTop: '264px' }}>
+        <div className="px-6 pb-32" style={{ paddingTop: '232px' }}>
           {!hasUnits ? (
             <div className="flex flex-col items-center justify-center text-center pt-12">
               <div
@@ -234,21 +250,24 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
             )}
           </div>
 
-          {/* Big rolling counter */}
-          <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
-            <div
-              className="font-display font-num text-app"
-              style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-            >
-              <RollingCounter value={displayValue} maxIntDigits={maxIntRef.current} />
-              <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+          {/* Big rolling counter — tap to toggle gold ↔ USD */}
+          <button
+            onClick={() => setDisplayMode(m => m === 'gold' ? 'usd' : 'gold')}
+            className="press-soft block w-full text-left bg-transparent border-0 p-0 mb-3"
+            aria-label="Toggle between gold and USD"
+          >
+            <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
+              <div
+                className="font-display font-num text-app"
+                style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+              >
+                <RollingCounter value={displayValue} maxIntDigits={maxIntDigits} />
+                {!isUsd && (
+                  <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+                )}
+              </div>
             </div>
-          </div>
-
-          {/* USD value */}
-          <div className="text-sm text-dim font-num mt-2 mb-3">
-            {formatUSD(totals.totalValueUSD)}
-          </div>
+          </button>
 
           {/* Stat pills */}
           <div className="flex gap-2">
