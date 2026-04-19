@@ -299,10 +299,10 @@ export default function App() {
   return (
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
-      className="w-full flex flex-col"
-      style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100dvh' }}
+      className="w-full"
+      style={{ background: 'var(--bg)', color: 'var(--text)', height: '100dvh', overflow: 'hidden' }}
     >
-      <div className="flex-1 relative overflow-hidden">
+      <div className="relative" style={{ height: '100%' }}>
             {screen === 'onboarding' && (
               <OnboardingScreen
                 key="onboarding"
