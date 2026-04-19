@@ -6,7 +6,7 @@ import './styles/app.css';
 import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
-import { loadUnits, saveUnits, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi } from './lib/storage.js';
+import { loadUnits, saveUnits, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi, clearAll } from './lib/storage.js';
 import { claimPosition, claimAllPositions, exitPositionEarly } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
@@ -317,6 +317,11 @@ export default function App() {
                 priceSource={priceSource}
                 onBack={() => setScreen('home')}
                 onLogout={() => { logout(); setScreen('onboarding'); }}
+                onResetAll={async () => {
+                  await clearAll();
+                  setUnits([]);
+                  setScreen('home');
+                }}
               />
             )}
 

@@ -8,7 +8,7 @@ import Row from '../components/Row.jsx';
 
 const formatSignedUSD = (v) => `${v >= 0 ? '+' : '−'}${formatUSD(Math.abs(v))}`;
 
-function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, goldPrice, priceSource }) {
+function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, onResetAll, goldPrice, priceSource }) {
   const [paxgBalance, setPaxgBalance] = useState(null);
   const [solvency, setSolvency] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -235,10 +235,25 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
         {/* Logout */}
         <button
           onClick={onLogout}
-          className="press w-full h-12 rounded-full border border-app text-dim text-xs font-medium tracking-wide"
+          className="press w-full h-12 rounded-full border border-app text-dim text-xs font-medium tracking-wide mb-3"
         >
           Log out
         </button>
+
+        {/* Reset all data — for resetting after contract redeploys */}
+        {onResetAll && (
+          <button
+            onClick={() => {
+              if (confirm('Wipe all mines and start fresh? This clears your local data and database records. On-chain positions remain.')) {
+                onResetAll();
+              }
+            }}
+            className="press w-full h-12 rounded-full border border-app text-dim text-xs font-medium tracking-wide"
+            style={{ borderColor: 'rgba(217, 119, 87, 0.3)', color: '#d97757' }}
+          >
+            Reset all data
+          </button>
+        )}
       </div>
     </div>
   );

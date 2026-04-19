@@ -177,7 +177,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
             <button
               key={s.key}
               onClick={() => setActiveStat(s.key)}
-              className={`press-soft h-7 px-3 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
+              className={`press-soft flex-1 h-7 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
                 activeStat === s.key
                   ? 'border-gold text-gold'
                   : 'border-app text-dim'
