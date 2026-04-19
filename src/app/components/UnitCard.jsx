@@ -26,7 +26,7 @@ function UnitCard({ unit, onClick, highlight }) {
       } ${isActive || isConstructing ? 'surface-breath' : ''}`}
     >
       {/* Ambient background layer */}
-      {isActive && <Particles />}
+      {isActive && <Particles tier={unit.tier} />}
       {isConstructing && (
         <div className="ambient-sweep">
           <Radar />

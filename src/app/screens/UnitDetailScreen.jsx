@@ -183,31 +183,9 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
         </div>
       </div>
 
-      {/* Dense particle field — floats above glass so visible everywhere */}
+      {/* Tier-scaled particle field — floats above glass */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 20 }}>
-        <span className="particle particle-lg p1" />
-        <span className="particle particle-lg p2" />
-        <span className="particle particle-lg p3" />
-        <span className="particle particle-lg p4" />
-        <span className="particle particle-lg p5" />
-        <span className="particle particle-lg p6" />
-        <span className="particle particle-lg p7" />
-        <span className="particle particle-lg p8" />
-        <span className="particle particle-lg p9" />
-        <span className="particle particle-lg p10" />
-        <span className="particle particle-lg p11" />
-        <span className="particle particle-lg p12" />
-        <span className="particle particle-lg p13" />
-        <span className="particle particle-lg p14" />
-        <span className="particle particle-lg p15" />
-        <span className="particle particle-lg p16" />
-        <span className="particle particle-lg p17" />
-        <span className="particle particle-lg p18" />
-        <span className="particle particle-lg p19" />
-        <span className="particle particle-lg p20" />
-        <span className="particle particle-lg p21" />
-        <span className="particle particle-lg p22" />
-        <span className="particle particle-lg p23" />
+        <Particles large tier={unit.tier} />
       </div>
     </div>
   );
