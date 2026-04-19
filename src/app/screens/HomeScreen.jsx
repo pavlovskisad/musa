@@ -65,21 +65,20 @@ function RollingChar({ char, index }) {
   );
 }
 
-function RollingCounter({ value, maxIntDigits }) {
+function RollingCounter({ value }) {
   if (value === '—') return <span>—</span>;
   const [intPart, decPart = ''] = value.split('.');
-  const paddedInt = intPart.padStart(maxIntDigits, ' ');
 
   return (
     <span style={{ display: 'inline-flex' }}>
-      {paddedInt.split('').map((ch, i) => (
+      {intPart.split('').map((ch, i) => (
         <RollingChar key={`i${i}`} char={ch} index={i} />
       ))}
       {decPart && (
         <>
-          <RollingChar key="dot" char="." index={paddedInt.length} />
+          <RollingChar key="dot" char="." index={intPart.length} />
           {decPart.split('').map((ch, i) => (
-            <RollingChar key={`d${i}`} char={ch} index={paddedInt.length + 1 + i} />
+            <RollingChar key={`d${i}`} char={ch} index={intPart.length + 1 + i} />
           ))}
         </>
       )}
@@ -103,26 +102,10 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     pending: totals.pendingGrams,
   };
 
-  // Track max integer-part length for gold mode only — values stay similar
-  // magnitude across stats so stable slots help. USD values can vary 1000x
-  // (Mined $0.05 vs Pending $1,200) so padding causes visual cut-off; render
-  // USD at natural width instead.
-  const maxIntGoldRef = React.useRef(1);
-  const goldMax = Math.max(
-    ...Object.values(statValues).map(v => {
-      const s = formatGold(v, goldUnit);
-      return s === '—' ? 1 : s.split('.')[0].length;
-    })
-  );
-  if (goldMax > maxIntGoldRef.current) maxIntGoldRef.current = goldMax;
-
   const isUsd = displayMode === 'usd';
   const displayValue = isUsd
     ? formatUSD(statValues[activeStat] * goldPrice).replace('$', '')
     : formatGold(statValues[activeStat], goldUnit, goldUnit === 'oz' ? 6 : 4);
-  const maxIntDigits = isUsd
-    ? displayValue.split('.')[0].length
-    : maxIntGoldRef.current;
 
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
@@ -226,7 +209,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
                 className="font-display font-num text-app"
                 style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
               >
-                <RollingCounter value={displayValue} maxIntDigits={maxIntDigits} />
+                <RollingCounter value={displayValue} />
                 <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>
                   {isUsd ? '$' : goldUnitLabel(goldUnit)}
                 </span>
