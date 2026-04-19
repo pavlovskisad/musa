@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, Plus, Sparkles, User } from 'lucide-react';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
+import { readSolvencyRatio } from '../lib/chain.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 
@@ -95,6 +96,21 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   const [displayMode, setDisplayMode] = React.useState('gold'); // 'gold' | 'usd'
   const canClaimAll = totals.totalClaimable > 1e-9;
 
+  const [solvency, setSolvency] = React.useState(null);
+  React.useEffect(() => {
+    let cancelled = false;
+    const fetch = () => {
+      readSolvencyRatio()
+        .then(r => { if (!cancelled) setSolvency(r); })
+        .catch(() => {});
+    };
+    fetch();
+    const interval = setInterval(fetch, 15000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
+  const solvencyPct = solvency != null && Number.isFinite(solvency) ? solvency * 100 : null;
+  const solvencyHealthy = solvency != null && solvency >= 1;
 
   const statValues = {
     mined: totals.totalGrams,
@@ -250,6 +266,19 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
               </button>
             ))}
           </div>
+
+          {/* Solvency indicator */}
+          {solvencyPct != null && (
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <span
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ background: solvencyHealthy ? 'var(--gold)' : '#d97757' }}
+              />
+              <span className="text-[9px] uppercase tracking-widest text-dim font-num">
+                Reserve {solvency > 100 ? '∞' : `${solvencyPct.toFixed(0)}%`}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
