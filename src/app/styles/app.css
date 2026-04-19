@@ -1216,7 +1216,7 @@
           background: linear-gradient(to bottom, rgba(10, 9, 8, 0.35), transparent);
           pointer-events: none;
         }
-        /* Wandering spirit glow — drifts across the hero, breathing */
+        /* Wandering spirit glow — drifts across the hero on an irregular path */
         .hero-ambient-glow {
           position: absolute;
           width: 180px;
@@ -1228,34 +1228,40 @@
           border-radius: 50%;
           background: radial-gradient(circle, rgba(201, 169, 97, 0.35) 0%, rgba(201, 169, 97, 0.12) 35%, transparent 65%);
           filter: blur(16px);
-          animation: spiritWander 12s ease-in-out infinite, spiritBreath 4s ease-in-out infinite;
+          animation: spiritX 8s ease-in-out infinite, spiritY 11s ease-in-out infinite, spiritBreath 4s ease-in-out infinite;
           pointer-events: none;
           will-change: transform, opacity;
         }
-        @keyframes spiritWander {
-          0%   { transform: translate(0, 0); }
-          15%  { transform: translate(100px, -15px); }
-          35%  { transform: translate(160px, 20px); }
-          50%  { transform: translate(90px, 35px); }
-          70%  { transform: translate(-20px, 15px); }
-          85%  { transform: translate(-40px, -10px); }
-          100% { transform: translate(0, 0); }
+        @keyframes spiritX {
+          0%   { left: 15%; }
+          30%  { left: 65%; }
+          55%  { left: 40%; }
+          80%  { left: 75%; }
+          100% { left: 15%; }
+        }
+        @keyframes spiritY {
+          0%   { top: 35%; }
+          25%  { top: 70%; }
+          50%  { top: 30%; }
+          75%  { top: 60%; }
+          100% { top: 35%; }
         }
         @keyframes spiritBreath {
           0%, 100% { opacity: 0.5; }
           50%      { opacity: 1; }
         }
-        /* Occasional soft burst — spirit exhales and fills the hero with warmth */
+        /* Spirit burst — quick soft pulse that fills the hero then fades */
         .hero-spirit-burst {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: radial-gradient(ellipse 80% 70% at 50% 60%, rgba(201, 169, 97, 0.14) 0%, rgba(201, 169, 97, 0.04) 40%, transparent 70%);
+          background: radial-gradient(ellipse 80% 70% at 50% 60%, rgba(201, 169, 97, 0.16) 0%, rgba(201, 169, 97, 0.05) 40%, transparent 70%);
           opacity: 0;
-          animation: spiritBurst 10s ease-in-out infinite;
+          animation: spiritBurst 10s ease-out infinite;
         }
         @keyframes spiritBurst {
-          0%, 70%, 100% { opacity: 0; transform: scale(0.85); }
-          80%  { opacity: 1; transform: scale(1.05); }
-          90%  { opacity: 0.3; transform: scale(1); }
+          0%, 74%, 100% { opacity: 0; }
+          76%  { opacity: 1; }
+          82%  { opacity: 0.15; }
+          86%  { opacity: 0; }
         }
