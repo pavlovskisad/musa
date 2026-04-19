@@ -53,6 +53,13 @@ export async function readUserPositionIds(walletAddress) {
   return ids.map(id => Number(id));
 }
 
+export async function readPositionOwner(positionId) {
+  const musa = readMusa();
+  if (!musa) return null;
+  const pos = await musa.positions(positionId);
+  return pos.owner;
+}
+
 // --- User-signed transactions via Privy embedded wallet ---
 // sendTransaction comes from Privy's useSendTransaction hook; sponsor: true
 // routes gas through Privy's native paymaster so users never need ETH.
@@ -65,8 +72,18 @@ export async function claimPosition(sendTransaction, positionId) {
   );
 }
 
-export async function claimAllPositions(sendTransaction, positionIds) {
+export async function claimAllPositions(sendTransaction, positionIds, fromAddress) {
   const data = musaIface.encodeFunctionData('claimAll', [positionIds]);
+  // Dry-run against the RPC so we surface the real contract revert reason
+  // instead of the opaque "0x" we'd otherwise see from the paymaster.
+  if (readProvider && fromAddress) {
+    try {
+      await readProvider.call({ to: MUSA_ADDRESS, data, from: fromAddress });
+    } catch (err) {
+      const reason = err?.reason || err?.shortMessage || err?.message || 'unknown';
+      throw new Error(`claimAll would revert: ${reason}`);
+    }
+  }
   return sendTransaction(
     { to: MUSA_ADDRESS, data, chainId: CHAIN_ID },
     { sponsor: true }

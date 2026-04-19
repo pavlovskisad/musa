@@ -7,7 +7,7 @@ import { TIERS } from './lib/tiers.js';
 import { formatGold, formatUSD } from './lib/gold.js';
 import { computeUnit, getExitPenaltyPct } from './lib/unit.js';
 import { loadUnits, saveUnits, setStorageUserId, setAccessToken, fetchUnits, createUnit, exitUnit as exitUnitApi, claimUnit as claimUnitApi, clearAll } from './lib/storage.js';
-import { claimPosition, claimAllPositions, exitPositionEarly, readUserPositionIds } from './lib/chain.js';
+import { claimPosition, claimAllPositions, exitPositionEarly, readUserPositionIds, readPositionOwner } from './lib/chain.js';
 
 import { GoldContext } from './context/GoldContext.jsx';
 import { useGoldPrice } from './hooks/useGoldPrice.js';
@@ -171,6 +171,24 @@ export default function App() {
     if (!computed || computed.positionId == null) return;
     const claimable = Math.max(0, (computed.gramsDelivered || 0) - (computed.gramsClaimed || 0));
     if (claimable < 1e-9) return;
+
+    // Verify position is owned by the current wallet on-chain. If the owner
+    // address differs (or is zero), the mine is tied to a different wallet or
+    // an older deploy — alert the user instead of sending a doomed tx.
+    try {
+      const onChainOwner = await readPositionOwner(computed.positionId);
+      if (!onChainOwner || onChainOwner === '0x0000000000000000000000000000000000000000') {
+        alert('This mine is not on the current contract. Use Reset all data in Profile to clear stale mines.');
+        return;
+      }
+      if (embeddedWallet?.address && onChainOwner.toLowerCase() !== embeddedWallet.address.toLowerCase()) {
+        alert(`Position owner on-chain (${onChainOwner.slice(0,6)}…${onChainOwner.slice(-4)}) differs from your wallet (${embeddedWallet.address.slice(0,6)}…${embeddedWallet.address.slice(-4)}). Cannot claim.`);
+        return;
+      }
+    } catch (err) {
+      console.error('Ownership check failed:', err);
+    }
+
     try {
       await claimPosition(sendTransaction, computed.positionId);
       setUnits(prev => prev.map(u =>
@@ -203,7 +221,7 @@ export default function App() {
 
     const positionIds = filtered.map(u => u.positionId);
     try {
-      await claimAllPositions(sendTransaction, positionIds);
+      await claimAllPositions(sendTransaction, positionIds, embeddedWallet?.address);
       for (const unit of filtered) {
         const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
         setUnits(prev => prev.map(u =>
@@ -213,6 +231,7 @@ export default function App() {
       }
     } catch (err) {
       console.error('Claim all failed:', err);
+      alert(err?.message || 'Claim all failed');
     }
   };
 
