@@ -217,7 +217,10 @@ export default function App() {
     const filtered = validIds
       ? claimable.filter(u => validIds.has(Number(u.positionId)))
       : claimable;
-    if (filtered.length === 0) return;
+    if (filtered.length === 0) {
+      alert('No claimable mines found on-chain. Your mines may be from an earlier deploy — use Reset all data in Profile and create a new mine.');
+      return;
+    }
 
     const positionIds = filtered.map(u => u.positionId);
 
