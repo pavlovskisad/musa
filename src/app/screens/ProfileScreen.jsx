@@ -108,7 +108,7 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
             <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>PAXG</span>
           </div>
           {paxgBalance != null && (
-            <div className="text-xs text-dim font-num mt-2">{formatUSD(paxgBalance * goldPrice)}</div>
+            <div className="text-xs text-dim font-num mt-2">{formatUSD(paxgBalance * goldPrice * GRAMS_PER_TROY_OZ)}</div>
           )}
         </div>
 
