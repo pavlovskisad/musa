@@ -95,21 +95,6 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   const [displayMode, setDisplayMode] = React.useState('gold'); // 'gold' | 'usd'
   const canClaimAll = totals.totalClaimable > 1e-9;
 
-  // Seeded shimmer positions — sparse, deterministic
-  const heroShimmers = React.useMemo(() => {
-    let seed = 37;
-    const rand = () => {
-      seed = (seed * 9301 + 49297) % 233280;
-      return seed / 233280;
-    };
-    return Array.from({ length: 5 }, (_, i) => ({
-      id: i,
-      left: 10 + rand() * 80,
-      top: 20 + rand() * 70,
-      dur: 5 + rand() * 6,
-      delay: rand() * -10,
-    }));
-  }, []);
 
   const statValues = {
     mined: totals.totalGrams,
@@ -189,21 +174,8 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         {/* Wandering spirit glow */}
         <div className="hero-ambient-glow" />
 
-        {/* Occasional subtle shimmers */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {heroShimmers.map(s => (
-            <span
-              key={s.id}
-              className="hero-shimmer"
-              style={{
-                left: `${s.left}%`,
-                top: `${s.top}%`,
-                '--shimmer-dur': `${s.dur}s`,
-                '--shimmer-delay': `${s.delay}s`,
-              }}
-            />
-          ))}
-        </div>
+        {/* Surface shimmer sweep */}
+        <div className="hero-shimmer-sweep" />
 
         {/* Header */}
         <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
