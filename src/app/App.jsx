@@ -220,18 +220,32 @@ export default function App() {
     if (filtered.length === 0) return;
 
     const positionIds = filtered.map(u => u.positionId);
+
+    // Try batched claimAll first, fall back to sequential single-claim if the
+    // deployed contract doesn't support claimAll (e.g. pre-upgrade bytecode).
+    const applyClaimed = (unit) => {
+      const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
+      setUnits(prev => prev.map(u =>
+        u.id === unit.id ? { ...u, gramsClaimed: (u.gramsClaimed || 0) + amount } : u
+      ));
+      claimUnitApi(unit.id, amount);
+    };
+
     try {
       await claimAllPositions(sendTransaction, positionIds, embeddedWallet?.address);
-      for (const unit of filtered) {
-        const amount = (unit.gramsDelivered || 0) - (unit.gramsClaimed || 0);
-        setUnits(prev => prev.map(u =>
-          u.id === unit.id ? { ...u, gramsClaimed: (u.gramsClaimed || 0) + amount } : u
-        ));
-        claimUnitApi(unit.id, amount);
-      }
+      for (const unit of filtered) applyClaimed(unit);
+      return;
     } catch (err) {
-      console.error('Claim all failed:', err);
-      alert(err?.message || 'Claim all failed');
+      console.error('claimAll failed, falling back to sequential:', err);
+    }
+
+    for (const unit of filtered) {
+      try {
+        await claimPosition(sendTransaction, unit.positionId);
+        applyClaimed(unit);
+      } catch (err) {
+        console.error(`claim failed for position ${unit.positionId}:`, err);
+      }
     }
   };
 
