@@ -155,7 +155,8 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
         <div className="relative p-6 pb-12">
           <button
             onClick={onExit}
-            className="press w-full h-12 rounded-full border border-app text-dim text-xs font-medium tracking-wide"
+            className="press w-full h-12 rounded-full border border-app text-xs font-medium tracking-wide"
+            style={{ borderColor: 'rgba(217, 119, 87, 0.3)', color: '#d97757' }}
           >
             Exit early
           </button>
