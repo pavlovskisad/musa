@@ -46,6 +46,13 @@ export async function readSolvencyRatio() {
   return Number.isFinite(num) ? num : null;
 }
 
+export async function readUserPositionIds(walletAddress) {
+  const musa = readMusa();
+  if (!musa || !walletAddress) return [];
+  const ids = await musa.getUserPositions(walletAddress);
+  return ids.map(id => Number(id));
+}
+
 // --- User-signed transactions via Privy embedded wallet ---
 // sendTransaction comes from Privy's useSendTransaction hook; sponsor: true
 // routes gas through Privy's native paymaster so users never need ETH.
