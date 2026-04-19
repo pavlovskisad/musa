@@ -28,9 +28,6 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
 
   return (
     <div className="h-full relative anim-slide-right overflow-hidden">
-      {/* Full-page ambient particles */}
-      <Particles large />
-
       {/* Scrollable content — padded to start below floating hero */}
       <div className="absolute inset-0 overflow-auto scrollable">
         <div className="px-6 pb-12" style={{ paddingTop: isConstructing ? '310px' : '290px' }}>
@@ -184,6 +181,33 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Dense particle field — floats above glass so visible everywhere */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 20 }}>
+        <span className="particle particle-lg p1" />
+        <span className="particle particle-lg p2" />
+        <span className="particle particle-lg p3" />
+        <span className="particle particle-lg p4" />
+        <span className="particle particle-lg p5" />
+        <span className="particle particle-lg p6" />
+        <span className="particle particle-lg p7" />
+        <span className="particle particle-lg p8" />
+        <span className="particle particle-lg p9" />
+        <span className="particle particle-lg p10" />
+        <span className="particle particle-lg p11" />
+        <span className="particle particle-lg p12" />
+        <span className="particle particle-lg p13" />
+        <span className="particle particle-lg p14" />
+        <span className="particle particle-lg p15" />
+        <span className="particle particle-lg p16" />
+        <span className="particle particle-lg p17" />
+        <span className="particle particle-lg p18" />
+        <span className="particle particle-lg p19" />
+        <span className="particle particle-lg p20" />
+        <span className="particle particle-lg p21" />
+        <span className="particle particle-lg p22" />
+        <span className="particle particle-lg p23" />
       </div>
     </div>
   );
