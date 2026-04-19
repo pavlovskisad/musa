@@ -135,7 +135,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
   const isUsd = displayMode === 'usd';
   const displayValue = isUsd
-    ? formatUSD(statValues[activeStat] * goldPrice)
+    ? formatUSD(statValues[activeStat] * goldPrice).replace('$', '')
     : formatGold(statValues[activeStat], goldUnit);
   const maxIntDigits = isUsd
     ? displayValue.split('.')[0].length
@@ -260,9 +260,9 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
                 style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
               >
                 <RollingCounter value={displayValue} maxIntDigits={maxIntDigits} />
-                {!isUsd && (
-                  <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
-                )}
+                <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>
+                  {isUsd ? '$' : goldUnitLabel(goldUnit)}
+                </span>
               </div>
             </div>
           </button>
@@ -288,14 +288,12 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Bottom CTA — floating button over a thin frosted panel */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pt-6 pointer-events-none z-10"
+        className="absolute bottom-0 left-0 right-0 px-6 pt-10 pointer-events-none z-10"
         style={{
           paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))',
-          background: 'linear-gradient(to top, rgba(10,9,8,0.55) 50%, transparent)',
+          background: 'linear-gradient(to top, rgba(10,9,8,0.7) 40%, rgba(10,9,8,0.3) 70%, transparent)',
           WebkitBackdropFilter: 'blur(12px)',
           backdropFilter: 'blur(12px)',
-          maskImage: 'linear-gradient(to top, black 60%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to top, black 60%, transparent)',
         }}
       >
         <button
