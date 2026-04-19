@@ -4,6 +4,7 @@ import { TIERS } from '../lib/tiers.js';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
+import Particles from '../components/Particles.jsx';
 import Radar from '../components/Radar.jsx';
 import Row from '../components/Row.jsx';
 
@@ -27,9 +28,12 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
 
   return (
     <div className="h-full relative anim-slide-right overflow-hidden">
+      {/* Full-page ambient particles */}
+      <Particles large />
+
       {/* Scrollable content — padded to start below floating hero */}
       <div className="absolute inset-0 overflow-auto scrollable">
-        <div className="px-6 pb-12" style={{ paddingTop: isConstructing ? '280px' : '260px' }}>
+        <div className="px-6 pb-12" style={{ paddingTop: isConstructing ? '310px' : '290px' }}>
           <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5">
             <Row label="Paid" value={formatUSD(unit.pricePaid)} />
             <Row label="Total gold" value={`${formatGold(unit.gramsTotal, goldUnit)}${goldUnitLabel(goldUnit)}`} />
