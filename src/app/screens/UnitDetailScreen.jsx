@@ -4,7 +4,6 @@ import { TIERS } from '../lib/tiers.js';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD } from '../lib/gold.js';
 import MusaLogo from '../components/MusaLogo.jsx';
-import Particles from '../components/Particles.jsx';
 import Radar from '../components/Radar.jsx';
 import Row from '../components/Row.jsx';
 
@@ -27,157 +26,161 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
   };
 
   return (
-    <div className="h-full flex flex-col anim-slide-right relative">
-      {/* Full-screen ambient layer — particles only, construction ambient is inlined in its hero */}
-      {isActive && <Particles large />}
+    <div className="h-full relative anim-slide-right overflow-hidden">
+      {/* Scrollable content — padded to start below floating hero */}
+      <div className="absolute inset-0 overflow-auto scrollable">
+        <div className="px-6 pb-12" style={{ paddingTop: isConstructing ? '280px' : '260px' }}>
+          <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5">
+            <Row label="Paid" value={formatUSD(unit.pricePaid)} />
+            <Row label="Total gold" value={`${formatGold(unit.gramsTotal, goldUnit)}${goldUnitLabel(goldUnit)}`} />
+            <Row label="Lock period" value={`${tier.lockMonths} months`} />
+            <Row label="Daily rate" value={`+${formatGold(dailyRate, goldUnit, 5)}${goldUnitLabel(goldUnit)}`} />
+            <Row label="Days remaining" value={`${Math.ceil(unit.daysRemaining)}`} />
+          </div>
 
-      <div className="relative px-6 pt-3 pb-4 flex items-center justify-between">
-        <div className="min-w-[60px]">
-          <button
-            onClick={onBack}
-            className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.03)' }}
-          >
-            <ArrowLeft size={15} className="text-dim" />
-          </button>
-        </div>
-        <MusaLogo />
-        <div className="text-[10px] uppercase tracking-[0.3em] text-dim min-w-[60px] text-right">
-          {isConstructing && 'Preparing'}
-          {isActive && 'Mining'}
-          {isComplete && 'Complete'}
-        </div>
-      </div>
-
-      <div className="relative px-6 pb-5">
-        <h1
-          className="font-display text-app flex items-center gap-3"
-          style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
-        >
-          {tier.name}
-          {isActive && (
-            <span className="relative inline-flex items-center justify-center" style={{ width: '12px', height: '12px' }}>
-              <span className="pulse-ring" />
-              <span className="relative w-2 h-2 rounded-full bg-gold" />
-            </span>
+          {canClaim && (
+            <div className="mt-5">
+              <button
+                onClick={handleClaim}
+                disabled={claiming}
+                className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
+                style={{ opacity: claiming ? 0.6 : 1 }}
+              >
+                {claiming ? 'Claiming...' : `Claim ${formatGold(claimable, goldUnit, 6)}${goldUnitLabel(goldUnit)}`}
+              </button>
+            </div>
           )}
-        </h1>
+
+          {tier.cancellable && isActive && (
+            <div className="mt-3">
+              <button
+                onClick={onExit}
+                className="press w-full h-12 rounded-full border border-app text-xs font-medium tracking-wide"
+                style={{ borderColor: 'rgba(217, 119, 87, 0.3)', color: '#d97757' }}
+              >
+                Exit early
+              </button>
+            </div>
+          )}
+
+          {isComplete && !canClaim && (
+            <div className="mt-6 text-center text-[11px] text-gold uppercase tracking-[0.3em]">
+              All gold delivered
+            </div>
+          )}
+
+          {!tier.cancellable && isActive && !canClaim && (
+            <div className="mt-6 text-center text-[10px] text-dim">
+              Spark mines complete on schedule. No early exit.
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="relative px-6 pb-5">
-        {isConstructing ? (
-          <div className="relative">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Construction</div>
-                <div
-                  className="font-display text-app"
-                  style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
-                >
-                  Preparing...
-                </div>
-                <div className="text-xs text-dim mt-3">Mining begins momentarily</div>
-              </div>
-              <div className="relative" style={{ width: '100px', height: '100px' }}>
-                <Radar large />
-              </div>
-            </div>
+      {/* Floating hero glass overlay */}
+      <div className="hero-glass absolute top-0 left-0 right-0 z-10">
+        {/* Wandering spirit glow */}
+        <div className="hero-ambient-glow" />
 
-            <div className="relative mt-5 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-              <div
-                className="h-full bg-gold progress-fill relative overflow-hidden"
-                style={{ width: `${unit.constructionPct * 100}%` }}
-              >
-                <div className="progress-shimmer" />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Mined</div>
-            <div
-              className={`font-display font-num text-app ${isActive ? 'pulse-gold' : ''}`}
-              style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
+        {/* Occasional soft burst from the spirit */}
+        <div className="hero-spirit-burst" />
+
+        {/* Header */}
+        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
+          <div className="min-w-[60px]">
+            <button
+              onClick={onBack}
+              className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.03)' }}
             >
-              {formatGold(unit.gramsDelivered, goldUnit, 6)}
-              <span
-                className="text-2xl text-dim ml-2"
-                style={{ fontFamily: "'Fraunces', serif" }}
-              >
-                {goldUnitLabel(goldUnit)}
-              </span>
-            </div>
-            <div className="text-xs text-dim font-num mt-3">
-              of {formatGold(unit.gramsTotal, goldUnit, 3)}{goldUnitLabel(goldUnit)} · {formatUSD(unit.gramsDelivered * price)}
-              {(unit.gramsClaimed || 0) > 0 && (
-                <span className="text-gold ml-2">· {formatGold(unit.gramsClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</span>
-              )}
-            </div>
+              <ArrowLeft size={15} className="text-dim" />
+            </button>
+          </div>
+          <MusaLogo />
+          <div className="text-[10px] uppercase tracking-[0.3em] text-dim min-w-[60px] text-right">
+            {isConstructing && 'Preparing'}
+            {isActive && 'Mining'}
+            {isComplete && 'Complete'}
+          </div>
+        </div>
 
-            <div className="relative mt-5 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-              <div
-                className="h-full bg-gold progress-fill relative overflow-hidden"
-                style={{ width: `${unit.pctDelivered * 100}%` }}
-              >
-                {isActive && <div className="progress-shimmer" />}
+        {/* Tier name */}
+        <div className="relative px-6 pb-3" style={{ zIndex: 2 }}>
+          <h1
+            className="font-display text-app flex items-center gap-3"
+            style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
+          >
+            {tier.name}
+            {isActive && (
+              <span className="relative inline-flex items-center justify-center" style={{ width: '12px', height: '12px' }}>
+                <span className="pulse-ring" />
+                <span className="relative w-2 h-2 rounded-full bg-gold" />
+              </span>
+            )}
+          </h1>
+        </div>
+
+        {/* Counter / construction */}
+        <div className="relative px-6 pb-4" style={{ zIndex: 2 }}>
+          {isConstructing ? (
+            <div>
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Construction</div>
+                  <div
+                    className="font-display text-app"
+                    style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
+                  >
+                    Preparing...
+                  </div>
+                  <div className="text-xs text-dim mt-3">Mining begins momentarily</div>
+                </div>
+                <div className="relative" style={{ width: '100px', height: '100px' }}>
+                  <Radar large />
+                </div>
+              </div>
+              <div className="relative mt-5 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div
+                  className="h-full bg-gold progress-fill relative overflow-hidden"
+                  style={{ width: `${unit.constructionPct * 100}%` }}
+                >
+                  <div className="progress-shimmer" />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="relative px-6 pb-5">
-        <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5">
-          <Row label="Paid" value={formatUSD(unit.pricePaid)} />
-          <Row label="Total gold" value={`${formatGold(unit.gramsTotal, goldUnit)}${goldUnitLabel(goldUnit)}`} />
-          <Row label="Lock period" value={`${tier.lockMonths} months`} />
-          <Row label="Daily rate" value={`+${formatGold(dailyRate, goldUnit, 5)}${goldUnitLabel(goldUnit)}`} />
-          <Row label="Days remaining" value={`${Math.ceil(unit.daysRemaining)}`} />
+          ) : (
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Mined</div>
+              <div
+                className={`font-display font-num text-app ${isActive ? 'pulse-gold' : ''}`}
+                style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
+              >
+                {formatGold(unit.gramsDelivered, goldUnit, 6)}
+                <span
+                  className="text-2xl text-dim ml-2"
+                  style={{ fontFamily: "'Fraunces', serif" }}
+                >
+                  {goldUnitLabel(goldUnit)}
+                </span>
+              </div>
+              <div className="text-xs text-dim font-num mt-3">
+                of {formatGold(unit.gramsTotal, goldUnit, 3)}{goldUnitLabel(goldUnit)} · {formatUSD(unit.gramsDelivered * price)}
+                {(unit.gramsClaimed || 0) > 0 && (
+                  <span className="text-gold ml-2">· {formatGold(unit.gramsClaimed, goldUnit, 4)}{goldUnitLabel(goldUnit)} claimed</span>
+                )}
+              </div>
+              <div className="relative mt-5 h-[3px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div
+                  className="h-full bg-gold progress-fill relative overflow-hidden"
+                  style={{ width: `${unit.pctDelivered * 100}%` }}
+                >
+                  {isActive && <div className="progress-shimmer" />}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      <div className="relative flex-1" />
-
-      {canClaim && (
-        <div className="relative px-6 pb-3">
-          <button
-            onClick={handleClaim}
-            disabled={claiming}
-            className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
-            style={{ opacity: claiming ? 0.6 : 1 }}
-          >
-            {claiming ? 'Claiming...' : `Claim ${formatGold(claimable, goldUnit, 6)}${goldUnitLabel(goldUnit)}`}
-          </button>
-        </div>
-      )}
-
-      {tier.cancellable && isActive && (
-        <div className="relative p-6 pb-12">
-          <button
-            onClick={onExit}
-            className="press w-full h-12 rounded-full border border-app text-xs font-medium tracking-wide"
-            style={{ borderColor: 'rgba(217, 119, 87, 0.3)', color: '#d97757' }}
-          >
-            Exit early
-          </button>
-        </div>
-      )}
-
-      {isComplete && !canClaim && (
-        <div className="relative p-6 pb-12">
-          <div className="text-center text-[11px] text-gold uppercase tracking-[0.3em]">
-            All gold delivered
-          </div>
-        </div>
-      )}
-
-      {!tier.cancellable && isActive && !canClaim && (
-        <div className="relative p-6 pb-12">
-          <div className="text-center text-[10px] text-dim">
-            Spark mines complete on schedule. No early exit.
-          </div>
-        </div>
-      )}
     </div>
   );
 }
