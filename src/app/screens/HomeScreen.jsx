@@ -120,28 +120,26 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
     pending: totals.pendingGrams,
   };
 
-  // Track max integer-part length per display mode — only ever grows so digit
-  // slots stay stable when switching between stat tabs within the same mode.
+  // Track max integer-part length for gold mode only — values stay similar
+  // magnitude across stats so stable slots help. USD values can vary 1000x
+  // (Mined $0.05 vs Pending $1,200) so padding causes visual cut-off; render
+  // USD at natural width instead.
   const maxIntGoldRef = React.useRef(1);
-  const maxIntUsdRef = React.useRef(2);
-
   const goldMax = Math.max(
     ...Object.values(statValues).map(v => {
       const s = formatGold(v, goldUnit);
       return s === '—' ? 1 : s.split('.')[0].length;
     })
   );
-  const usdMax = Math.max(
-    ...Object.values(statValues).map(v => formatUSD(v * goldPrice).split('.')[0].length)
-  );
   if (goldMax > maxIntGoldRef.current) maxIntGoldRef.current = goldMax;
-  if (usdMax > maxIntUsdRef.current) maxIntUsdRef.current = usdMax;
 
   const isUsd = displayMode === 'usd';
   const displayValue = isUsd
     ? formatUSD(statValues[activeStat] * goldPrice)
     : formatGold(statValues[activeStat], goldUnit);
-  const maxIntDigits = isUsd ? maxIntUsdRef.current : maxIntGoldRef.current;
+  const maxIntDigits = isUsd
+    ? displayValue.split('.')[0].length
+    : maxIntGoldRef.current;
 
   const handleClaimAll = async () => {
     if (!onClaimAll || claimingAll) return;
@@ -288,15 +286,22 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
       </div>
 
-      {/* Bottom CTA — floating button, no panel */}
+      {/* Bottom CTA — floating button over a thin frosted panel */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pointer-events-none z-10"
-        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
+        className="absolute bottom-0 left-0 right-0 px-6 pt-6 pointer-events-none z-10"
+        style={{
+          paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))',
+          background: 'linear-gradient(to top, rgba(10,9,8,0.55) 50%, transparent)',
+          WebkitBackdropFilter: 'blur(12px)',
+          backdropFilter: 'blur(12px)',
+          maskImage: 'linear-gradient(to top, black 60%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to top, black 60%, transparent)',
+        }}
       >
         <button
           onClick={onBuy}
           className="press pointer-events-auto w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
-          style={{ boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(201, 169, 97, 0.25), 0 0 0 1px rgba(201, 169, 97, 0.15)' }}
+          style={{ boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(201, 169, 97, 0.15)' }}
         >
           <Plus size={18} strokeWidth={2.5} />
           New mine
