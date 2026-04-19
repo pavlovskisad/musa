@@ -119,7 +119,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   const isUsd = displayMode === 'usd';
   const displayValue = isUsd
     ? formatUSD(statValues[activeStat] * goldPrice).replace('$', '')
-    : formatGold(statValues[activeStat], goldUnit);
+    : formatGold(statValues[activeStat], goldUnit, goldUnit === 'oz' ? 6 : 4);
   const maxIntDigits = isUsd
     ? displayValue.split('.')[0].length
     : maxIntGoldRef.current;
