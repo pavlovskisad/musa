@@ -1245,25 +1245,17 @@
           0%, 100% { opacity: 0.5; }
           50%      { opacity: 1; }
         }
-        /* Shimmer sweep — a slow light band that glides across the hero glass surface */
-        .hero-shimmer-sweep {
+        /* Occasional soft burst — spirit exhales and fills the hero with warmth */
+        .hero-spirit-burst {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: linear-gradient(
-            105deg,
-            transparent 30%,
-            rgba(201, 169, 97, 0.06) 45%,
-            rgba(228, 197, 126, 0.1) 50%,
-            rgba(201, 169, 97, 0.06) 55%,
-            transparent 70%
-          );
-          background-size: 250% 100%;
-          background-position: 150% 0;
-          animation: heroShimmerSweep 8s ease-in-out infinite;
+          background: radial-gradient(ellipse 80% 70% at 50% 60%, rgba(201, 169, 97, 0.14) 0%, rgba(201, 169, 97, 0.04) 40%, transparent 70%);
+          opacity: 0;
+          animation: spiritBurst 10s ease-in-out infinite;
         }
-        @keyframes heroShimmerSweep {
-          0%   { background-position: 150% 0; }
-          30%  { background-position: -50% 0; }
-          100% { background-position: -50% 0; }
+        @keyframes spiritBurst {
+          0%, 70%, 100% { opacity: 0; transform: scale(0.85); }
+          80%  { opacity: 1; transform: scale(1.05); }
+          90%  { opacity: 0.3; transform: scale(1); }
         }

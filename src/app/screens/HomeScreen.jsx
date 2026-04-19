@@ -174,8 +174,8 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         {/* Wandering spirit glow */}
         <div className="hero-ambient-glow" />
 
-        {/* Surface shimmer sweep */}
-        <div className="hero-shimmer-sweep" />
+        {/* Occasional soft burst from the spirit */}
+        <div className="hero-spirit-burst" />
 
         {/* Header */}
         <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
