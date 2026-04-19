@@ -91,6 +91,24 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   const [activeStat, setActiveStat] = React.useState('mined');
   const canClaimAll = totals.totalClaimable > 1e-9;
 
+  // Seeded ambient particles for the hero glass — deterministic across renders
+  const heroParticles = React.useMemo(() => {
+    let seed = 23;
+    const rand = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+    return Array.from({ length: 10 }, (_, i) => ({
+      id: i,
+      left: rand() * 100,
+      top: 30 + rand() * 70,
+      dur: 10 + rand() * 8,
+      delay: -rand() * 12,
+      dx: (rand() - 0.5) * 24,
+      pop: 0.35 + rand() * 0.35,
+    }));
+  }, []);
+
   const statValues = {
     mined: totals.totalGrams,
     claimed: totals.totalClaimed,
@@ -116,87 +134,12 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   };
 
   return (
-    <div className="h-full flex flex-col anim-fade">
-      {/* Header */}
-      <div className="px-6 pt-4 pb-2 flex items-center justify-between">
-        <button
-          onClick={onHome}
-          className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
-          style={{ background: 'rgba(255,255,255,0.03)' }}
-          aria-label="Back to start"
-        >
-          <ArrowLeft size={15} className="text-dim" />
-        </button>
-        <MusaLogo />
-        <button
-          onClick={onProfile}
-          className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
-          style={{ background: 'rgba(255,255,255,0.03)' }}
-          aria-label="Profile"
-        >
-          <User size={14} className="text-dim" />
-        </button>
-      </div>
-
-      {/* Hero */}
-      <div className="px-6 pt-4 pb-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
-            {userName ? `musa ${userName}'s gold` : 'Your gold'}
-          </div>
-          {canClaimAll && (
-            <button
-              onClick={handleClaimAll}
-              disabled={claimingAll}
-              className="press h-7 px-3.5 rounded-full border border-gold text-gold text-[10px] font-medium tracking-wide disabled:opacity-40 flex-shrink-0"
-            >
-              {claimingAll ? 'Claiming…' : 'Claim all'}
-            </button>
-          )}
-        </div>
-
-        {/* Big rolling counter */}
-        <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
-          <div
-            className="font-display font-num text-app"
-            style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
-          >
-            <RollingCounter value={displayValue} maxIntDigits={maxIntRef.current} />
-            <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
-          </div>
-        </div>
-
-        {/* USD value */}
-        <div className="text-sm text-dim font-num mt-2 mb-3">
-          {formatUSD(totals.totalValueUSD)}
-        </div>
-
-        {/* Stat pills */}
-        <div className="flex gap-2">
-          {STATS.map(s => (
-            <button
-              key={s.key}
-              onClick={() => setActiveStat(s.key)}
-              className={`press-soft flex-1 h-7 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
-                activeStat === s.key
-                  ? 'border-gold text-gold'
-                  : 'border-app text-dim'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="mx-6 h-px" style={{ background: 'var(--border)' }} />
-
-      {/* Units */}
-      <div className="flex-1 overflow-auto scrollable">
-        <div className="px-6 pt-5 pb-24">
+    <div className="h-full relative anim-fade overflow-hidden">
+      {/* Scrollable area fills the whole screen — content padded so it starts below the floating hero */}
+      <div className="absolute inset-0 overflow-auto scrollable">
+        <div className="px-6 pb-32" style={{ paddingTop: '264px' }}>
           {!hasUnits ? (
-            <div className="h-full flex flex-col items-center justify-center text-center pt-16">
+            <div className="flex flex-col items-center justify-center text-center pt-12">
               <div
                 className="w-14 h-14 rounded-full border border-app flex items-center justify-center mb-5"
                 style={{ background: 'rgba(201,169,97,0.05)' }}
@@ -229,9 +172,106 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
       </div>
 
+      {/* Floating hero glass overlay — mines scroll under this */}
+      <div className="hero-glass absolute top-0 left-0 right-0 z-10">
+        {/* Ambient breathing glow */}
+        <div className="hero-ambient-glow" />
+
+        {/* Drifting gold particles */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {heroParticles.map(p => (
+            <span
+              key={p.id}
+              className="hero-particle"
+              style={{
+                left: `${p.left}%`,
+                top: `${p.top}%`,
+                animationDuration: `${p.dur}s`,
+                animationDelay: `${p.delay}s`,
+                '--dx': `${p.dx}px`,
+                '--pop': p.pop,
+                '--dur': `${p.dur}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Header */}
+        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
+          <button
+            onClick={onHome}
+            className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.03)' }}
+            aria-label="Back to start"
+          >
+            <ArrowLeft size={15} className="text-dim" />
+          </button>
+          <MusaLogo />
+          <button
+            onClick={onProfile}
+            className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.03)' }}
+            aria-label="Profile"
+          >
+            <User size={14} className="text-dim" />
+          </button>
+        </div>
+
+        {/* Hero */}
+        <div className="relative px-6 pt-4 pb-4" style={{ zIndex: 2 }}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
+              {userName ? `musa ${userName}'s gold` : 'Your gold'}
+            </div>
+            {canClaimAll && (
+              <button
+                onClick={handleClaimAll}
+                disabled={claimingAll}
+                className="press h-7 px-3.5 rounded-full border border-gold text-gold text-[10px] font-medium tracking-wide disabled:opacity-40 flex-shrink-0"
+              >
+                {claimingAll ? 'Claiming…' : 'Claim all'}
+              </button>
+            )}
+          </div>
+
+          {/* Big rolling counter */}
+          <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
+            <div
+              className="font-display font-num text-app"
+              style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
+            >
+              <RollingCounter value={displayValue} maxIntDigits={maxIntRef.current} />
+              <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>{goldUnitLabel(goldUnit)}</span>
+            </div>
+          </div>
+
+          {/* USD value */}
+          <div className="text-sm text-dim font-num mt-2 mb-3">
+            {formatUSD(totals.totalValueUSD)}
+          </div>
+
+          {/* Stat pills */}
+          <div className="flex gap-2">
+            {STATS.map(s => (
+              <button
+                key={s.key}
+                onClick={() => setActiveStat(s.key)}
+                className={`press-soft flex-1 h-7 rounded-full text-[10px] font-medium tracking-wide border transition-colors duration-200 ${
+                  activeStat === s.key
+                    ? 'border-gold text-gold'
+                    : 'border-app text-dim'
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Bottom CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pt-8 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 px-6 pt-8 pointer-events-none z-10"
         style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0.5rem))', background: 'linear-gradient(to top, var(--bg) 60%, rgba(10,9,8,0.85) 88%, transparent)' }}
       >
         <button
