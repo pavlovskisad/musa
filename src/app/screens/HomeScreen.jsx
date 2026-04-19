@@ -251,7 +251,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           {/* Big rolling counter — tap to toggle gold ↔ USD */}
           <button
             onClick={() => setDisplayMode(m => m === 'gold' ? 'usd' : 'gold')}
-            className="press-soft block w-full text-left bg-transparent border-0 p-0 mb-3"
+            className="press-soft block w-full text-center bg-transparent border-0 p-0 mb-3"
             aria-label="Toggle between gold and USD"
           >
             <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
@@ -286,20 +286,15 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
       </div>
 
-      {/* Bottom CTA — floating button over a thin frosted panel */}
+      {/* Floating CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pt-10 pointer-events-none z-10"
-        style={{
-          paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))',
-          background: 'linear-gradient(to top, rgba(10,9,8,0.7) 40%, rgba(10,9,8,0.3) 70%, transparent)',
-          WebkitBackdropFilter: 'blur(12px)',
-          backdropFilter: 'blur(12px)',
-        }}
+        className="absolute bottom-0 left-0 right-0 px-6 z-10 pointer-events-none"
+        style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
       >
         <button
           onClick={onBuy}
           className="press pointer-events-auto w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
-          style={{ boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(201, 169, 97, 0.15)' }}
+          style={{ boxShadow: '0 4px 24px 8px rgba(0,0,0,0.5), 0 12px 48px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(201,169,97,0.15)' }}
         >
           <Plus size={18} strokeWidth={2.5} />
           New mine

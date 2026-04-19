@@ -13,4 +13,4 @@ export const formatGold = (grams, unit, digits = 4) => {
 export const goldUnitLabel = (unit) => (unit === 'oz' ? 'oz' : 'g');
 
 export const formatUSD = (v) =>
-  `$${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  `$${Number(v).toFixed(2)}`;
