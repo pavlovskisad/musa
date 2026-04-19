@@ -37,15 +37,29 @@ export default function App() {
   const { goldPrice, priceSource } = useGoldPrice();
   const [goldUnit, setGoldUnit] = useState('g');
 
-  const [screen, setScreen] = useState(() => 'onboarding');
+  const [screen, setScreen] = useState(() => {
+    try { return sessionStorage.getItem('musa_screen') || 'onboarding'; } catch { return 'onboarding'; }
+  });
   const [units, setUnits] = useState(() => loadUnits());
   const [selectedTier, setSelectedTier] = useState(null);
   const [selectedAmount, setSelectedAmount] = useState(100);
-  const [selectedUnitId, setSelectedUnitId] = useState(null);
+  const [selectedUnitId, setSelectedUnitId] = useState(() => {
+    try { return sessionStorage.getItem('musa_selectedUnit') || null; } catch { return null; }
+  });
   const [recentlyPurchased, setRecentlyPurchased] = useState(null);
   const [creating, setCreating] = useState(null);
   const [celebratingUnit, setCelebratingUnit] = useState(null);
   const celebratedIdsRef = useRef(new Set());
+
+  useEffect(() => {
+    try { sessionStorage.setItem('musa_screen', screen); } catch {}
+  }, [screen]);
+  useEffect(() => {
+    try {
+      if (selectedUnitId) sessionStorage.setItem('musa_selectedUnit', selectedUnitId);
+      else sessionStorage.removeItem('musa_selectedUnit');
+    } catch {}
+  }, [selectedUnitId]);
 
   // On auth: set user ID, get token, ensure wallet exists, fetch units
   useEffect(() => {
