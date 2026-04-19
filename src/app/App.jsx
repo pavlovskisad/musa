@@ -175,8 +175,9 @@ export default function App() {
       console.error('Buy failed:', result?.error, result?.detail);
       alert(`Buy failed: ${result?.error || 'Unknown error'}${result?.detail ? `\n\n${result.detail}` : ''}`);
     }
-    setCreating(null);
     setScreen('home');
+    setCreating(prev => prev ? { ...prev, done: true } : null);
+    setTimeout(() => setCreating(null), 400);
     setTimeout(() => setRecentlyPurchased(null), 2500);
   };
 
@@ -298,15 +299,10 @@ export default function App() {
   return (
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
-      className="w-full flex items-center justify-center p-4"
-      style={{ background: '#0a0908', minHeight: '100dvh' }}
+      className="w-full flex flex-col"
+      style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100dvh' }}
     >
-      <div className="relative" style={{ width: '390px', height: '844px', maxHeight: '95dvh' }}>
-        <div
-          className="absolute inset-0 rounded-[44px] overflow-hidden phone-frame flex flex-col"
-          style={{ background: 'var(--bg)', color: 'var(--text)' }}
-        >
-          <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden">
             {screen === 'onboarding' && (
               <OnboardingScreen
                 key="onboarding"
@@ -387,7 +383,7 @@ export default function App() {
               />
             )}
 
-            {creating && <CreationOverlay tierId={creating.tierId} amount={creating.amount} />}
+            {creating && <CreationOverlay tierId={creating.tierId} amount={creating.amount} done={creating.done} />}
             {celebratingUnit && (
               <CelebrationOverlay
                 unit={celebratingUnit}
@@ -395,8 +391,6 @@ export default function App() {
               />
             )}
           </div>
-        </div>
-      </div>
     </div>
     </GoldContext.Provider>
   );

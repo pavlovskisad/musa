@@ -3,7 +3,7 @@ import { TIERS } from '../lib/tiers.js';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel } from '../lib/gold.js';
 
-function CreationOverlay({ tierId, amount }) {
+function CreationOverlay({ tierId, amount, done }) {
   const tier = TIERS[tierId];
   const { price, unit: goldUnit } = useGold();
   const grams = (amount * (1 + tier.discount)) / price;
@@ -11,7 +11,11 @@ function CreationOverlay({ tierId, amount }) {
   return (
     <div
       className="absolute inset-0 z-50 flex items-center justify-center creation-overlay"
-      style={{ background: 'rgba(10, 9, 8, 0.96)' }}
+      style={{
+        background: 'rgba(10, 9, 8, 0.96)',
+        opacity: done ? 0 : 1,
+        transition: 'opacity 0.35s ease-out',
+      }}
     >
       {/* Background grid */}
       <div className="absolute inset-0 dot-grid creation-grid" />

@@ -169,7 +169,7 @@
         }
 
         .creation-overlay {
-          animation: shutterIn 0.25s ease-out both, shutterOut 0.3s ease-in 1.5s both;
+          animation: shutterIn 0.25s ease-out both;
         }
 
         .creation-grid {
@@ -183,9 +183,9 @@
           border: 1px solid var(--gold);
           border-radius: 9999px;
         }
-        .creation-ring-1 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
-        .creation-ring-2 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
-        .creation-ring-3 { animation: ringExpand 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+        .creation-ring-1 { animation: ringExpand 2.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s infinite; }
+        .creation-ring-2 { animation: ringExpand 2.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s infinite; }
+        .creation-ring-3 { animation: ringExpand 2.4s cubic-bezier(0.16, 1, 0.3, 1) 1.6s infinite; }
         .creation-scan {
           position: absolute;
           left: 0; right: 0;
