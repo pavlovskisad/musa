@@ -269,14 +269,15 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
       </div>
 
-      {/* Bottom CTA */}
+      {/* Bottom CTA — floating button, no panel */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 pt-8 pointer-events-none z-10"
-        style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0.5rem))', background: 'linear-gradient(to top, var(--bg) 60%, rgba(10,9,8,0.85) 88%, transparent)' }}
+        className="absolute bottom-0 left-0 right-0 px-6 pointer-events-none z-10"
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
       >
         <button
           onClick={onBuy}
           className="press pointer-events-auto w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
+          style={{ boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(201, 169, 97, 0.25), 0 0 0 1px rgba(201, 169, 97, 0.15)' }}
         >
           <Plus size={18} strokeWidth={2.5} />
           New mine
