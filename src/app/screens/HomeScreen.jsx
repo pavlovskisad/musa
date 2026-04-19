@@ -218,7 +218,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           {/* Big rolling counter — tap to toggle gold ↔ USD */}
           <button
             onClick={() => setDisplayMode(m => m === 'gold' ? 'usd' : 'gold')}
-            className="press-soft block w-full text-center bg-transparent border-0 p-0 mb-3"
+            className="press-soft block w-full text-left bg-transparent border-0 p-0 mb-3"
             aria-label="Toggle between gold and USD"
           >
             <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
