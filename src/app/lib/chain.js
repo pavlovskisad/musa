@@ -53,6 +53,20 @@ export async function readUserPositionIds(walletAddress) {
   return ids.map(id => Number(id));
 }
 
+export async function readReserveBalance() {
+  const musa = readMusa();
+  if (!musa) return null;
+  const wei = await musa.reserveBalance();
+  return weiToGrams(wei);
+}
+
+export async function readTotalOutstandingGrams() {
+  const musa = readMusa();
+  if (!musa) return null;
+  const wei = await musa.totalOutstandingGrams();
+  return weiToGrams(wei);
+}
+
 export async function readPositionOwner(positionId) {
   const musa = readMusa();
   if (!musa) return null;

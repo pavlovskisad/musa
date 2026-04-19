@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Wallet, Copy, Check } from 'lucide-react';
 import { useGold } from '../context/GoldContext.jsx';
 import { formatGold, goldUnitLabel, formatUSD, GRAMS_PER_TROY_OZ } from '../lib/gold.js';
-import { readPaxgBalance, readSolvencyRatio } from '../lib/chain.js';
+import { readPaxgBalance, readSolvencyRatio, readReserveBalance, readTotalOutstandingGrams } from '../lib/chain.js';
 import MusaLogo from '../components/MusaLogo.jsx';
 import Row from '../components/Row.jsx';
 
@@ -11,6 +11,8 @@ const formatSignedUSD = (v) => `${v >= 0 ? '+' : '−'}${formatUSD(Math.abs(v))}
 function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, onResetAll, goldPrice, priceSource }) {
   const [paxgBalance, setPaxgBalance] = useState(null);
   const [solvency, setSolvency] = useState(null);
+  const [reserveBalance, setReserveBalance] = useState(null);
+  const [outstandingGrams, setOutstandingGrams] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const copyAddress = () => {
@@ -27,13 +29,19 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
 
   useEffect(() => {
     let cancelled = false;
-    const fetchSolvency = () => {
+    const fetchAll = () => {
       readSolvencyRatio()
         .then(r => { if (!cancelled) setSolvency(r); })
         .catch(() => { if (!cancelled) setSolvency(null); });
+      readReserveBalance()
+        .then(r => { if (!cancelled) setReserveBalance(r); })
+        .catch(() => {});
+      readTotalOutstandingGrams()
+        .then(r => { if (!cancelled) setOutstandingGrams(r); })
+        .catch(() => {});
     };
-    fetchSolvency();
-    const interval = setInterval(fetchSolvency, 15000);
+    fetchAll();
+    const interval = setInterval(fetchAll, 15000);
     return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
@@ -167,6 +175,16 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
               }}
             />
           </div>
+          {reserveBalance != null && outstandingGrams != null && (
+            <div className="flex items-center justify-between mt-3 text-[10px] font-num">
+              <span className="text-dim">
+                Reserve <span className="text-app">{reserveBalance.toFixed(4)}</span> PAXG
+              </span>
+              <span className="text-dim">
+                Owed <span className="text-app">{outstandingGrams.toFixed(4)}</span> g
+              </span>
+            </div>
+          )}
           <div className="text-[10px] text-dim mt-2">
             PAXG reserve vs. outstanding obligations
           </div>
