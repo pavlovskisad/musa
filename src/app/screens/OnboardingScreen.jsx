@@ -883,8 +883,8 @@ function OnboardingScreen({ onContinue }) {
             $100/mo · Vein · 5 years
           </div>
 
-          <div style={{ height: '180px' }}>
-            <svg viewBox="0 0 280 160" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+          <div style={{ height: '180px', paddingTop: '16px' }}>
+            <svg viewBox="0 0 280 160" overflow="visible" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
               <line
                 x1="0" y1="130" x2="280" y2="130"
                 stroke="rgba(255,255,255,0.06)"
