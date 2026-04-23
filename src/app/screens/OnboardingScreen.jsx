@@ -963,7 +963,7 @@ function OnboardingScreen({ onContinue }) {
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.8s',
                 }}
-              >{`$${Math.round(accumData.value)}`}</text>
+              >value</text>
               <text
                 x="276" y={accumData.invEndY + 12}
                 textAnchor="end"
