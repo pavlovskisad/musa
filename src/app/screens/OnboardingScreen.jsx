@@ -16,7 +16,7 @@ function OnboardingScreen({ onContinue }) {
     if (!el) return;
     const onScroll = () => {
       const idx = Math.round(el.scrollTop / el.clientHeight);
-      setActiveScreen(Math.max(0, Math.min(6, idx)));
+      setActiveScreen(Math.max(0, Math.min(7, idx)));
     };
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
@@ -172,11 +172,47 @@ function OnboardingScreen({ onContinue }) {
     }).join('\n');
   }, [connectVortex]);
 
+  const accumData = useMemo(() => {
+    const r = Math.pow(1.08, 1 / 12) - 1;
+    const pts = [{ m: 0, inv: 0, val: 0, g: 0 }];
+    let gold = 0, inv = 0;
+    for (let m = 1; m <= 60; m++) {
+      const price = 100 * Math.pow(1 + r, m);
+      inv += 100;
+      gold += 118.8 / price;
+      pts.push({ m, inv, val: gold * price, g: gold });
+    }
+    const last = pts[pts.length - 1];
+    const maxY = Math.ceil(last.val / 1000) * 1000;
+    const W = 280, H = 110;
+    const x = m => (m / 60) * W;
+    const y = v => H - (v / maxY) * H;
+    const invPath = pts.map((p, i) =>
+      `${i === 0 ? 'M' : 'L'}${x(p.m).toFixed(1)},${y(p.inv).toFixed(1)}`
+    ).join(' ');
+    const valPath = pts.map((p, i) =>
+      `${i === 0 ? 'M' : 'L'}${x(p.m).toFixed(1)},${y(p.val).toFixed(1)}`
+    ).join(' ');
+    const fillPath = pts.map((p, i) =>
+      `${i === 0 ? 'M' : 'L'}${x(p.m).toFixed(1)},${y(p.val).toFixed(1)}`
+    ).join(' ') + ' ' + [...pts].reverse().map(p =>
+      `L${x(p.m).toFixed(1)},${y(p.inv).toFixed(1)}`
+    ).join(' ') + ' Z';
+    return {
+      invPath, valPath, fillPath,
+      invEndY: y(last.inv), valEndY: y(last.val),
+      invested: last.inv,
+      value: last.val,
+      gold: last.g,
+      returnPct: ((last.val - last.inv) / last.inv * 100),
+    };
+  }, []);
+
   const [arcPulse, setArcPulse] = useState(0);
   const mountTimeRef = useRef(performance.now() / 1000);
 
   useEffect(() => {
-    if (activeScreen !== 6) return;
+    if (activeScreen !== 7) return;
 
     const CAPTURE_RADIUS = 32;
     const EAT_EVERY = 6;
@@ -290,7 +326,7 @@ function OnboardingScreen({ onContinue }) {
           gap: '10px',
         }}
       >
-        {[0, 1, 2, 3, 4, 5, 6].map(i => (
+        {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
           <span
             key={i}
             className="onboard-dot"
@@ -802,7 +838,166 @@ function OnboardingScreen({ onContinue }) {
         <div className={`vault-screen-shimmer ${activeScreen === 5 ? 'vault-screen-shimmer-on' : ''}`} />
       </div>
 
-      {/* === SCREEN 7 — Connect the dots === */}
+      {/* === SCREEN 7 — Accumulation === */}
+      <div
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
+      >
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {firstViewportParticles.slice(0, 10).map(p => (
+            <span
+              key={`acc-${p.id}`}
+              className="particle particle-drift"
+              style={{
+                left: `${p.left}%`,
+                bottom: `${p.bottom}%`,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                opacity: p.opacity,
+                animationDelay: `${p.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative" style={{ zIndex: 4 }}>
+          <h2
+            className="font-display text-app"
+            style={{ fontWeight: 300, fontSize: '48px', lineHeight: '0.95' }}
+          >
+            accumulation is
+            <br />a good habit
+            <br />
+            <span className="italic text-gold" style={{ fontWeight: 400 }}>
+              anybody can
+            </span>
+          </h2>
+        </div>
+
+        <div className="flex-1" />
+
+        <div className="relative bg-surface border border-app rounded-2xl p-5" style={{ zIndex: 4 }}>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-4">
+            $100/mo · Vein · 5 years
+          </div>
+
+          <div style={{ height: '130px' }}>
+            <svg viewBox="0 0 280 130" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+              <line x1="0" y1="110" x2="280" y2="110" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+
+              <path
+                d={accumData.fillPath}
+                fill="rgba(201, 169, 97, 0.06)"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.8s ease-out 0.8s',
+                }}
+              />
+
+              <path
+                d={accumData.invPath}
+                fill="none"
+                stroke="rgba(180,180,170,0.35)"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                style={{
+                  strokeDasharray: 500,
+                  strokeDashoffset: activeScreen === 6 ? 0 : 500,
+                  transition: 'stroke-dashoffset 1.6s cubic-bezier(0.4, 0.6, 0.3, 1) 0.4s',
+                }}
+              />
+
+              <path
+                d={accumData.valPath}
+                fill="none"
+                stroke="#C9A961"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                style={{
+                  strokeDasharray: 500,
+                  strokeDashoffset: activeScreen === 6 ? 0 : 500,
+                  transition: 'stroke-dashoffset 1.6s cubic-bezier(0.4, 0.6, 0.3, 1) 0.2s',
+                }}
+              />
+
+              <text
+                x="0" y="126"
+                fill="rgba(255,255,255,0.25)"
+                fontSize="8"
+                fontFamily="'Geist Mono', monospace"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.5s ease-out 1.6s',
+                }}
+              >now</text>
+              <text
+                x="280" y="126"
+                textAnchor="end"
+                fill="rgba(255,255,255,0.25)"
+                fontSize="8"
+                fontFamily="'Geist Mono', monospace"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.5s ease-out 1.7s',
+                }}
+              >5yr</text>
+
+              <text
+                x="276" y={accumData.valEndY - 4}
+                textAnchor="end"
+                fill="#C9A961"
+                fontSize="9"
+                fontFamily="'Geist Mono', monospace"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.5s ease-out 1.8s',
+                }}
+              >{`$${Math.round(accumData.value)}`}</text>
+              <text
+                x="276" y={accumData.invEndY + 12}
+                textAnchor="end"
+                fill="rgba(180,180,170,0.5)"
+                fontSize="9"
+                fontFamily="'Geist Mono', monospace"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.5s ease-out 1.9s',
+                }}
+              >{`$${accumData.invested}`}</text>
+            </svg>
+          </div>
+
+          <div
+            className="flex items-center justify-between mt-4 pt-3"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            <div>
+              <div className="text-[9px] text-dim uppercase tracking-widest">Invested</div>
+              <div className="text-sm font-num text-app">{`$${accumData.invested}`}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-dim uppercase tracking-widest">Gold</div>
+              <div className="text-sm font-num text-app">{`${accumData.gold.toFixed(1)}g`}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-dim uppercase tracking-widest">Value</div>
+              <div className="text-sm font-num text-gold">{`$${Math.round(accumData.value)}`}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-dim uppercase tracking-widest">Return</div>
+              <div className="text-sm font-num text-gold">{`+${accumData.returnPct.toFixed(0)}%`}</div>
+            </div>
+          </div>
+
+          <div className="text-[8px] text-dim mt-3 text-center" style={{ opacity: 0.5 }}>
+            8% annual gold appreciation · 20yr median
+          </div>
+        </div>
+
+        <div className="flex-1" />
+      </div>
+
+      {/* === SCREEN 8 — Connect the dots === */}
       <div
         className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
@@ -871,7 +1066,7 @@ function OnboardingScreen({ onContinue }) {
           >
             <div
               ref={fillRef}
-              className={`connect-fill ${activeScreen === 6 ? 'connect-fill-on' : ''}`}
+              className={`connect-fill ${activeScreen === 7 ? 'connect-fill-on' : ''}`}
               style={{
                 position: 'absolute',
                 top: '50%', left: '50%',
@@ -884,7 +1079,7 @@ function OnboardingScreen({ onContinue }) {
             />
             <div
               ref={singularityRef}
-              className={`singularity-glow ${activeScreen === 6 ? 'singularity-glow-on' : ''}`}
+              className={`singularity-glow ${activeScreen === 7 ? 'singularity-glow-on' : ''}`}
             />
             <svg
               viewBox="0 0 220 220"
@@ -901,7 +1096,7 @@ function OnboardingScreen({ onContinue }) {
                   strokeDasharray: 320,
                   strokeDashoffset: 320,
                   opacity: 0,
-                  animation: activeScreen === 6 && arcPulse > 0 ? 'arcFlash 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards' : 'none',
+                  animation: activeScreen === 7 && arcPulse > 0 ? 'arcFlash 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards' : 'none',
                 }}
               />
               <path
@@ -915,7 +1110,7 @@ function OnboardingScreen({ onContinue }) {
                   strokeDasharray: 320,
                   strokeDashoffset: 320,
                   opacity: 0,
-                  animation: activeScreen === 6 && arcPulse > 0 ? 'arcFlash 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards' : 'none',
+                  animation: activeScreen === 7 && arcPulse > 0 ? 'arcFlash 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards' : 'none',
                 }}
               />
               <circle
@@ -924,7 +1119,7 @@ function OnboardingScreen({ onContinue }) {
                 cx="110" cy="10" r="4"
                 fill="rgba(232, 218, 188, 0.9)"
                 style={{
-                  animation: activeScreen === 6 && arcPulse > 0
+                  animation: activeScreen === 7 && arcPulse > 0
                     ? 'endpointFlashUser 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards'
                     : 'none',
                 }}
@@ -935,7 +1130,7 @@ function OnboardingScreen({ onContinue }) {
                 cx="110" cy="210" r="4"
                 fill="#C9A961"
                 style={{
-                  animation: activeScreen === 6 && arcPulse > 0
+                  animation: activeScreen === 7 && arcPulse > 0
                     ? 'endpointFlashMiner 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards'
                     : 'none',
                 }}
@@ -952,7 +1147,7 @@ function OnboardingScreen({ onContinue }) {
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
                 opacity: 0.7,
-                animation: activeScreen === 6 && arcPulse > 0
+                animation: activeScreen === 7 && arcPulse > 0
                   ? 'labelFlashUser 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards'
                   : 'none',
               }}
@@ -970,7 +1165,7 @@ function OnboardingScreen({ onContinue }) {
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
                 opacity: 0.7,
-                animation: activeScreen === 6 && arcPulse > 0
+                animation: activeScreen === 7 && arcPulse > 0
                   ? 'labelFlashMiner 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards'
                   : 'none',
               }}
@@ -988,7 +1183,7 @@ function OnboardingScreen({ onContinue }) {
               <div
                 key={`musa-pulse-${arcPulse}`}
                 style={{
-                  animation: activeScreen === 6 && arcPulse > 0
+                  animation: activeScreen === 7 && arcPulse > 0
                     ? 'musaLogoPulse 0.95s cubic-bezier(0.4, 0.6, 0.3, 1) forwards'
                     : 'none',
                 }}
