@@ -184,7 +184,7 @@ function OnboardingScreen({ onContinue }) {
     }
     const last = pts[pts.length - 1];
     const maxY = Math.ceil(last.val / 1000) * 1000;
-    const W = 280, H = 110;
+    const W = 280, H = 130;
     const x = m => (m / 60) * W;
     const y = v => H - (v / maxY) * H;
     const invPath = pts.map((p, i) =>
@@ -863,27 +863,38 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '48px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
           >
-            accumulation is
-            <br />a good habit
+            accumulation
             <br />
             <span className="italic text-gold" style={{ fontWeight: 400 }}>
-              anybody can
+              is a good habit
             </span>
           </h2>
+          <p className="text-dim text-[13px] leading-relaxed mt-4 font-display italic" style={{ fontWeight: 300 }}>
+            anybody can
+          </p>
         </div>
 
         <div className="flex-1" />
 
-        <div className="relative bg-surface border border-app rounded-2xl p-5" style={{ zIndex: 4 }}>
+        <div className="relative" style={{ zIndex: 4 }}>
           <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-4">
             $100/mo · Vein · 5 years
           </div>
 
-          <div style={{ height: '130px' }}>
-            <svg viewBox="0 0 280 130" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
-              <line x1="0" y1="110" x2="280" y2="110" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          <div style={{ height: '180px' }}>
+            <svg viewBox="0 0 280 160" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+              <line
+                x1="0" y1="130" x2="280" y2="130"
+                stroke="rgba(255,255,255,0.06)"
+                strokeWidth="1"
+                strokeDasharray="2 4"
+                style={{
+                  opacity: activeScreen === 6 ? 1 : 0,
+                  transition: 'opacity 0.6s ease-out 0.0s',
+                }}
+              />
 
               <path
                 d={accumData.fillPath}
@@ -897,7 +908,7 @@ function OnboardingScreen({ onContinue }) {
               <path
                 d={accumData.invPath}
                 fill="none"
-                stroke="rgba(180,180,170,0.35)"
+                stroke="rgba(180,180,170,0.4)"
                 strokeWidth="1.25"
                 strokeLinecap="round"
                 style={{
@@ -921,7 +932,7 @@ function OnboardingScreen({ onContinue }) {
               />
 
               <text
-                x="0" y="126"
+                x="0" y="148"
                 fill="rgba(255,255,255,0.25)"
                 fontSize="8"
                 fontFamily="'Geist Mono', monospace"
@@ -931,7 +942,7 @@ function OnboardingScreen({ onContinue }) {
                 }}
               >now</text>
               <text
-                x="280" y="126"
+                x="280" y="148"
                 textAnchor="end"
                 fill="rgba(255,255,255,0.25)"
                 fontSize="8"
@@ -967,10 +978,7 @@ function OnboardingScreen({ onContinue }) {
             </svg>
           </div>
 
-          <div
-            className="flex items-center justify-between mt-4 pt-3"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-          >
+          <div className="flex items-center justify-between mt-2">
             <div>
               <div className="text-[9px] text-dim uppercase tracking-widest">Invested</div>
               <div className="text-sm font-num text-app">{`$${accumData.invested}`}</div>
@@ -989,7 +997,7 @@ function OnboardingScreen({ onContinue }) {
             </div>
           </div>
 
-          <div className="text-[8px] text-dim mt-3 text-center" style={{ opacity: 0.5 }}>
+          <div className="text-[8px] text-dim mt-3" style={{ opacity: 0.5 }}>
             8% annual gold appreciation · 20yr median
           </div>
         </div>
