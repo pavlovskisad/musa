@@ -974,7 +974,7 @@ function OnboardingScreen({ onContinue }) {
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.9s',
                 }}
-              >{`$${accumData.invested}`}</text>
+              >invested</text>
             </svg>
           </div>
 
