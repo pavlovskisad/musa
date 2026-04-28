@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>musa · admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0908;
+    --surface: #161513;
+    --text: #e8e6e0;
+    --dim: rgba(232,230,224,0.54);
+    --gold: #c9a961;
+    --gold-light: #e4c57e;
+    --border: rgba(255,255,255,0.08);
+    --red: #d97757;
+    --green: #5cb85c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist', -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .mono { font-family: 'Geist Mono', monospace; }
+  .dim { color: var(--dim); }
+  .gold { color: var(--gold); }
+  .red { color: var(--red); }
+  .green { color: var(--green); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  header h1 span { color: var(--gold); }
+  #status {
+    font-size: 11px;
+    color: var(--dim);
+  }
+  #status .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .dot-ok { background: var(--green); }
+  .dot-err { background: var(--red); }
+  .dot-load { background: var(--dim); }
+
+  .login-form {
+    max-width: 360px;
+    margin: 120px auto;
+    text-align: center;
+  }
+  .login-form h2 {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 20px;
+  }
+  .login-form input {
+    width: 100%;
+    height: 44px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    padding: 0 16px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+  .login-form input:focus { border-color: var(--gold); }
+  .login-form button {
+    width: 100%;
+    height: 44px;
+    background: var(--gold);
+    color: #0a0908;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  .login-form button:hover { background: var(--gold-light); }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .metric-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+  .metric-value {
+    font-family: 'Geist Mono', monospace;
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .metric-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 4px;
+  }
+
+  .section {
+    margin-bottom: 24px;
+  }
+  .section-header {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-header .count {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    font-weight: 400;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'Geist', sans-serif;
+  }
+  .badge-spark { background: rgba(201,169,97,0.12); color: var(--gold); }
+  .badge-flow { background: rgba(201,169,97,0.2); color: var(--gold-light); }
+  .badge-vein { background: rgba(201,169,97,0.3); color: #fff; }
+  .badge-active { background: rgba(92,184,92,0.15); color: var(--green); }
+  .badge-constructing { background: rgba(201,169,97,0.12); color: var(--gold); }
+  .badge-completed { background: rgba(255,255,255,0.08); color: var(--text); }
+  .badge-exited { background: rgba(217,119,87,0.15); color: var(--red); }
+
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { color: var(--gold-light); }
+
+  .addr {
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .addr:hover { color: var(--text); }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: 'Geist', sans-serif;
+    cursor: pointer;
+  }
+  .refresh-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .solvency-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .solvency-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease-out;
+  }
+
+  .empty { color: var(--dim); text-align: center; padding: 40px; }
+
+  @media (max-width: 768px) {
+    .container { padding: 16px; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    table { font-size: 11px; }
+    td, th { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Login -->
+  <div id="login" class="login-form">
+    <h2>musa admin</h2>
+    <input id="secret-input" type="password" placeholder="admin secret" autofocus>
+    <button onclick="doLogin()">Enter</button>
+  </div>
+
+  <!-- Dashboard (hidden until auth) -->
+  <div id="dashboard" style="display:none">
+    <header>
+      <h1>musa · <span>admin</span></h1>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="status"><span class="dot dot-load"></span>loading</span>
+        <button class="refresh-btn" onclick="refresh()">Refresh</button>
+      </div>
+    </header>
+
+    <!-- Key metrics -->
+    <div class="metrics" id="metrics"></div>
+
+    <!-- Chain info -->
+    <div class="section">
+      <div class="section-header">
+        <span>On-chain</span>
+      </div>
+      <div id="chain-info" class="metrics"></div>
+    </div>
+
+    <!-- Positions table -->
+    <div class="section">
+      <div class="section-header">
+        <span>Positions</span>
+        <span class="count" id="positions-count"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="positions-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Tier</th>
+              <th>Status</th>
+              <th>Paid</th>
+              <th>Grams</th>
+              <th>Delivered</th>
+              <th>Claimed</th>
+              <th>Position</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="positions-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="section">
+      <div class="section-header">
+        <span>Users</span>
+        <span class="count" id="users-count"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>Wallet</th>
+              <th>Privy ID</th>
+              <th>Positions</th>
+              <th>Invested</th>
+              <th>Grams</th>
+              <th>Claimed</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TIERS = { spark: { lock: 180, name: 'Spark' }, flow: { lock: 360, name: 'Flow' }, vein: { lock: 720, name: 'Vein' } };
+const SCAN = 'https://sepolia.basescan.org';
+let SECRET = sessionStorage.getItem('musa_admin_secret') || '';
+
+function doLogin() {
+  SECRET = document.getElementById('secret-input').value.trim();
+  if (!SECRET) return;
+  sessionStorage.setItem('musa_admin_secret', SECRET);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  refresh();
+}
+
+if (SECRET) {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  refresh();
+}
+
+async function refresh() {
+  const st = document.getElementById('status');
+  st.innerHTML = '<span class="dot dot-load"></span>loading';
+
+  try {
+    const res = await fetch('/api/admin', {
+      headers: { Authorization: `Bearer ${SECRET}` },
+    });
+    if (res.status === 401) {
+      sessionStorage.removeItem('musa_admin_secret');
+      SECRET = '';
+      document.getElementById('login').style.display = 'block';
+      document.getElementById('dashboard').style.display = 'none';
+      return;
+    }
+    const data = await res.json();
+    render(data);
+    const t = new Date(data.timestamp).toLocaleTimeString();
+    st.innerHTML = `<span class="dot dot-ok"></span>${t}`;
+  } catch (err) {
+    st.innerHTML = `<span class="dot dot-err"></span>${err.message}`;
+  }
+}
+
+function truncAddr(a) {
+  if (!a) return '—';
+  return a.slice(0, 6) + '…' + a.slice(-4);
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = typeof ts === 'string' ? new Date(ts) : new Date(ts);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
+function fmtG(v, d = 4) {
+  if (v == null || isNaN(v)) return '—';
+  return v.toFixed(d);
+}
+
+function fmtUSD(v) {
+  if (v == null || isNaN(v)) return '—';
+  return '$' + Number(v).toFixed(2);
+}
+
+function getStatus(unit) {
+  if (unit.exitedAt) return 'exited';
+  const now = Date.now();
+  const purchasedAt = unit.purchasedAt;
+  const elapsed = (now - purchasedAt) / 1000;
+  if (elapsed < 60) return 'constructing';
+  const tier = TIERS[unit.tier];
+  const lockSec = tier ? tier.lock * 86400 : 0;
+  const deliveryElapsed = elapsed - 60;
+  if (deliveryElapsed >= lockSec) return 'completed';
+  return 'active';
+}
+
+function getDelivered(unit) {
+  if (unit.exitedAt) return unit.gramsAtExit || 0;
+  const now = Date.now();
+  const elapsed = (now - unit.purchasedAt) / 1000;
+  if (elapsed < 60) return 0;
+  const tier = TIERS[unit.tier];
+  const lockSec = tier ? tier.lock * 86400 : 0;
+  const deliveryElapsed = Math.min(elapsed - 60, lockSec);
+  return (deliveryElapsed / lockSec) * unit.gramsTotal;
+}
+
+function render(data) {
+  const { users, units, chain } = data;
+
+  // Aggregate metrics
+  const activeUnits = units.filter(u => !u.exitedAt);
+  const totalInvested = activeUnits.reduce((s, u) => s + u.pricePaid, 0);
+  const totalGrams = activeUnits.reduce((s, u) => s + u.gramsTotal, 0);
+  const totalClaimed = units.reduce((s, u) => s + u.gramsClaimed, 0);
+  const statusCounts = {};
+  units.forEach(u => {
+    const s = getStatus(u);
+    statusCounts[s] = (statusCounts[s] || 0) + 1;
+  });
+
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric">
+      <div class="metric-label">Users</div>
+      <div class="metric-value">${users.length}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Positions</div>
+      <div class="metric-value">${units.length}</div>
+      <div class="metric-sub">${statusCounts.active || 0} active · ${statusCounts.constructing || 0} building · ${statusCounts.completed || 0} done · ${statusCounts.exited || 0} exited</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total invested</div>
+      <div class="metric-value">${fmtUSD(totalInvested)}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total grams committed</div>
+      <div class="metric-value mono">${fmtG(totalGrams, 2)}g</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total claimed</div>
+      <div class="metric-value mono">${fmtG(totalClaimed, 4)}g</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Tier split</div>
+      <div class="metric-value" style="font-size:14px">
+        <span class="badge badge-spark">${units.filter(u => u.tier === 'spark').length} Spark</span>
+        <span class="badge badge-flow">${units.filter(u => u.tier === 'flow').length} Flow</span>
+        <span class="badge badge-vein">${units.filter(u => u.tier === 'vein').length} Vein</span>
+      </div>
+    </div>
+  `;
+
+  // Chain info
+  const ci = document.getElementById('chain-info');
+  if (chain && !chain.error) {
+    const solvPct = chain.solvencyRatio != null ? (chain.solvencyRatio * 100) : null;
+    const solvHealthy = chain.solvencyRatio != null && chain.solvencyRatio >= 1;
+    const barW = chain.solvencyRatio != null ? Math.min(100, (chain.solvencyRatio / 1.5) * 100) : 0;
+    ci.innerHTML = `
+      <div class="metric">
+        <div class="metric-label">Contract</div>
+        <div class="metric-value" style="font-size:12px">
+          <a href="${SCAN}/address/${chain.contractAddress}" target="_blank">${truncAddr(chain.contractAddress)}</a>
+        </div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Reserve</div>
+        <div class="metric-value mono">${fmtG(chain.reserveGrams, 2)}g</div>
+        <div class="metric-sub">${fmtG(chain.reservePaxg, 6)} PAXG</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Outstanding</div>
+        <div class="metric-value mono">${fmtG(chain.outstandingGrams, 2)}g</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Solvency</div>
+        <div class="metric-value ${solvHealthy ? 'green' : 'red'}">
+          ${solvPct != null ? (chain.solvencyRatio > 100 ? '∞' : solvPct.toFixed(1) + '%') : '—'}
+        </div>
+        <div class="solvency-bar">
+          <div class="solvency-fill" style="width:${barW}%;background:${solvHealthy ? 'var(--green)' : 'var(--red)'}"></div>
+        </div>
+      </div>
+    `;
+  } else {
+    ci.innerHTML = `<div class="metric"><div class="metric-label">Chain</div><div class="metric-value dim">${chain?.error || 'Not configured'}</div></div>`;
+  }
+
+  // Positions table
+  document.getElementById('positions-count').textContent = units.length;
+  const pb = document.getElementById('positions-body');
+  if (units.length === 0) {
+    pb.innerHTML = '<tr><td colspan="10" class="empty">No positions</td></tr>';
+  } else {
+    pb.innerHTML = units.map(u => {
+      const status = getStatus(u);
+      const delivered = getDelivered(u);
+      const tierName = TIERS[u.tier]?.name || u.tier;
+      const posLink = u.positionId != null ? `#${u.positionId}` : '—';
+      const wallet = u.walletAddress
+        ? `<a href="${SCAN}/address/${u.walletAddress}" target="_blank" class="addr">${truncAddr(u.walletAddress)}</a>`
+        : '—';
+      return `<tr>
+        <td>${u.id.slice(0, 7)}</td>
+        <td>${wallet}</td>
+        <td><span class="badge badge-${u.tier}">${tierName}</span></td>
+        <td><span class="badge badge-${status}">${status}</span></td>
+        <td>${fmtUSD(u.pricePaid)}</td>
+        <td>${fmtG(u.gramsTotal, 3)}g</td>
+        <td>${fmtG(delivered, 4)}g</td>
+        <td>${fmtG(u.gramsClaimed, 4)}g</td>
+        <td>${u.txHash ? `<a href="${SCAN}/tx/${u.txHash}" target="_blank">${posLink}</a>` : posLink}</td>
+        <td class="dim">${fmtDate(u.purchasedAt)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Users table
+  document.getElementById('users-count').textContent = users.length;
+  const ub = document.getElementById('users-body');
+  if (users.length === 0) {
+    ub.innerHTML = '<tr><td colspan="7" class="empty">No users</td></tr>';
+  } else {
+    ub.innerHTML = users.map(u => {
+      const userUnits = units.filter(p => p.userId === u.privyDid);
+      const invested = userUnits.filter(p => !p.exitedAt).reduce((s, p) => s + p.pricePaid, 0);
+      const grams = userUnits.filter(p => !p.exitedAt).reduce((s, p) => s + p.gramsTotal, 0);
+      const claimed = userUnits.reduce((s, p) => s + p.gramsClaimed, 0);
+      const wallet = u.walletAddress
+        ? `<a href="${SCAN}/address/${u.walletAddress}" target="_blank" class="addr">${truncAddr(u.walletAddress)}</a>`
+        : '—';
+      return `<tr>
+        <td>${wallet}</td>
+        <td class="dim" style="font-size:10px">${u.privyDid.slice(0, 20)}…</td>
+        <td>${userUnits.length}</td>
+        <td>${fmtUSD(invested)}</td>
+        <td>${fmtG(grams, 3)}g</td>
+        <td>${fmtG(claimed, 4)}g</td>
+        <td class="dim">${fmtDate(u.createdAt)}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+document.getElementById('secret-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
