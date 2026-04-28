@@ -316,8 +316,8 @@
         <table id="users-table">
           <thead>
             <tr>
+              <th>Email</th>
               <th>Wallet</th>
-              <th>Privy ID</th>
               <th>Positions</th>
               <th>Invested</th>
               <th>Grams</th>
@@ -507,19 +507,22 @@ function render(data) {
   document.getElementById('positions-count').textContent = units.length;
   const pb = document.getElementById('positions-body');
   if (units.length === 0) {
-    pb.innerHTML = '<tr><td colspan="10" class="empty">No positions</td></tr>';
+    pb.innerHTML = '<tr><td colspan="10" class="empty">No positions yet</td></tr>';
   } else {
+    const emailByDid = {};
+    data.users.forEach(u => { emailByDid[u.privyDid] = u.email; });
     pb.innerHTML = units.map(u => {
       const status = getStatus(u);
       const delivered = getDelivered(u);
       const tierName = TIERS[u.tier]?.name || u.tier;
       const posLink = u.positionId != null ? `#${u.positionId}` : '—';
+      const email = emailByDid[u.userId] || '';
       const wallet = u.walletAddress
         ? `<a href="${SCAN}/address/${u.walletAddress}" target="_blank" class="addr">${truncAddr(u.walletAddress)}</a>`
         : '—';
       return `<tr>
         <td>${u.id.slice(0, 7)}</td>
-        <td>${wallet}</td>
+        <td>${email ? `<span class="dim" style="font-size:11px">${email}</span>` : wallet}</td>
         <td><span class="badge badge-${u.tier}">${tierName}</span></td>
         <td><span class="badge badge-${status}">${status}</span></td>
         <td>${fmtUSD(u.pricePaid)}</td>
@@ -547,8 +550,8 @@ function render(data) {
         ? `<a href="${SCAN}/address/${u.walletAddress}" target="_blank" class="addr">${truncAddr(u.walletAddress)}</a>`
         : '—';
       return `<tr>
+        <td>${u.email || '<span class="dim">—</span>'}</td>
         <td>${wallet}</td>
-        <td class="dim" style="font-size:10px">${u.privyDid.slice(0, 20)}…</td>
         <td>${userUnits.length}</td>
         <td>${fmtUSD(invested)}</td>
         <td>${fmtG(grams, 3)}g</td>

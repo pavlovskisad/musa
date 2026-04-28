@@ -1,4 +1,5 @@
 import sql from './_lib/db.js';
+import privy from './_lib/auth.js';
 import { JsonRpcProvider, Contract } from 'ethers';
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET;
@@ -75,10 +76,21 @@ export default async function handler(req, res) {
       }
     }
 
+    const emailMap = {};
+    await Promise.all(users.map(async (u) => {
+      try {
+        const pu = await privy.getUser(u.privy_did);
+        emailMap[u.privy_did] = pu?.email?.address || null;
+      } catch {
+        emailMap[u.privy_did] = null;
+      }
+    }));
+
     const data = {
       users: users.map(u => ({
         id: u.id,
         privyDid: u.privy_did,
+        email: emailMap[u.privy_did] || null,
         walletAddress: u.wallet_address,
         createdAt: u.created_at,
       })),
