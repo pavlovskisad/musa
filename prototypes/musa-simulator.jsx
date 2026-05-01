@@ -643,13 +643,26 @@ export default function App() {
     const annualRevenue = monthlyRevenue * 12;
     const marketCap = annualRevenue * revenueMultiple;
 
+    // Miner pipeline: how many junior miners needed to sustain current delivery
+    // Junior miner benchmark: ~20,000 oz/yr ≈ 622,070 g/yr ≈ 11,963 g/week
+    const MINER_WEEKLY_G = 11963;
+    const weeklyDelivery = recent.length > 0
+      ? recent.reduce((s, h) => s + h.goldGramsDelivered - (recent[recent.indexOf(h) - 1]?.goldGramsDelivered || (state.history[state.history.length - recent.length - 1]?.goldGramsDelivered || 0)), 0) / recent.length
+      : 0;
+    // Simpler: use undelivered pipeline and the sim's delivery rate
+    const undeliveredGrams = Math.max(0, state.totalGoldGramsCommitted - state.totalGoldGramsDelivered);
+    const currentWeeklyDelivery = undeliveredGrams * (1 / 56);
+    const minersNeeded = currentWeeklyDelivery > 0 ? currentWeeklyDelivery / MINER_WEEKLY_G : 0;
+    const annualDeliveryOz = (currentWeeklyDelivery * 52) / GRAMS_PER_TROY_OZ;
+
     return {
       monthlyRevenue, monthlyCosts, monthlyProfit, breakevenWeek,
       ltv, goldKg, goldOz, goldValue,
       bootCapital, bootCapitalWithBuffer, bootSettled, troughWeek,
       annualRevenue, marketCap,
+      minersNeeded, currentWeeklyDelivery, annualDeliveryOz, undeliveredGrams,
     };
-  }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.cumulativeProfit, inputs.goldPricePerGram, revenueMultiple]);
+  }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.totalGoldGramsCommitted, state.cumulativeProfit, inputs.goldPricePerGram, revenueMultiple]);
 
   return (
     <div className="w-full p-4 md:p-6" style={{ background: '#0a0908', color: '#FAFAF7', minHeight: '100dvh' }}>
@@ -937,6 +950,12 @@ export default function App() {
             label="Breakeven"
             value={derived.breakevenWeek ? `Week ${derived.breakevenWeek}` : '—'}
             tone={derived.breakevenWeek ? 'green' : 'default'}
+          />
+          <TickerCell
+            label="Miners needed"
+            value={derived.minersNeeded < 0.1 ? derived.minersNeeded.toFixed(2) : derived.minersNeeded.toFixed(1)}
+            tone="gold"
+            sub={`${fmtNum(Math.round(derived.annualDeliveryOz))} oz/yr flow`}
           />
           <div className="min-w-0">
             <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-1.5 truncate">Market cap</div>
@@ -1314,7 +1333,7 @@ export default function App() {
 // SUB-COMPONENTS
 // ============================================================
 
-function TickerCell({ label, value, tone = 'default' }) {
+function TickerCell({ label, value, tone = 'default', sub }) {
   const color = {
     default: 'var(--text)',
     gold: 'var(--gold)',
@@ -1330,6 +1349,7 @@ function TickerCell({ label, value, tone = 'default' }) {
       >
         {value}
       </div>
+      {sub && <div className="text-[9px] text-dim font-num mt-1 truncate">{sub}</div>}
     </div>
   );
 }
