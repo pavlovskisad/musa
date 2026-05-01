@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw, ChevronDown, ChevronUp, Activity, GitBranch, In
 // ============================================================
 const DEFAULT_GOLD_PRICE_PER_GRAM = 150;
 const GRAMS_PER_TROY_OZ = 31.1035;
+const AGREEMENT_YEARLY_OZ = 1250;
 const CONSTRUCTION_WEEKS = 4; // ~30 days
 const PROCESSING_FEE = 0.02;
 
@@ -643,16 +644,13 @@ export default function App() {
     const annualRevenue = monthlyRevenue * 12;
     const marketCap = annualRevenue * revenueMultiple;
 
-    // Miner pipeline: how many junior miners needed to sustain current delivery
-    // Junior miner benchmark: ~20,000 oz/yr ≈ 622,070 g/yr ≈ 11,963 g/week
-    const MINER_WEEKLY_G = 11963;
-    const weeklyDelivery = recent.length > 0
-      ? recent.reduce((s, h) => s + h.goldGramsDelivered - (recent[recent.indexOf(h) - 1]?.goldGramsDelivered || (state.history[state.history.length - recent.length - 1]?.goldGramsDelivered || 0)), 0) / recent.length
+    // Supply pipeline: how many forward purchase agreements needed
+    const AGREEMENT_WEEKLY_G = (AGREEMENT_YEARLY_OZ * GRAMS_PER_TROY_OZ) / 52;
+    // Actual delivery rate from recent sim history (not the decay formula)
+    const currentWeeklyDelivery = recent.length > 1
+      ? (recent[recent.length - 1].goldGramsDelivered - recent[0].goldGramsDelivered) / (recent.length - 1)
       : 0;
-    // Simpler: use undelivered pipeline and the sim's delivery rate
-    const undeliveredGrams = Math.max(0, state.totalGoldGramsCommitted - state.totalGoldGramsDelivered);
-    const currentWeeklyDelivery = undeliveredGrams * (1 / 56);
-    const minersNeeded = currentWeeklyDelivery > 0 ? currentWeeklyDelivery / MINER_WEEKLY_G : 0;
+    const minersNeeded = currentWeeklyDelivery > 0 ? currentWeeklyDelivery / AGREEMENT_WEEKLY_G : 0;
     const annualDeliveryOz = (currentWeeklyDelivery * 52) / GRAMS_PER_TROY_OZ;
 
     return {
@@ -660,7 +658,7 @@ export default function App() {
       ltv, goldKg, goldOz, goldValue,
       bootCapital, bootCapitalWithBuffer, bootSettled, troughWeek,
       annualRevenue, marketCap,
-      minersNeeded, currentWeeklyDelivery, annualDeliveryOz, undeliveredGrams,
+      minersNeeded, currentWeeklyDelivery, annualDeliveryOz,
     };
   }, [state.history, state.totalUsersEver, state.totalPlatformRevenue, state.totalGoldGramsDelivered, state.totalGoldGramsCommitted, state.cumulativeProfit, inputs.goldPricePerGram, revenueMultiple]);
 
@@ -952,10 +950,10 @@ export default function App() {
             tone={derived.breakevenWeek ? 'green' : 'default'}
           />
           <TickerCell
-            label="Miners needed"
+            label="Supply agreements"
             value={derived.minersNeeded < 0.1 ? derived.minersNeeded.toFixed(2) : derived.minersNeeded.toFixed(1)}
             tone="gold"
-            sub={`${fmtNum(Math.round(derived.annualDeliveryOz))} oz/yr flow`}
+            sub={`${fmtNum(Math.round(derived.annualDeliveryOz))} oz/yr · ~${fmtNum(AGREEMENT_YEARLY_OZ)}/ea`}
           />
           <div className="min-w-0">
             <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-1.5 truncate">Market cap</div>
