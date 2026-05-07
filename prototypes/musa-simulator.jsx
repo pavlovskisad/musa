@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Play, Pause, RotateCcw, ChevronDown, ChevronUp, Activity, GitBranch, Info } from 'lucide-react';
+import { Play, Pause, RotateCcw, ChevronDown, ChevronUp, Activity, GitBranch, Info, HelpCircle, X } from 'lucide-react';
 
 // ============================================================
 // CONSTANTS — the locked Tier 1 economics
@@ -508,6 +508,7 @@ export default function App() {
   const [revenueMultiple, setRevenueMultiple] = useState(15);
   const [goldUnit, setGoldUnit] = useState('g'); // 'g' | 'oz'
   const [priceSource, setPriceSource] = useState('default'); // 'default' | 'live' | 'failed'
+  const [showHelp, setShowHelp] = useState(false);
   const tickRef = useRef(null);
 
   // Try to fetch live gold price via CoinGecko PAXG on mount
@@ -850,6 +851,14 @@ export default function App() {
               title="Download current state as JSON"
             >
               Snapshot
+            </button>
+            {/* Help */}
+            <button
+              onClick={() => setShowHelp(true)}
+              className="press w-8 h-8 rounded-full border border-app text-dim flex items-center justify-center"
+              title="How this simulator works"
+            >
+              <HelpCircle size={14} />
             </button>
           </div>
         </div>
@@ -1323,6 +1332,131 @@ export default function App() {
           musa simulator · all numbers live · tweak and reset freely
         </div>
       </div>
+
+      {/* ================= HELP MODAL ================= */}
+      {showHelp && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+          onClick={() => setShowHelp(false)}
+        >
+          <div
+            className="bg-surface border border-app rounded-2xl max-w-[640px] w-full max-h-[85vh] overflow-y-auto scrollable"
+            style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-surface border-b border-app rounded-t-2xl px-6 py-4 flex items-center justify-between z-10">
+              <div className="font-display italic text-gold text-lg">how this works</div>
+              <button onClick={() => setShowHelp(false)} className="press w-8 h-8 rounded-full border border-app text-dim flex items-center justify-center">
+                <X size={14} />
+              </button>
+            </div>
+
+            <div className="px-6 py-5 space-y-5 text-[13px] leading-relaxed" style={{ color: 'var(--text)' }}>
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">What is this</div>
+                <p style={{ color: 'var(--text-dim)' }}>
+                  This simulator models how musa grows as a business over time. It runs week-by-week, simulating real user behavior — people signing up, buying gold positions, churning, and claiming their gold. Every number updates live as the simulation runs.
+                </p>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How musa works (the basics)</div>
+                <p style={{ color: 'var(--text-dim)' }}>
+                  Users pay cash to lock in a gold position at a discount to today's price. musa uses that cash to buy real gold from junior mining partners. The gold is then delivered back to the user gradually over the lock period (6, 12, or 24 months depending on tier). Users get more gold than they paid for — that's the discount.
+                </p>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">The three tiers</div>
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                  {Object.entries(TIER_SPECS).map(([k, t]) => (
+                    <div key={k} className="bg-surface-2 rounded-xl p-3 border border-app">
+                      <div className="text-gold font-num text-[11px] mb-1">{t.name}</div>
+                      <div className="text-dim text-[11px]">{t.lockWeeks / 4.33 | 0} months</div>
+                      <div className="text-dim text-[11px]">{(t.discount * 100).toFixed(1)}% discount</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-dim text-[11px] mt-2">Longer lock = bigger discount. The gold drips in daily over the lock period.</p>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">The money flow</div>
+                <p style={{ color: 'var(--text-dim)' }}>
+                  When a user pays $100: 2% goes to payment processing, 3% is musa's margin, 1% goes to a reserve fund (a safety buffer), and ~94% goes to the mining partner to buy gold. The reserve fund earns yield on treasuries and absorbs losses if anything goes wrong.
+                </p>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Three user types</div>
+                <div className="space-y-2 mt-2">
+                  <div className="flex gap-3 items-start">
+                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.curious.color }} />
+                    <div>
+                      <span className="text-app text-[12px]">Curious</span>
+                      <span className="text-dim text-[11px]"> — small buyers testing it out. Average $60, mostly Spark tier, high churn (~80%/yr)</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 items-start">
+                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.saver.color }} />
+                    <div>
+                      <span className="text-app text-[12px]">Saver</span>
+                      <span className="text-dim text-[11px]"> — regular monthly buyers building a gold position. Average $150, mix of tiers, low churn (~23%/yr)</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 items-start">
+                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.whale.color }} />
+                    <div>
+                      <span className="text-app text-[12px]">Whale</span>
+                      <span className="text-dim text-[11px]"> — high-net-worth buyers using musa for discounted gold. Average $7,500, mostly Vein tier, very low churn (~14%/yr)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Key metrics explained</div>
+                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Monthly profit</span> — platform revenue minus all costs (marketing, overhead, processing, defaults)</p>
+                  <p><span className="text-app">LTV</span> — lifetime value per user. Total revenue divided by total users ever acquired</p>
+                  <p><span className="text-app">Boot capital</span> — how much cash you need upfront to survive the early loss-making period before the business turns profitable</p>
+                  <p><span className="text-app">Supply agreements</span> — how many mining partners musa needs to sign to keep up with gold delivery demand. Based on ~{AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per partner</p>
+                  <p><span className="text-app">Reserve fund</span> — a safety buffer funded by 1% of every purchase. Earns yield, absorbs partner default losses. Capped to avoid over-accumulation</p>
+                  <p><span className="text-app">Breakeven</span> — the week when cumulative profit first turns positive (you've earned back all early losses)</p>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How to use it</div>
+                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Play / pause</span> — start or stop the simulation clock. Each tick is one week.</p>
+                  <p><span className="text-app">Speed</span> — 1x, 4x, 16x, or 64x. Higher speed = more weeks per second.</p>
+                  <p><span className="text-app">Scenarios</span> — Base, Optimistic, Stressed. Pre-configured assumptions about marketing spend, user behavior, and risk. Pick one as a starting point.</p>
+                  <p><span className="text-app">Sliders</span> — tweak any assumption while the sim is running. Changes apply immediately. Try cranking churn to 2.5x or cutting marketing budget to see what breaks.</p>
+                  <p><span className="text-app">Charts vs Flows</span> — toggle between data charts and the money flow diagram to see where cash and gold move.</p>
+                  <p><span className="text-app">Reset</span> — start over from week 0 with current slider settings.</p>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">What the scenarios test</div>
+                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Base</span> — conservative marketing ($600/wk), standard churn, 70% curious users. The realistic starting point.</p>
+                  <p><span className="text-app">Optimistic</span> — doubled marketing, lower churn, more savers and whales. What happens if product-market fit is strong.</p>
+                  <p><span className="text-app">Stressed</span> — expensive acquisition ($12/user), 2.5x churn, 85% curious. Tests whether the model survives hostile conditions.</p>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-app">
+                <p className="text-dim text-[11px]">
+                  All numbers are simulated approximations, not predictions. The model uses published research on user retention (pump.fun churn studies), realistic junior mining economics, and conservative platform margin assumptions. Gold price is fetched live from CoinGecko via PAXG.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
