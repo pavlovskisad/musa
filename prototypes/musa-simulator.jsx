@@ -1341,7 +1341,7 @@ export default function App() {
           onClick={() => setShowHelp(false)}
         >
           <div
-            className="bg-surface border border-app rounded-2xl max-w-[640px] w-full max-h-[85vh] overflow-y-auto scrollable"
+            className="bg-surface border border-app rounded-2xl max-w-[720px] w-full max-h-[85vh] overflow-y-auto scrollable"
             style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}
             onClick={e => e.stopPropagation()}
           >
@@ -1352,105 +1352,295 @@ export default function App() {
               </button>
             </div>
 
-            <div className="px-6 py-5 space-y-5 text-[13px] leading-relaxed" style={{ color: 'var(--text)' }}>
+            <div className="px-6 py-5 space-y-6 text-[13px] leading-relaxed" style={{ color: 'var(--text)' }}>
+
+              {/* ---- OVERVIEW ---- */}
               <div>
                 <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">What is this</div>
                 <p style={{ color: 'var(--text-dim)' }}>
-                  This simulator models how musa grows as a business over time. It runs week-by-week, simulating real user behavior — people signing up, buying gold positions, churning, and claiming their gold. Every number updates live as the simulation runs.
+                  A week-by-week business simulator for musa. It models every part of the system — user acquisition, purchasing behavior, gold delivery, churn, costs, defaults, and the reserve fund — running forward in simulated time. Every number on screen is computed live from the simulation state, not hard-coded. You control the assumptions; the model shows the consequences.
                 </p>
               </div>
 
+              {/* ---- MUSA BASICS ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How musa works (the basics)</div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How musa works</div>
                 <p style={{ color: 'var(--text-dim)' }}>
-                  Users pay cash to lock in a gold position at a discount to today's price. musa uses that cash to buy real gold from junior mining partners. The gold is then delivered back to the user gradually over the lock period (6, 12, or 24 months depending on tier). Users get more gold than they paid for — that's the discount.
+                  Users pay cash to lock in a gold position at a discount to the current spot price. musa forwards that cash to junior mining partners who supply real gold (PAXG on-chain). The gold is delivered gradually over the lock period. Users end up with more gold than they paid for — the discount is the incentive to lock.
                 </p>
-              </div>
-
-              <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">The three tiers</div>
-                <div className="grid grid-cols-3 gap-3 mt-2">
+                <div className="grid grid-cols-3 gap-3 mt-3">
                   {Object.entries(TIER_SPECS).map(([k, t]) => (
                     <div key={k} className="bg-surface-2 rounded-xl p-3 border border-app">
                       <div className="text-gold font-num text-[11px] mb-1">{t.name}</div>
-                      <div className="text-dim text-[11px]">{t.lockWeeks / 4.33 | 0} months</div>
-                      <div className="text-dim text-[11px]">{(t.discount * 100).toFixed(1)}% discount</div>
+                      <div className="text-dim text-[11px]">{t.lockWeeks / 4.33 | 0} month lock</div>
+                      <div className="text-dim text-[11px]">{(t.discount * 100).toFixed(1)}% more gold</div>
                     </div>
                   ))}
                 </div>
-                <p className="text-dim text-[11px] mt-2">Longer lock = bigger discount. The gold drips in daily over the lock period.</p>
               </div>
 
+              {/* ---- THE SIMULATION ENGINE ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">The money flow</div>
-                <p style={{ color: 'var(--text-dim)' }}>
-                  When a user pays $100: 2% goes to payment processing, 3% is musa's margin, 1% goes to a reserve fund (a safety buffer), and ~94% goes to the mining partner to buy gold. The reserve fund earns yield on treasuries and absorbs losses if anything goes wrong.
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">The simulation engine — what happens each week</div>
+                <p className="text-dim text-[11px] mb-3">Every tick advances one week. The sim runs seven steps in order:</p>
+                <div className="space-y-3">
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">1</div>
+                    <div>
+                      <div className="text-app text-[12px]">Acquisition</div>
+                      <p className="text-dim text-[11px]">New users arrive. Paid users = marketing budget ÷ CAC. Organic users = a percentage of paid (the organic multiplier). Plus a small referral stream (0.1% of existing users). New users are split across the three personas by the audience mix sliders.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">2</div>
+                    <div>
+                      <div className="text-app text-[12px]">Churn</div>
+                      <p className="text-dim text-[11px]">Each persona has a different weekly churn rate (Curious 3%, Saver 0.5%, Whale 0.3%). The churn multiplier slider scales all three together. Key mechanic: users with active locked positions (Flow or Vein) are protected from churning — they can't leave while their gold is vesting. This is the lock-in effect.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">3</div>
+                    <div>
+                      <div className="text-app text-[12px]">Purchases</div>
+                      <p className="text-dim text-[11px]">Each persona buys at their own frequency and ticket size. Curious: 2×/yr at $60. Saver: 18×/yr at $150. Whale: 2×/yr at $7,500. The frequency multiplier and audience volume sliders scale these. Each purchase is allocated to a tier based on the persona's preference weights, then the cash is split: 2% processing, X% platform margin, X% reserve, remainder to mining partner.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">4</div>
+                    <div>
+                      <div className="text-app text-[12px]">Gold delivery</div>
+                      <p className="text-dim text-[11px]">Outstanding committed grams are delivered using exponential decay: each week, 1/56th of undelivered grams are delivered. 56 weeks is the blended average delivery window across the three tiers (Spark 22 + Flow 48 + Vein 100 weeks, averaged). This creates a smooth, realistic delivery curve rather than cliff-edged batch deliveries.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">5</div>
+                    <div>
+                      <div className="text-app text-[12px]">Costs</div>
+                      <p className="text-dim text-[11px]">Weekly costs = monthly overhead ÷ 4.33 + marketing budget + processing fees from this week's purchases. Overhead covers team, infra, legal — all fixed costs.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">6</div>
+                    <div>
+                      <div className="text-app text-[12px]">Defaults</div>
+                      <p className="text-dim text-[11px]">A rare random event. Each week there's a small probability (annual default rate ÷ 52) that a mining partner fails to deliver. When it fires: exposure is 5% of in-flight capital (capped at $1.5M per event), 60% is recovered through legal/insurance, and the net loss hits the reserve fund first. Only if the reserve is empty does the loss hit the P&L.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 rounded-full bg-surface-2 border border-app flex items-center justify-center text-gold text-[10px] font-num flex-shrink-0 mt-0.5">7</div>
+                    <div>
+                      <div className="text-app text-[12px]">Early exits</div>
+                      <p className="text-dim text-[11px]">A percentage of active positions exit early each year (the early exit rate slider). These users forfeit a portion of their remaining gold. The forfeited gold stays in the reserve.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ---- PERSONAS ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Three user personas</div>
+                <p className="text-dim text-[11px] mb-3">Every simulated user belongs to one of three archetypes. The audience mix sliders control the ratio of new users across these groups.</p>
+                <div className="space-y-2">
+                  {[
+                    { key: 'curious', desc: 'Top-of-funnel testers. Small ticket ($60), buy infrequently (2×/yr), heavily Spark tier, high churn (3%/wk ≈ 80%/yr). Most users start here. Revenue per user is low but they build volume and some convert to Saver behavior over time.' },
+                    { key: 'saver', desc: 'The core user. Monthly buyers ($150), buy often (18×/yr ≈ 1.5/mo), balanced across tiers but leaning Flow, low churn (0.5%/wk ≈ 23%/yr). High LTV. Their locked positions protect them from churning — the product\'s retention flywheel.' },
+                    { key: 'whale', desc: 'High-net-worth buyers using musa for discounted physical gold exposure. Large ticket ($7,500), buy rarely (2×/yr), heavily Vein tier (24-month lock), very low churn (0.3%/wk ≈ 14%/yr). A small percentage of users but outsized revenue impact.' },
+                  ].map(({ key, desc }) => (
+                    <div key={key} className="flex gap-3 items-start">
+                      <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS[key].color }} />
+                      <div>
+                        <span className="text-app text-[12px]">{PERSONAS[key].name}</span>
+                        <span className="text-dim text-[11px]"> — {desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ---- SLIDERS: MAIN ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Main control sliders</div>
+                <p className="text-dim text-[11px] mb-3">These control the primary growth and economics levers. Changes apply immediately to the next simulated week.</p>
+                <div className="space-y-2" style={{ color: 'var(--text-dim)' }}>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Marketing budget / week</div>
+                    <p className="text-[11px]">How much you spend on paid acquisition each week. Directly determines paid user inflow: budget ÷ CAC = paid users. Higher budget = more users, but the efficiency depends on CAC.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">CAC per paid user</div>
+                    <p className="text-[11px]">Cost to acquire one paid user. Lower = more users per dollar. This is the other half of the acquisition equation. A $5 CAC with $600/wk budget gets 120 paid users. At $12, only 50.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Organic multiplier</div>
+                    <p className="text-[11px]">What percentage of paid users you also get organically (word of mouth, SEO, press, social). 20% means for every 100 paid users, you get 20 organic users for free. Plus a tiny referral stream (0.1% of total users per week). This is where viral/brand effects show up.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Audience volume</div>
+                    <p className="text-[11px]">Scales the ticket size for all personas. At 1.0× each persona uses their default ticket ($60 / $150 / $7,500). At 2.0× those double. Models whether your audience skews richer or poorer than the baseline assumption.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Purchase frequency</div>
+                    <p className="text-[11px]">Scales how often each persona buys. At 1.0× Curious buys 2×/yr, Saver 18×/yr, Whale 2×/yr. At 1.5× those increase by 50%. Models whether users are more or less engaged than baseline.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Platform margin</div>
+                    <p className="text-[11px]">The percentage of each purchase that musa keeps as revenue. Default 3%. The rest (minus processing and reserve) goes to mining partners for gold. Higher margin = more revenue per unit but users get slightly less gold value.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Reserve cap</div>
+                    <p className="text-[11px]">Maximum size of the reserve fund. Once the reserve hits this cap, new contributions overflow into platform revenue instead. Prevents over-accumulation of idle capital. Set to $0 for uncapped.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Reserve yield</div>
+                    <p className="text-[11px]">Annual yield earned on the reserve balance (treasuries, money market). Compounds weekly. This yield flows into platform revenue, making the reserve a productive asset rather than dead capital.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ---- SLIDERS: ADVANCED ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Advanced sliders</div>
+                <p className="text-dim text-[11px] mb-3">Risk and stress-testing parameters. Hidden by default in the "Advanced" panel.</p>
+                <div className="space-y-2" style={{ color: 'var(--text-dim)' }}>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Churn multiplier</div>
+                    <p className="text-[11px]">Scales all persona churn rates together. At 1.0× the base rates apply (Curious 3%/wk, Saver 0.5%/wk, Whale 0.3%/wk). At 2.5× (the Stressed scenario), churn is brutal — most Curious users leave within weeks. Users with active locked positions are still protected from churning regardless of this slider.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Early exit rate / year</div>
+                    <p className="text-[11px]">Percentage of active locked positions that exit early each year. These users break their lock, forfeit unvested gold, and leave. Higher = more attrition in the active unit base. Forfeited gold benefits the reserve.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Annual default probability</div>
+                    <p className="text-[11px]">The chance per year that a mining partner fails to deliver gold. When triggered: 5% of in-flight working capital is exposed, 60% is recovered, and the net loss hits the reserve first. At 2%/yr you might see one event every 50 weeks. At 6%+ you'll see the reserve get tested regularly.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Monthly overhead</div>
+                    <p className="text-[11px]">Fixed costs: team salaries, infrastructure, legal, compliance. Paid every week (÷ 4.33). This is the burn floor — even with zero users, you pay this. The breakeven point depends heavily on how fast revenue outgrows this number.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Reserve contribution</div>
+                    <p className="text-[11px]">Percentage of each purchase that's set aside into the reserve fund. Default 1%. Higher = safer (bigger buffer against defaults) but less cash to mining partners = less gold purchased per dollar.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ---- AUDIENCE MIX ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Audience mix sliders</div>
+                <p className="text-dim text-[11px]">
+                  Three sliders (Curious / Saver / Whale) control the composition of newly acquired users. They're relative weights, not absolute percentages — if you set Curious=70, Saver=25, Whale=5, then 70% of new users each week are Curious. The mix dramatically affects revenue: a 5% Whale share drives more dollars than 70% Curious users, because Whales spend 125× more per purchase.
                 </p>
               </div>
 
+              {/* ---- DEPENDENCIES ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Three user types</div>
-                <div className="space-y-2 mt-2">
-                  <div className="flex gap-3 items-start">
-                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.curious.color }} />
-                    <div>
-                      <span className="text-app text-[12px]">Curious</span>
-                      <span className="text-dim text-[11px]"> — small buyers testing it out. Average $60, mostly Spark tier, high churn (~80%/yr)</span>
-                    </div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How parameters connect</div>
+                <p className="text-dim text-[11px] mb-3">Nothing in this model exists in isolation. Here's how the levers interact:</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Marketing budget + CAC + organic multiplier</span> → total new users per week. This is the growth engine. Budget ÷ CAC = paid users. Paid × organic% = free bonus. More users → more purchases → more revenue, but also more gold to deliver.</p>
+                  <p><span className="text-app">Audience mix + frequency + volume</span> → revenue per user. The mix decides WHO your users are. Frequency decides how OFTEN they buy. Volume decides how MUCH they spend. A saver-heavy mix with high frequency generates steady, predictable cash flow. A whale-heavy mix generates lumpy but large inflows.</p>
+                  <p><span className="text-app">Platform margin + reserve contribution</span> → how cash is split. Margin is your revenue. Reserve is your safety net. The remainder (after 2% processing) goes to mining partners. If margin + reserve + processing exceed ~6%, partners get less than 94 cents per dollar, which means less gold per position.</p>
+                  <p><span className="text-app">Churn × lock-in protection</span> → effective retention. High churn devastates Curious users (Spark tier, no meaningful lock). But Savers and Whales on Flow/Vein tiers are partially shielded — they have active locked positions that prevent churning. This is why the tier mix matters: longer locks create stickier users.</p>
+                  <p><span className="text-app">Default rate × reserve fund</span> → resilience. Defaults are absorbed by the reserve first. A well-funded reserve (high contribution %, high cap, earning yield) can swallow multiple defaults without hitting the P&L. An underfunded reserve means defaults blow straight through to your bottom line.</p>
+                  <p><span className="text-app">Gold delivery rate × supply agreements</span> → operational scale. As more gold is committed, the weekly delivery throughput grows. The "Supply agreements" metric shows how many mining partner contracts you need to sustain that throughput, based on ~{AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per agreement.</p>
+                  <p><span className="text-app">Overhead × breakeven</span> → how deep the J-curve goes. Higher overhead pushes breakeven further out and deepens the boot capital requirement. The sim tracks cumulative P&L to find the exact trough — that's your minimum fundraise.</p>
+                </div>
+              </div>
+
+              {/* ---- REALITY INJECTIONS ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Reality injections — where the numbers come from</div>
+                <p className="text-dim text-[11px] mb-3">The model is grounded in real data wherever possible. Here's what's calibrated to reality vs. what's an assumption:</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Churn rates — from pump.fun retention studies</div>
+                    <p>The Curious persona's 3%/wk churn (~80%/yr) is calibrated to observed retention curves from crypto consumer products (pump.fun data). Saver and Whale rates are lower, reflecting the stickiness of users with real financial commitment. These aren't guesses — they match published cohort decay patterns.</p>
                   </div>
-                  <div className="flex gap-3 items-start">
-                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.saver.color }} />
-                    <div>
-                      <span className="text-app text-[12px]">Saver</span>
-                      <span className="text-dim text-[11px]"> — regular monthly buyers building a gold position. Average $150, mix of tiers, low churn (~23%/yr)</span>
-                    </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Lock-in churn protection</div>
+                    <p>Users with active Flow (12mo) or Vein (24mo) positions can't churn while locked. The sim tracks locked units per persona and excludes them from the churn pool. Lock decay rate (1/75 per week) models positions maturing over time, gradually releasing users back into the churn-eligible pool. This is the core retention mechanic — not marketing, not loyalty points, but a structural incentive.</p>
                   </div>
-                  <div className="flex gap-3 items-start">
-                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS.whale.color }} />
-                    <div>
-                      <span className="text-app text-[12px]">Whale</span>
-                      <span className="text-dim text-[11px]"> — high-net-worth buyers using musa for discounted gold. Average $7,500, mostly Vein tier, very low churn (~14%/yr)</span>
-                    </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Gold delivery — exponential decay model</div>
+                    <p>Rather than delivering gold in batches when locks expire, the sim uses a continuous exponential decay: 1/56th of all undelivered grams are delivered each week. 56 is the blended average delivery window across tiers. This smooths the delivery curve and is more realistic — in practice, musa has positions maturing at different times constantly.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Default model — rare, capped, reserve-first</div>
+                    <p>Defaults aren't "users not paying" — they're exceptional events where a mining partner fails (geopolitics, fraud, force majeure). Exposure per event is capped at 5% of in-flight capital or $1.5M, whichever is less. 60% recovery rate reflects legal recourse, insurance, and asset liquidation. The reserve absorbs losses first, P&L only takes the hit if the reserve is empty. This is how real commodity finance risk works.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Supply agreements — junior mining benchmarks</div>
+                    <p>Each supply agreement represents ~{AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr of gold throughput — a realistic forward purchase agreement with a junior mining operation (a fraction of a full mine's ~20,000 oz/yr output). The metric tells you how many partner contracts musa needs to sign to sustain current delivery volume.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Gold price — live from PAXG</div>
+                    <p>On load, the sim fetches the current PAXG price from CoinGecko and converts to $/gram. If the fetch fails, it falls back to ${DEFAULT_GOLD_PRICE_PER_GRAM}/g. The green dot in the header means live price is active. All gold values, delivery rates, and supply agreement calculations use this price.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Persona purchase stochasticity</div>
+                    <p>Purchase counts per week aren't deterministic. The sim computes expected purchases (frequency × users ÷ 52), takes the integer part, then rolls a random number for the fractional part. This means early weeks with few users have realistic variance — some weeks 3 purchases, some weeks 0 — rather than smooth impossible-looking curves.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Reserve fund mechanics</div>
+                    <p>The reserve is a real structural feature, not decoration. It's funded by a percentage of every purchase, earns weekly yield (treasuries/money market), has a cap to prevent over-accumulation (overflow goes to revenue), and is the first line of defense against default losses. This mirrors how real commodity trading firms manage counterparty risk.</p>
+                  </div>
+                  <div className="bg-surface-2 rounded-xl p-3 border border-app">
+                    <div className="text-app text-[12px] mb-1">Boot capital (J-curve analysis)</div>
+                    <p>The sim tracks cumulative profit from week 0. Early on, costs exceed revenue, creating a deepening loss (the J-curve). The deepest point is the "boot capital" — the minimum cash you need to pre-fund. Once revenue catches up and cumulative profit starts climbing, the trough is "settled." The recommended raise is 1.4× the trough (40% buffer for variance).</p>
                   </div>
                 </div>
               </div>
 
+              {/* ---- SCENARIOS ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Key metrics explained</div>
-                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
-                  <p><span className="text-app">Monthly profit</span> — platform revenue minus all costs (marketing, overhead, processing, defaults)</p>
-                  <p><span className="text-app">LTV</span> — lifetime value per user. Total revenue divided by total users ever acquired</p>
-                  <p><span className="text-app">Boot capital</span> — how much cash you need upfront to survive the early loss-making period before the business turns profitable</p>
-                  <p><span className="text-app">Supply agreements</span> — how many mining partners musa needs to sign to keep up with gold delivery demand. Based on ~{AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per partner</p>
-                  <p><span className="text-app">Reserve fund</span> — a safety buffer funded by 1% of every purchase. Earns yield, absorbs partner default losses. Capped to avoid over-accumulation</p>
-                  <p><span className="text-app">Breakeven</span> — the week when cumulative profit first turns positive (you've earned back all early losses)</p>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Scenario presets</div>
+                <p className="text-dim text-[11px] mb-3">Three pre-configured starting points. Each sets all sliders to a coherent set of assumptions. You can tweak individual sliders after loading a scenario.</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Base</span> — the realistic starting point. $600/wk marketing, $5 CAC, 20% organic, 70/25/5 audience mix, 1× churn, 5% early exits, 2% default rate, $7k/mo overhead. This is where you start to understand the baseline economics.</p>
+                  <p><span className="text-app">Optimistic</span> — product-market fit hits. $1,200/wk marketing (you're scaling), $3 CAC (brand pull), 40% organic, more Savers and Whales (35/10 vs 25/5), 0.6× churn (product is sticky), 3% early exits, 1% defaults, $9k/mo overhead (team grew).</p>
+                  <p><span className="text-app">Stressed</span> — hostile conditions. Same $600/wk budget but $12 CAC (paid channels are expensive), only 10% organic, 85% Curious users (no product-market fit), 2.5× churn, 15% early exits, 6% default rate, $8k/mo overhead. Tests whether the model breaks or bends.</p>
                 </div>
               </div>
 
+              {/* ---- HOW TO USE ---- */}
               <div>
                 <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">How to use it</div>
-                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
-                  <p><span className="text-app">Play / pause</span> — start or stop the simulation clock. Each tick is one week.</p>
-                  <p><span className="text-app">Speed</span> — 1x, 4x, 16x, or 64x. Higher speed = more weeks per second.</p>
-                  <p><span className="text-app">Scenarios</span> — Base, Optimistic, Stressed. Pre-configured assumptions about marketing spend, user behavior, and risk. Pick one as a starting point.</p>
-                  <p><span className="text-app">Sliders</span> — tweak any assumption while the sim is running. Changes apply immediately. Try cranking churn to 2.5x or cutting marketing budget to see what breaks.</p>
-                  <p><span className="text-app">Charts vs Flows</span> — toggle between data charts and the money flow diagram to see where cash and gold move.</p>
-                  <p><span className="text-app">Reset</span> — start over from week 0 with current slider settings.</p>
+                <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Play / pause</span> — start or stop time. Each tick is one week.</p>
+                  <p><span className="text-app">Speed</span> — 1×, 4×, 16×, or 64×. At 64× you'll hit year 5 in about a minute.</p>
+                  <p><span className="text-app">Reset</span> — go back to week 0 with current slider settings. Use this to test a clean run after changing assumptions.</p>
+                  <p><span className="text-app">Charts vs Flows</span> — Charts show time-series data (revenue, users, gold). Flows show the live money/gold flow diagram — where cash enters, gets split, and where gold comes back.</p>
+                  <p><span className="text-app">Platform / Users / Gold tabs</span> — three chart views. Platform shows revenue, costs, and profit. Users shows acquisition, churn, and persona breakdown. Gold shows delivery and commitment curves.</p>
+                  <p><span className="text-app">Snapshot</span> — downloads the full simulation state as JSON. Useful for saving a specific run to compare later.</p>
+                  <p><span className="text-app">g / oz toggle</span> — switch gold display between grams and troy ounces.</p>
                 </div>
               </div>
 
+              {/* ---- KEY METRICS ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">What the scenarios test</div>
-                <div className="space-y-1.5" style={{ color: 'var(--text-dim)' }}>
-                  <p><span className="text-app">Base</span> — conservative marketing ($600/wk), standard churn, 70% curious users. The realistic starting point.</p>
-                  <p><span className="text-app">Optimistic</span> — doubled marketing, lower churn, more savers and whales. What happens if product-market fit is strong.</p>
-                  <p><span className="text-app">Stressed</span> — expensive acquisition ($12/user), 2.5x churn, 85% curious. Tests whether the model survives hostile conditions.</p>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Key metrics (top ticker row)</div>
+                <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <p><span className="text-app">Monthly profit</span> — averaged over the last 12 weeks. Revenue (platform margin + reserve overflow + reserve yield) minus costs (overhead + marketing + processing + default losses).</p>
+                  <p><span className="text-app">LTV</span> — lifetime value. Total platform revenue ever ÷ total users ever acquired. Tells you how much each user is worth on average across all personas.</p>
+                  <p><span className="text-app">Gold delivered</span> — total grams (or oz) of gold delivered to all users across all time. The core output metric.</p>
+                  <p><span className="text-app">Breakeven</span> — the week when cumulative profit first crosses zero. Before this point, the business is in the red. After, every week of profit is real retained earnings.</p>
+                  <p><span className="text-app">Supply agreements</span> — how many mining partner contracts are needed right now, based on actual delivery throughput from the last 12 weeks ÷ {AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per agreement.</p>
+                  <p><span className="text-app">Market cap</span> — a rough indicative valuation: annual revenue × the revenue multiple you set (default 15×). Just a reference point, not a prediction.</p>
+                </div>
+              </div>
+
+              {/* ---- WHAT IT DOESN'T MODEL ---- */}
+              <div>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">What it doesn't model</div>
+                <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-dim)' }}>
+                  <p>Gold price changes over time (uses a fixed spot price per run). Conversion from Curious→Saver over time. Seasonality. Regulatory events. Partner capacity constraints. Network effects beyond basic referral. Geographic expansion. These are all real factors but adding them would make the model harder to reason about without proportional insight gain.</p>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-app">
                 <p className="text-dim text-[11px]">
-                  All numbers are simulated approximations, not predictions. The model uses published research on user retention (pump.fun churn studies), realistic junior mining economics, and conservative platform margin assumptions. Gold price is fetched live from CoinGecko via PAXG.
+                  All numbers are simulated approximations, not forecasts. The model is designed to reveal dynamics and sensitivities, not predict exact outcomes. Tweak the assumptions, watch what changes, and build intuition for how the system behaves under different conditions.
                 </p>
               </div>
             </div>
