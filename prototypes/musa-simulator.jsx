@@ -995,7 +995,7 @@ export default function App() {
             label="Supply agreements"
             value={derived.minersNeeded < 0.1 ? derived.minersNeeded.toFixed(2) : derived.minersNeeded.toFixed(1)}
             tone="gold"
-            sub={`${fmtNum(Math.round(derived.annualDeliveryOz))} oz/yr · ~${fmtNum(AGREEMENT_YEARLY_OZ)}/ea`}
+            sub={`${fmtGold(derived.currentWeeklyDelivery * 52, goldUnit)}/yr delivery`}
           />
           <div className="min-w-0">
             <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-1.5 truncate">Market cap</div>
@@ -1078,6 +1078,9 @@ export default function App() {
                       <span className="text-[11px] text-dim">Concurrent agreements</span>
                       <span className="font-num text-gold text-sm">{derived.bootAgreementsAtTrough > 0 ? derived.bootAgreementsAtTrough.toFixed(1) : '—'}</span>
                     </div>
+                    <div className="text-[9px] text-dim font-num mt-0.5 text-right">
+                      {derived.bootAgreementsAtTrough > 0 ? `@ ${fmtGold(AGREEMENT_YEARLY_OZ * GRAMS_PER_TROY_OZ, goldUnit)}/yr each` : ''}
+                    </div>
                   </div>
                 </div>
                 {/* At breakeven */}
@@ -1100,6 +1103,9 @@ export default function App() {
                     <div className="flex justify-between items-baseline">
                       <span className="text-[11px] text-dim">Concurrent agreements</span>
                       <span className="font-num text-gold text-sm">{derived.bootAgreementsAtBreakeven > 0 ? derived.bootAgreementsAtBreakeven.toFixed(1) : '—'}</span>
+                    </div>
+                    <div className="text-[9px] text-dim font-num mt-0.5 text-right">
+                      {derived.bootAgreementsAtBreakeven > 0 ? `@ ${fmtGold(AGREEMENT_YEARLY_OZ * GRAMS_PER_TROY_OZ, goldUnit)}/yr each` : ''}
                     </div>
                   </div>
                 </div>
