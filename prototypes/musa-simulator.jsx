@@ -94,7 +94,7 @@ const SCENARIOS = {
     reserveContribution: 1.0,
   },
   optimistic: {
-    label: 'PWA Growth',
+    label: 'PWA + PMF',
     marketingBudgetWeek: 5000,
     cacPerUser: 20,
     organicMultiplier: 50,
@@ -1700,7 +1700,7 @@ export default function App() {
                 <p className="text-dim text-[11px] mb-3">Three pre-configured starting points. Each sets all sliders to a coherent set of assumptions. You can tweak individual sliders after loading a scenario.</p>
                 <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
                   <p><span className="text-app">PWA Base</span> — PWA-first launch, realistic paid acquisition. $3K/wk marketing, $35 CAC, 30% organic, 80/15/4/1 mix (Curious/Saver/Whale/MegaWhale), $12K/mo overhead. No app store cut, direct checkout. The credible launch scenario.</p>
-                  <p><span className="text-app">PWA Growth</span> — product clicks, referral loops work. $5K/wk, $20 CAC, 50% organic, 62/25/10/3 mix (more committed users as traction builds), 0.6× churn, $15K/mo overhead. The scenario where word-of-mouth compounds and acquisition costs drop.</p>
+                  <p><span className="text-app">PWA + PMF</span> — product-market fit on web. $5K/wk, $20 CAC, 50% organic, 62/25/10/3 mix (more committed users as PMF kicks in), 0.6× churn, $15K/mo overhead. What happens when the product clicks and referral loops compound.</p>
                   <p><span className="text-app">Native Cold</span> — native app cold-start. $6K/wk, $80 CAC, 15% organic, 88/10/2/0 mix (almost no whales at launch), 2.5× churn, 15% early exits, 6% defaults, $20K/mo overhead. Tests whether the model survives expensive distribution.</p>
                 </div>
               </div>
