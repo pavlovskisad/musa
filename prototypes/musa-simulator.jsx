@@ -36,20 +36,30 @@ const PERSONAS = {
   saver: {
     name: 'Saver',
     color: '#C9A961',
-    frequency: 18,     // ~1.5 per month, matches paycheck cadence
-    avgTicket: 150,
+    frequency: 12,     // monthly DCA cadence
+    avgTicket: 200,
     tierWeights: { spark: 20, flow: 55, vein: 25 },
     baseWeeklyChurn: 0.005,  // 0.5%/week → ~23%/yr
   },
   whale: {
     name: 'Whale',
     color: '#E4C57E',
-    frequency: 2,      // rare but huge
+    frequency: 2,      // rare but large
     avgTicket: 7500,
     tierWeights: { spark: 5, flow: 25, vein: 70 },
     baseWeeklyChurn: 0.003,  // 0.3%/week → ~14%/yr
   },
+  megawhale: {
+    name: 'MegaWhale',
+    color: '#F4DE9D',
+    frequency: 1,      // 1 big annual allocation
+    avgTicket: 50000,
+    tierWeights: { spark: 0, flow: 10, vein: 90 },
+    baseWeeklyChurn: 0.002,  // 0.2%/week → ~10%/yr — stickiest cohort
+  },
 };
+
+const PERSONA_KEYS = Object.keys(PERSONAS);
 
 // Helper: pick a tier from persona weights (proportional allocation).
 // Returns a count-per-tier given a total unit count to distribute.
@@ -70,7 +80,7 @@ const SCENARIOS = {
     marketingBudgetWeek: 3000,
     cacPerUser: 35,
     organicMultiplier: 30,
-    personaMix: { curious: 70, saver: 25, whale: 5 },
+    personaMix: { curious: 80, saver: 15, whale: 4, megawhale: 1 },
     audienceVolume: 1.0,
     frequencyMultiplier: 1.0,
     platformMargin: 3.0,
@@ -88,7 +98,7 @@ const SCENARIOS = {
     marketingBudgetWeek: 5000,
     cacPerUser: 20,
     organicMultiplier: 50,
-    personaMix: { curious: 55, saver: 35, whale: 10 },
+    personaMix: { curious: 62, saver: 25, whale: 10, megawhale: 3 },
     audienceVolume: 1.3,
     frequencyMultiplier: 1.2,
     platformMargin: 3.0,
@@ -106,7 +116,7 @@ const SCENARIOS = {
     marketingBudgetWeek: 6000,
     cacPerUser: 80,
     organicMultiplier: 15,
-    personaMix: { curious: 85, saver: 13, whale: 2 },
+    personaMix: { curious: 88, saver: 10, whale: 2, megawhale: 0 },
     audienceVolume: 0.7,
     frequencyMultiplier: 0.8,
     platformMargin: 3.0,
@@ -128,10 +138,10 @@ function createInitialState() {
   return {
     week: 0,
     // Per-persona active user counts (replaces the flat `users` number)
-    usersByPersona: { curious: 0, saver: 0, whale: 0 },
+    usersByPersona: { curious: 0, saver: 0, whale: 0, megawhale: 0 },
     totalUsersEver: 0,
     // Per-persona active locked units (for lock-in churn protection)
-    lockedUnitsByPersona: { curious: 0, saver: 0, whale: 0 },
+    lockedUnitsByPersona: { curious: 0, saver: 0, whale: 0, megawhale: 0 },
     activeUnits: 0,
     totalUnitsSold: 0,
     totalCashInflow: 0,
@@ -171,7 +181,7 @@ function stepSimulation(state, inputs) {
   next.lockedUnitsByPersona = { ...state.lockedUnitsByPersona };
 
   const totalUsersNow = () =>
-    next.usersByPersona.curious + next.usersByPersona.saver + next.usersByPersona.whale;
+    PERSONA_KEYS.reduce((s, k) => s + next.usersByPersona[k], 0);
 
   // ==== 1. ACQUISITION (distributed across personas by mix) ====
   const paidUsers = inputs.cacPerUser > 0
@@ -183,15 +193,17 @@ function stepSimulation(state, inputs) {
   const newUsers = paidUsers + organicUsers;
 
   // Distribute across personas based on configured mix
-  const mix = inputs.personaMix || { curious: 70, saver: 25, whale: 5 };
-  const mixTotal = mix.curious + mix.saver + mix.whale;
-  const newCurious = Math.round(newUsers * (mix.curious / mixTotal));
-  const newSaver = Math.round(newUsers * (mix.saver / mixTotal));
-  const newWhale = newUsers - newCurious - newSaver;
-
-  next.usersByPersona.curious += newCurious;
-  next.usersByPersona.saver   += newSaver;
-  next.usersByPersona.whale   += newWhale;
+  const mix = inputs.personaMix || { curious: 80, saver: 15, whale: 4, megawhale: 1 };
+  const mixTotal = PERSONA_KEYS.reduce((s, k) => s + (mix[k] || 0), 0);
+  let assigned = 0;
+  for (let i = 0; i < PERSONA_KEYS.length; i++) {
+    const k = PERSONA_KEYS[i];
+    const n = i === PERSONA_KEYS.length - 1
+      ? newUsers - assigned
+      : Math.round(newUsers * ((mix[k] || 0) / mixTotal));
+    next.usersByPersona[k] += n;
+    assigned += n;
+  }
   next.totalUsersEver += newUsers;
 
   // ==== 2. CHURN (per-persona, lock-in protected) ==========
@@ -199,7 +211,7 @@ function stepSimulation(state, inputs) {
   // `churnMultiplier` scales all three together for stress-testing.
   // Users with active locked units (Flow or Vein) can't churn.
   const churnMult = inputs.churnMultiplier || 1.0;
-  for (const pKey of ['curious', 'saver', 'whale']) {
+  for (const pKey of PERSONA_KEYS) {
     const p = PERSONAS[pKey];
     const count = next.usersByPersona[pKey];
     if (count === 0) continue;
@@ -224,9 +236,9 @@ function stepSimulation(state, inputs) {
   let unitsAddedThisWeek = 0;
   let gramsCommittedThisWeek = 0;
   // Track new locked units by persona (for future churn protection)
-  const newLockedByPersona = { curious: 0, saver: 0, whale: 0 };
+  const newLockedByPersona = { curious: 0, saver: 0, whale: 0, megawhale: 0 };
 
-  for (const pKey of ['curious', 'saver', 'whale']) {
+  for (const pKey of PERSONA_KEYS) {
     const p = PERSONAS[pKey];
     const count = next.usersByPersona[pKey];
     if (count === 0) continue;
@@ -275,7 +287,7 @@ function stepSimulation(state, inputs) {
   // Apply new locks and decay existing ones toward maturation
   // Average lock tenor ≈ 75 weeks blended; weekly decay rate = 1/75
   const lockDecayRate = 1 / 75;
-  for (const pKey of ['curious', 'saver', 'whale']) {
+  for (const pKey of PERSONA_KEYS) {
     next.lockedUnitsByPersona[pKey] =
       next.lockedUnitsByPersona[pKey] * (1 - lockDecayRate) + newLockedByPersona[pKey];
   }
@@ -426,7 +438,7 @@ function stepSimulation(state, inputs) {
   }
 
   // ==== 12. HISTORY =======================================
-  const totalUsers = next.usersByPersona.curious + next.usersByPersona.saver + next.usersByPersona.whale;
+  const totalUsers = PERSONA_KEYS.reduce((s, k) => s + next.usersByPersona[k], 0);
   const snapshot = {
     week: next.week,
     revenue: totalPlatformRevThisWeek,
@@ -501,7 +513,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState('charts');
 
   // Computed: total active users across all personas
-  const totalUsers = state.usersByPersona.curious + state.usersByPersona.saver + state.usersByPersona.whale;
+  const totalUsers = PERSONA_KEYS.reduce((s, k) => s + state.usersByPersona[k], 0);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [personaInfoOpen, setPersonaInfoOpen] = useState(false);
   const [bootInfoOpen, setBootInfoOpen] = useState(false);
@@ -1145,8 +1157,8 @@ export default function App() {
           {personaInfoOpen && (
             <div className="mb-4 bg-surface-2 border border-app rounded-xl p-4">
               <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-3">Persona configurations</div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {['curious', 'saver', 'whale'].map(pKey => {
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {PERSONA_KEYS.map(pKey => {
                   const p = PERSONAS[pKey];
                   const yearlyRev = (p.frequency * (inputs.frequencyMultiplier || 1)) * (p.avgTicket * (inputs.audienceVolume || 1));
                   return (
@@ -1200,23 +1212,29 @@ export default function App() {
 
           {/* Stacked bar visualization */}
           {(() => {
-            const mix = inputs.personaMix || { curious: 70, saver: 25, whale: 5 };
-            const total = mix.curious + mix.saver + mix.whale || 1;
+            const mix = inputs.personaMix || { curious: 80, saver: 15, whale: 4, megawhale: 1 };
+            const total = PERSONA_KEYS.reduce((s, k) => s + (mix[k] || 0), 0) || 1;
             return (
               <div className="flex h-2 rounded-full overflow-hidden mb-4" style={{ background: 'rgba(255,255,255,0.04)' }}>
-                <div style={{ width: `${(mix.curious / total) * 100}%`, background: PERSONAS.curious.color, transition: 'width 0.2s' }} />
-                <div style={{ width: `${(mix.saver / total) * 100}%`, background: PERSONAS.saver.color, transition: 'width 0.2s' }} />
-                <div style={{ width: `${(mix.whale / total) * 100}%`, background: PERSONAS.whale.color, transition: 'width 0.2s' }} />
+                {PERSONA_KEYS.map(k => (
+                  <div key={k} style={{ width: `${((mix[k] || 0) / total) * 100}%`, background: PERSONAS[k].color, transition: 'width 0.2s' }} />
+                ))}
               </div>
             );
           })()}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['curious', 'saver', 'whale'].map(pKey => {
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {PERSONA_KEYS.map(pKey => {
               const p = PERSONAS[pKey];
-              const mix = inputs.personaMix || { curious: 70, saver: 25, whale: 5 };
-              const total = mix.curious + mix.saver + mix.whale || 1;
-              const pct = ((mix[pKey] / total) * 100).toFixed(0);
+              const mix = inputs.personaMix || { curious: 80, saver: 15, whale: 4, megawhale: 1 };
+              const total = PERSONA_KEYS.reduce((s, k) => s + (mix[k] || 0), 0) || 1;
+              const pct = (((mix[pKey] || 0) / total) * 100).toFixed(0);
+              const desc = {
+                curious: `Trial buyers · $${p.avgTicket} avg · ${p.frequency}×/yr · high churn`,
+                saver: `Monthly DCA · $${p.avgTicket} avg · ${p.frequency}×/yr · sticky`,
+                whale: `HNW · $${(p.avgTicket / 1000).toFixed(1)}k avg · ${p.frequency}×/yr · very sticky`,
+                megawhale: `Institutional · $${(p.avgTicket / 1000).toFixed(0)}k avg · ${p.frequency}×/yr · stickiest`,
+              };
               return (
                 <div key={pKey}>
                   <div className="flex items-center gap-1.5 mb-1">
@@ -1225,9 +1243,7 @@ export default function App() {
                     <div className="text-[10px] text-dim font-num ml-auto">{pct}%</div>
                   </div>
                   <div className="text-[9px] text-dim mb-2 leading-snug">
-                    {pKey === 'curious' && 'Trial buyers · $60 avg · spark heavy · high churn'}
-                    {pKey === 'saver' && 'Monthly accumulators · $150 avg · flow heavy · sticky'}
-                    {pKey === 'whale' && 'HNW · $7.5k avg · vein heavy · very sticky'}
+                    {desc[pKey]}
                   </div>
                   <Slider
                     label=""
@@ -1336,7 +1352,7 @@ export default function App() {
                     onChange={v => updateInput('churnMultiplier', parseFloat(v))}
                   />
                   <div className="text-[9px] text-dim font-num mt-1.5 flex items-center gap-2 flex-wrap">
-                    {['curious', 'saver', 'whale'].map(pKey => {
+                    {PERSONA_KEYS.map(pKey => {
                       const p = PERSONAS[pKey];
                       const effective = p.baseWeeklyChurn * (inputs.churnMultiplier || 1);
                       return (
@@ -1397,7 +1413,7 @@ export default function App() {
               >
                 <div className="font-display text-app text-lg mb-1" style={{ fontWeight: 400 }}>{s.label}</div>
                 <div className="text-[10px] text-dim font-num">
-                  ${s.marketingBudgetWeek}/wk · {s.audienceVolume.toFixed(1)}× vol · {s.personaMix.whale}% whale
+                  ${(s.marketingBudgetWeek / 1000).toFixed(0)}K/wk · ${s.cacPerUser} CAC · {s.personaMix.saver + (s.personaMix.whale || 0) + (s.personaMix.megawhale || 0)}% committed
                 </div>
               </button>
             ))}
@@ -1514,13 +1530,14 @@ export default function App() {
 
               {/* ---- PERSONAS ---- */}
               <div>
-                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Three user personas</div>
-                <p className="text-dim text-[11px] mb-3">Every simulated user belongs to one of three archetypes. The audience mix sliders control the ratio of new users across these groups.</p>
+                <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Four user personas</div>
+                <p className="text-dim text-[11px] mb-3">Every simulated user belongs to one of four archetypes. The audience mix sliders control the ratio of new users across these groups.</p>
                 <div className="space-y-2">
                   {[
-                    { key: 'curious', desc: 'Top-of-funnel testers. Small ticket ($60), buy infrequently (2×/yr), heavily Spark tier, high churn (3%/wk ≈ 80%/yr). Most users start here. Revenue per user is low but they build volume and some convert to Saver behavior over time.' },
-                    { key: 'saver', desc: 'The core user. Monthly buyers ($150), buy often (18×/yr ≈ 1.5/mo), balanced across tiers but leaning Flow, low churn (0.5%/wk ≈ 23%/yr). High LTV. Their locked positions protect them from churning — the product\'s retention flywheel.' },
-                    { key: 'whale', desc: 'High-net-worth buyers using musa for discounted physical gold exposure. Large ticket ($7,500), buy rarely (2×/yr), heavily Vein tier (24-month lock), very low churn (0.3%/wk ≈ 14%/yr). A small percentage of users but outsized revenue impact.' },
+                    { key: 'curious', desc: 'Top-of-funnel testers. Small ticket ($60), buy infrequently (2×/yr), heavily Spark tier, high churn (3%/wk ≈ 80%/yr). Most users start here. Revenue per user is low but they build volume. Calibrated to pump.fun/Coinbase first-purchase data.' },
+                    { key: 'saver', desc: 'The core user. Monthly DCA buyers ($200), 12×/yr cadence, balanced across tiers but leaning Flow, low churn (0.5%/wk ≈ 23%/yr). ~$2,400/yr per user. Their locked positions protect them from churning — the product\'s retention flywheel.' },
+                    { key: 'whale', desc: 'High-net-worth buyers. $7,500 ticket, 2×/yr, heavily Vein tier (24-month lock), very low churn (0.3%/wk ≈ 14%/yr). $15K/yr — a "small whale" allocating 1-3% of a $500K-2M portfolio to gold.' },
+                    { key: 'megawhale', desc: 'Institutional / family office allocations. $50K ticket, 1×/yr, almost entirely Vein tier, stickiest cohort (0.2%/wk ≈ 10%/yr). Rare (0.5-3% of users) but transformative for volume. Represents advisors, funds, or HNW individuals doing $50-100K annual gold allocations.' },
                   ].map(({ key, desc }) => (
                     <div key={key} className="flex gap-3 items-start">
                       <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: PERSONAS[key].color }} />
@@ -1605,7 +1622,7 @@ export default function App() {
               <div>
                 <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Audience mix sliders</div>
                 <p className="text-dim text-[11px]">
-                  Three sliders (Curious / Saver / Whale) control the composition of newly acquired users. They're relative weights, not absolute percentages — if you set Curious=70, Saver=25, Whale=5, then 70% of new users each week are Curious. The mix dramatically affects revenue: a 5% Whale share drives more dollars than 70% Curious users, because Whales spend 125× more per purchase.
+                  Four sliders (Curious / Saver / Whale / MegaWhale) control the composition of new users. They're relative weights, not absolute percentages — 80/15/4/1 means 80% Curious, 15% Saver, etc. The mix dramatically affects revenue: even 1% MegaWhales drive outsized volume ($50K ticket vs $60 Curious). MegaWhales are rare but transformative — a single one equals ~833 Curious purchases.
                 </p>
               </div>
 
@@ -1673,9 +1690,9 @@ export default function App() {
                 <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Scenario presets</div>
                 <p className="text-dim text-[11px] mb-3">Three pre-configured starting points. Each sets all sliders to a coherent set of assumptions. You can tweak individual sliders after loading a scenario.</p>
                 <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
-                  <p><span className="text-app">PWA Base</span> — PWA-first launch, realistic paid acquisition. $3K/wk marketing, $35 CAC (Meta/Google/newsletters), 30% organic (crypto Twitter + referral), 70/25/5 audience mix, 1× churn, 5% early exits, 2% default rate, $12K/mo overhead. No app store cut, direct checkout. This is the credible launch scenario.</p>
-                  <p><span className="text-app">PWA + PMF</span> — product-market fit hits on web. $5K/wk marketing (scaling spend), $20 CAC (brand pull lowers paid cost), 50% organic (word-of-mouth compounds), more Savers and Whales (35/10 vs 25/5), 0.6× churn, 3% early exits, 1% defaults, $15K/mo overhead (team grew). What happens when the product clicks and referral loops work.</p>
-                  <p><span className="text-app">Native Cold</span> — native app cold-start, hostile conditions. $6K/wk marketing (app store + paid channels), $80 CAC (install funnel kills conversion), 15% organic (store gating slows word-of-mouth), 85% Curious (no PMF yet), 2.5× churn, 15% early exits, 6% defaults, $20K/mo overhead (ASO, store creative, larger team). Tests whether the model survives when distribution is expensive.</p>
+                  <p><span className="text-app">PWA Base</span> — PWA-first launch, realistic paid acquisition. $3K/wk marketing, $35 CAC, 30% organic, 80/15/4/1 mix (Curious/Saver/Whale/MegaWhale), $12K/mo overhead. No app store cut, direct checkout. The credible launch scenario.</p>
+                  <p><span className="text-app">PWA + PMF</span> — product-market fit on web. $5K/wk, $20 CAC, 50% organic, 62/25/10/3 mix (more committed users as PMF kicks in), 0.6× churn, $15K/mo overhead. What happens when the product clicks and referral loops compound.</p>
+                  <p><span className="text-app">Native Cold</span> — native app cold-start. $6K/wk, $80 CAC, 15% organic, 88/10/2/0 mix (almost no whales at launch), 2.5× churn, 15% early exits, 6% defaults, $20K/mo overhead. Tests whether the model survives expensive distribution.</p>
                 </div>
               </div>
 
@@ -2019,12 +2036,12 @@ function UsersChart({ state, derived, goldUnit, totalUsers }) {
         {totalUsers > 0 ? (
           <>
             <div className="flex h-2 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
-              <div style={{ width: `${(state.usersByPersona.curious / totalUsers) * 100}%`, background: PERSONAS.curious.color }} />
-              <div style={{ width: `${(state.usersByPersona.saver / totalUsers) * 100}%`, background: PERSONAS.saver.color }} />
-              <div style={{ width: `${(state.usersByPersona.whale / totalUsers) * 100}%`, background: PERSONAS.whale.color }} />
+              {PERSONA_KEYS.map(k => (
+                <div key={k} style={{ width: `${(state.usersByPersona[k] / totalUsers) * 100}%`, background: PERSONAS[k].color }} />
+              ))}
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {['curious', 'saver', 'whale'].map(pKey => {
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {PERSONA_KEYS.map(pKey => {
                 const p = PERSONAS[pKey];
                 const count = state.usersByPersona[pKey];
                 const pct = totalUsers > 0 ? (count / totalUsers) * 100 : 0;
