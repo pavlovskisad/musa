@@ -632,15 +632,31 @@ export default function App() {
     // has passed (current profit > historical minimum).
     let troughProfit = 0;
     let troughWeek = 0;
-    for (const h of state.history) {
-      if (h.cumulativeProfit < troughProfit) {
-        troughProfit = h.cumulativeProfit;
-        troughWeek = h.week;
+    let troughIdx = -1;
+    for (let i = 0; i < state.history.length; i++) {
+      if (state.history[i].cumulativeProfit < troughProfit) {
+        troughProfit = state.history[i].cumulativeProfit;
+        troughWeek = state.history[i].week;
+        troughIdx = i;
       }
     }
     const bootCapital = Math.max(0, -troughProfit);
     const bootCapitalWithBuffer = bootCapital * 1.4;
     const bootSettled = state.cumulativeProfit > troughProfit && bootCapital > 0;
+
+    // Boot gold: gold committed and delivered at trough and breakeven
+    const troughSnap = troughIdx >= 0 ? state.history[troughIdx] : null;
+    const breakevenSnap = breakevenWeek
+      ? state.history.find(h => h.week === breakevenWeek) || null
+      : null;
+    const bootGoldCommittedAtTrough = troughSnap ? troughSnap.goldGramsCommitted : 0;
+    const bootGoldDeliveredAtTrough = troughSnap ? troughSnap.goldGramsDelivered : 0;
+    const bootGoldCommittedAtBreakeven = breakevenSnap ? breakevenSnap.goldGramsCommitted : 0;
+    const bootGoldDeliveredAtBreakeven = breakevenSnap ? breakevenSnap.goldGramsDelivered : 0;
+    const bootAgreementsAtTrough = bootGoldCommittedAtTrough > 0
+      ? (bootGoldCommittedAtTrough / GRAMS_PER_TROY_OZ) / AGREEMENT_YEARLY_OZ : 0;
+    const bootAgreementsAtBreakeven = bootGoldCommittedAtBreakeven > 0
+      ? (bootGoldCommittedAtBreakeven / GRAMS_PER_TROY_OZ) / AGREEMENT_YEARLY_OZ : 0;
 
     const annualRevenue = monthlyRevenue * 12;
     const marketCap = annualRevenue * revenueMultiple;
@@ -658,6 +674,8 @@ export default function App() {
       monthlyRevenue, monthlyCosts, monthlyProfit, breakevenWeek,
       ltv, goldKg, goldOz, goldValue,
       bootCapital, bootCapitalWithBuffer, bootSettled, troughWeek,
+      bootGoldCommittedAtTrough, bootGoldDeliveredAtTrough, bootAgreementsAtTrough,
+      bootGoldCommittedAtBreakeven, bootGoldDeliveredAtBreakeven, bootAgreementsAtBreakeven,
       annualRevenue, marketCap,
       minersNeeded, currentWeeklyDelivery, annualDeliveryOz,
     };
@@ -985,7 +1003,7 @@ export default function App() {
         {bootInfoOpen && (
           <div className="bg-surface border border-app rounded-2xl p-5 mb-4">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-dim">Boot capital breakdown</div>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-dim">Launch requirements</div>
               <button
                 onClick={() => setBootInfoOpen(false)}
                 className="text-[10px] text-dim hover:text-app"
@@ -1020,6 +1038,64 @@ export default function App() {
                 </div>
               </div>
             </div>
+            {/* Boot gold supply */}
+            <div className="mt-4 pt-4 border-t border-app">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Gold supply requirements</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* At peak burn (trough) */}
+                <div className="bg-surface-2 rounded-xl p-4 border border-app">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-2">At peak burn (week {derived.troughWeek || '—'})</div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Gold committed</span>
+                      <span className="font-num text-gold text-sm">{fmtGold(derived.bootGoldCommittedAtTrough, goldUnit)}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Gold delivered</span>
+                      <span className="font-num text-app text-sm">{fmtGold(derived.bootGoldDeliveredAtTrough, goldUnit)}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">In pipeline</span>
+                      <span className="font-num text-app text-sm">{fmtGold(derived.bootGoldCommittedAtTrough - derived.bootGoldDeliveredAtTrough, goldUnit)}</span>
+                    </div>
+                    <div className="border-t border-app my-1" />
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Supply agreements needed</span>
+                      <span className="font-num text-gold text-sm">{derived.bootAgreementsAtTrough > 0 ? derived.bootAgreementsAtTrough.toFixed(1) : '—'}</span>
+                    </div>
+                  </div>
+                </div>
+                {/* At breakeven */}
+                <div className="bg-surface-2 rounded-xl p-4 border border-app">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-dim mb-2">At breakeven (week {derived.breakevenWeek || '—'})</div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Gold committed</span>
+                      <span className="font-num text-gold text-sm">{derived.breakevenWeek ? fmtGold(derived.bootGoldCommittedAtBreakeven, goldUnit) : '—'}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Gold delivered</span>
+                      <span className="font-num text-app text-sm">{derived.breakevenWeek ? fmtGold(derived.bootGoldDeliveredAtBreakeven, goldUnit) : '—'}</span>
+                    </div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">In pipeline</span>
+                      <span className="font-num text-app text-sm">{derived.breakevenWeek ? fmtGold(derived.bootGoldCommittedAtBreakeven - derived.bootGoldDeliveredAtBreakeven, goldUnit) : '—'}</span>
+                    </div>
+                    <div className="border-t border-app my-1" />
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-dim">Supply agreements needed</span>
+                      <span className="font-num text-gold text-sm">{derived.bootAgreementsAtBreakeven > 0 ? derived.bootAgreementsAtBreakeven.toFixed(1) : '—'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[9px] text-dim mt-3 leading-snug">
+                <span className="text-app">Gold committed</span> = total gold promised to users through all positions created by that point.
+                <span className="text-app"> Supply agreements</span> = committed oz ÷ {AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per agreement — how many mining partner contracts you need signed.
+                <span className="text-app"> In pipeline</span> = committed minus delivered — gold still owed, still vesting in users' positions.
+              </div>
+            </div>
+
             <div className="mt-4 pt-4 border-t border-app text-[10px] text-dim leading-relaxed">
               <div className="mb-1">
                 <span className="text-app">How this works:</span> cumulative P&L tracks how much cash the business has consumed since week 0. Early weeks are deeply negative — overhead and marketing spend with nothing yet earned. As users arrive and purchases compound, weekly revenue starts outpacing weekly costs, and the cumulative curve reaches its deepest point (the trough). After that, it climbs back toward zero (breakeven).
@@ -1586,8 +1662,8 @@ export default function App() {
                     <p>The reserve is a real structural feature, not decoration. It's funded by a percentage of every purchase, earns weekly yield (treasuries/money market), has a cap to prevent over-accumulation (overflow goes to revenue), and is the first line of defense against default losses. This mirrors how real commodity trading firms manage counterparty risk.</p>
                   </div>
                   <div className="bg-surface-2 rounded-xl p-3 border border-app">
-                    <div className="text-app text-[12px] mb-1">Boot capital (J-curve analysis)</div>
-                    <p>The sim tracks cumulative profit from week 0. Early on, costs exceed revenue, creating a deepening loss (the J-curve). The deepest point is the "boot capital" — the minimum cash you need to pre-fund. Once revenue catches up and cumulative profit starts climbing, the trough is "settled." The recommended raise is 1.4× the trough (40% buffer for variance).</p>
+                    <div className="text-app text-[12px] mb-1">Boot capital + boot gold (J-curve analysis)</div>
+                    <p>The sim tracks cumulative profit from week 0. Early on, costs exceed revenue, creating a deepening loss (the J-curve). The deepest point is the "boot capital" — the minimum cash you need to pre-fund. The "boot gold" panel shows the supply side: how much gold you've committed to users at the trough and at breakeven, how much has been delivered, and how many mining partner agreements that translates to. Together, boot capital + boot gold answer: "what do I need to launch?"</p>
                   </div>
                 </div>
               </div>
