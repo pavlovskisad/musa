@@ -173,11 +173,12 @@ function OnboardingScreen({ onContinue }) {
   }, [connectVortex]);
 
   const accumData = useMemo(() => {
+    const startPrice = 150;
     const r = Math.pow(1.08, 1 / 12) - 1;
     const pts = [{ m: 0, inv: 0, val: 0, g: 0 }];
     let gold = 0, inv = 0;
     for (let m = 1; m <= 60; m++) {
-      const price = 100 * Math.pow(1 + r, m);
+      const price = startPrice * Math.pow(1 + r, m);
       inv += 100;
       gold += 118.8 / price;
       pts.push({ m, inv, val: gold * price, g: gold });
