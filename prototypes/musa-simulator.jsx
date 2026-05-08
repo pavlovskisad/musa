@@ -66,10 +66,10 @@ function allocateTiers(totalUnits, tierWeights) {
 // ============================================================
 const SCENARIOS = {
   base: {
-    label: 'Base',
-    marketingBudgetWeek: 600,
-    cacPerUser: 5,
-    organicMultiplier: 20,
+    label: 'PWA Base',
+    marketingBudgetWeek: 3000,
+    cacPerUser: 35,
+    organicMultiplier: 30,
     personaMix: { curious: 70, saver: 25, whale: 5 },
     audienceVolume: 1.0,
     frequencyMultiplier: 1.0,
@@ -80,14 +80,14 @@ const SCENARIOS = {
     churnMultiplier: 1.0,
     earlyExitRate: 5,
     defaultRatePerYear: 2,
-    monthlyOverhead: 7000,
+    monthlyOverhead: 12000,
     reserveContribution: 1.0,
   },
   optimistic: {
-    label: 'Optimistic',
-    marketingBudgetWeek: 1200,
-    cacPerUser: 3,
-    organicMultiplier: 40,
+    label: 'PWA + PMF',
+    marketingBudgetWeek: 5000,
+    cacPerUser: 20,
+    organicMultiplier: 50,
     personaMix: { curious: 55, saver: 35, whale: 10 },
     audienceVolume: 1.3,
     frequencyMultiplier: 1.2,
@@ -98,14 +98,14 @@ const SCENARIOS = {
     churnMultiplier: 0.6,
     earlyExitRate: 3,
     defaultRatePerYear: 1,
-    monthlyOverhead: 9000,
+    monthlyOverhead: 15000,
     reserveContribution: 1.0,
   },
   stressed: {
-    label: 'Stressed',
-    marketingBudgetWeek: 600,
-    cacPerUser: 12,
-    organicMultiplier: 10,
+    label: 'Native Cold',
+    marketingBudgetWeek: 6000,
+    cacPerUser: 80,
+    organicMultiplier: 15,
     personaMix: { curious: 85, saver: 13, whale: 2 },
     audienceVolume: 0.7,
     frequencyMultiplier: 0.8,
@@ -116,7 +116,7 @@ const SCENARIOS = {
     churnMultiplier: 2.5,
     earlyExitRate: 15,
     defaultRatePerYear: 6,
-    monthlyOverhead: 8000,
+    monthlyOverhead: 20000,
     reserveContribution: 1.0,
   },
 };
@@ -1261,14 +1261,14 @@ export default function App() {
               <Slider
                 label="Marketing budget / week"
                 value={inputs.marketingBudgetWeek}
-                min={0} max={10000} step={50}
+                min={0} max={20000} step={250}
                 format={v => fmtUSD(v, true)}
                 onChange={v => updateInput('marketingBudgetWeek', v)}
               />
               <Slider
                 label="CAC per paid user"
                 value={inputs.cacPerUser}
-                min={1} max={50} step={1}
+                min={1} max={150} step={1}
                 format={v => `$${v}`}
                 onChange={v => updateInput('cacPerUser', v)}
               />
@@ -1365,7 +1365,7 @@ export default function App() {
                 <Slider
                   label="Monthly overhead"
                   value={inputs.monthlyOverhead}
-                  min={2000} max={100_000} step={500}
+                  min={2000} max={150_000} step={500}
                   format={v => fmtUSD(v, true)}
                   onChange={v => updateInput('monthlyOverhead', v)}
                 />
@@ -1544,7 +1544,7 @@ export default function App() {
                   </div>
                   <div className="bg-surface-2 rounded-xl p-3 border border-app">
                     <div className="text-app text-[12px] mb-1">CAC per paid user</div>
-                    <p className="text-[11px]">Cost to acquire one paid user. Lower = more users per dollar. This is the other half of the acquisition equation. A $5 CAC with $600/wk budget gets 120 paid users. At $12, only 50.</p>
+                    <p className="text-[11px]">Cost to acquire one paid user. Lower = more users per dollar. This is the other half of the acquisition equation. A $35 CAC with $3K/wk budget gets ~86 paid users. At $80 CAC, only 37. PWA distribution typically runs $25-60, native app $40-150.</p>
                   </div>
                   <div className="bg-surface-2 rounded-xl p-3 border border-app">
                     <div className="text-app text-[12px] mb-1">Organic multiplier</div>
@@ -1673,9 +1673,9 @@ export default function App() {
                 <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-2">Scenario presets</div>
                 <p className="text-dim text-[11px] mb-3">Three pre-configured starting points. Each sets all sliders to a coherent set of assumptions. You can tweak individual sliders after loading a scenario.</p>
                 <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-dim)' }}>
-                  <p><span className="text-app">Base</span> — the realistic starting point. $600/wk marketing, $5 CAC, 20% organic, 70/25/5 audience mix, 1× churn, 5% early exits, 2% default rate, $7k/mo overhead. This is where you start to understand the baseline economics.</p>
-                  <p><span className="text-app">Optimistic</span> — product-market fit hits. $1,200/wk marketing (you're scaling), $3 CAC (brand pull), 40% organic, more Savers and Whales (35/10 vs 25/5), 0.6× churn (product is sticky), 3% early exits, 1% defaults, $9k/mo overhead (team grew).</p>
-                  <p><span className="text-app">Stressed</span> — hostile conditions. Same $600/wk budget but $12 CAC (paid channels are expensive), only 10% organic, 85% Curious users (no product-market fit), 2.5× churn, 15% early exits, 6% default rate, $8k/mo overhead. Tests whether the model breaks or bends.</p>
+                  <p><span className="text-app">PWA Base</span> — PWA-first launch, realistic paid acquisition. $3K/wk marketing, $35 CAC (Meta/Google/newsletters), 30% organic (crypto Twitter + referral), 70/25/5 audience mix, 1× churn, 5% early exits, 2% default rate, $12K/mo overhead. No app store cut, direct checkout. This is the credible launch scenario.</p>
+                  <p><span className="text-app">PWA + PMF</span> — product-market fit hits on web. $5K/wk marketing (scaling spend), $20 CAC (brand pull lowers paid cost), 50% organic (word-of-mouth compounds), more Savers and Whales (35/10 vs 25/5), 0.6× churn, 3% early exits, 1% defaults, $15K/mo overhead (team grew). What happens when the product clicks and referral loops work.</p>
+                  <p><span className="text-app">Native Cold</span> — native app cold-start, hostile conditions. $6K/wk marketing (app store + paid channels), $80 CAC (install funnel kills conversion), 15% organic (store gating slows word-of-mouth), 85% Curious (no PMF yet), 2.5× churn, 15% early exits, 6% defaults, $20K/mo overhead (ASO, store creative, larger team). Tests whether the model survives when distribution is expensive.</p>
                 </div>
               </div>
 
