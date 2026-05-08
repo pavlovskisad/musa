@@ -665,10 +665,13 @@ export default function App() {
     const bootGoldDeliveredAtTrough = troughSnap ? troughSnap.goldGramsDelivered : 0;
     const bootGoldCommittedAtBreakeven = breakevenSnap ? breakevenSnap.goldGramsCommitted : 0;
     const bootGoldDeliveredAtBreakeven = breakevenSnap ? breakevenSnap.goldGramsDelivered : 0;
+    // Concurrent agreements = committed oz / (yearly capacity × years elapsed)
+    const troughYears = troughWeek > 0 ? troughWeek / 52 : 1;
+    const breakevenYears = breakevenWeek > 0 ? breakevenWeek / 52 : 1;
     const bootAgreementsAtTrough = bootGoldCommittedAtTrough > 0
-      ? (bootGoldCommittedAtTrough / GRAMS_PER_TROY_OZ) / AGREEMENT_YEARLY_OZ : 0;
+      ? (bootGoldCommittedAtTrough / GRAMS_PER_TROY_OZ) / (AGREEMENT_YEARLY_OZ * troughYears) : 0;
     const bootAgreementsAtBreakeven = bootGoldCommittedAtBreakeven > 0
-      ? (bootGoldCommittedAtBreakeven / GRAMS_PER_TROY_OZ) / AGREEMENT_YEARLY_OZ : 0;
+      ? (bootGoldCommittedAtBreakeven / GRAMS_PER_TROY_OZ) / (AGREEMENT_YEARLY_OZ * breakevenYears) : 0;
 
     const annualRevenue = monthlyRevenue * 12;
     const marketCap = annualRevenue * revenueMultiple;
@@ -1072,7 +1075,7 @@ export default function App() {
                     </div>
                     <div className="border-t border-app my-1" />
                     <div className="flex justify-between items-baseline">
-                      <span className="text-[11px] text-dim">Supply agreements needed</span>
+                      <span className="text-[11px] text-dim">Concurrent agreements</span>
                       <span className="font-num text-gold text-sm">{derived.bootAgreementsAtTrough > 0 ? derived.bootAgreementsAtTrough.toFixed(1) : '—'}</span>
                     </div>
                   </div>
@@ -1095,7 +1098,7 @@ export default function App() {
                     </div>
                     <div className="border-t border-app my-1" />
                     <div className="flex justify-between items-baseline">
-                      <span className="text-[11px] text-dim">Supply agreements needed</span>
+                      <span className="text-[11px] text-dim">Concurrent agreements</span>
                       <span className="font-num text-gold text-sm">{derived.bootAgreementsAtBreakeven > 0 ? derived.bootAgreementsAtBreakeven.toFixed(1) : '—'}</span>
                     </div>
                   </div>
@@ -1103,8 +1106,8 @@ export default function App() {
               </div>
               <div className="text-[9px] text-dim mt-3 leading-snug">
                 <span className="text-app">Gold committed</span> = total gold promised to users through all positions created by that point.
-                <span className="text-app"> Supply agreements</span> = committed oz ÷ {AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr per agreement — how many mining partner contracts you need signed.
-                <span className="text-app"> In pipeline</span> = committed minus delivered — gold still owed, still vesting in users' positions.
+                <span className="text-app"> Concurrent agreements</span> = how many {AGREEMENT_YEARLY_OZ.toLocaleString()} oz/yr mining partner contracts running simultaneously from day one to produce the committed gold by that week.
+                <span className="text-app"> In pipeline</span> = committed minus delivered — gold still owed, still vesting.
               </div>
             </div>
 
