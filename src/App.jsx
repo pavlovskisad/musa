@@ -1,19 +1,16 @@
-// Hash-based router for the pitch surface.
+// Hash-based router.
 //
-//   #/        → Landing chooser
-//   #/app     → consumer app (modular, src/app/)
-//   #/sim     → economic simulator (single-file, prototypes/)
+//   / or #/     → consumer app (src/app/)
+//   #/sim       → economic simulator (prototypes/)
 
 import React, { useEffect, useState } from 'react';
-import Landing from './Landing.jsx';
 import MusaApp from './app/App.jsx';
 import Simulator from '../prototypes/musa-simulator.jsx';
 
 const parseRoute = (hash) => {
   const h = (hash || '').replace(/^#\/?/, '').split('?')[0].split('/')[0];
-  if (h === 'app') return 'app';
   if (h === 'sim' || h === 'simulator') return 'sim';
-  return 'landing';
+  return 'app';
 };
 
 export default function App() {
@@ -25,7 +22,6 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  if (route === 'app') return <MusaApp />;
   if (route === 'sim') return <Simulator />;
-  return <Landing />;
+  return <MusaApp />;
 }

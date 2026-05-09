@@ -327,7 +327,7 @@ export default function App() {
               <BrowseScreen
                 key="browse"
                 onBack={() => setScreen('home')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => setScreen('home')}
                 onSelect={(tierId) => { setSelectedTier(tierId); setScreen('buy'); }}
               />
             )}
@@ -338,7 +338,7 @@ export default function App() {
                 amount={selectedAmount}
                 setAmount={setSelectedAmount}
                 onBack={() => setScreen('browse')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => setScreen('home')}
                 onConfirm={() => startBuy(selectedTier, selectedAmount)}
               />
             )}
@@ -347,7 +347,7 @@ export default function App() {
                 key={`unitDetail-${selectedUnitId}`}
                 unit={selectedUnit}
                 onBack={() => setScreen('home')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => setScreen('home')}
                 onExit={() => setScreen('exit')}
                 onClaim={() => claimUnit(selectedUnitId)}
               />
@@ -357,7 +357,7 @@ export default function App() {
                 key="exit"
                 unit={selectedUnit}
                 onBack={() => setScreen('unitDetail')}
-                onHome={() => setScreen('onboarding')}
+                onHome={() => setScreen('home')}
                 onConfirm={() => exitUnit(selectedUnitId)}
               />
             )}
@@ -374,6 +374,7 @@ export default function App() {
                 goldPrice={goldPrice}
                 priceSource={priceSource}
                 onBack={() => setScreen('home')}
+                onHome={() => setScreen('home')}
                 onLogout={() => { logout(); setScreen('onboarding'); }}
                 onResetAll={async () => {
                   await clearAll();

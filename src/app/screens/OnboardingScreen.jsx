@@ -382,7 +382,7 @@ function OnboardingScreen({ onContinue }) {
 
         <div className="px-6 pt-4 pb-2 flex justify-center onboard-label-in" style={{ zIndex: 4 }}>
           <button
-            onClick={() => { window.location.hash = '#/'; }}
+            onClick={onContinue}
             className="press"
             style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0, font: 'inherit', color: 'inherit' }}
           >
