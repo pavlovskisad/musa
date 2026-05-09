@@ -300,7 +300,7 @@ export default function App() {
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
       className="w-full"
-      style={{ background: 'var(--bg)', color: 'var(--text)', height: '100dvh', overflow: 'hidden' }}
+      style={{ background: 'var(--bg)', color: 'var(--text)', height: '100dvh', overflow: 'hidden', paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
       <div className="relative" style={{ height: '100%' }}>
             {screen === 'onboarding' && (
