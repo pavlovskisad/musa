@@ -24,7 +24,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
         >
           <ArrowLeft size={15} className="text-dim" />
         </button>
-        <MusaLogo />
+        <MusaLogo onClick={onHome} />
         <div className="w-9" />
       </div>
 

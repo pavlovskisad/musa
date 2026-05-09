@@ -8,7 +8,7 @@ import Row from '../components/Row.jsx';
 
 const formatSignedUSD = (v) => `${v >= 0 ? '+' : '−'}${formatUSD(Math.abs(v))}`;
 
-function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onLogout, onResetAll, goldPrice, priceSource }) {
+function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, goldUnit, setGoldUnit, onBack, onHome, onLogout, onResetAll, goldPrice, priceSource }) {
   const [paxgBalance, setPaxgBalance] = useState(null);
   const [solvency, setSolvency] = useState(null);
   const [reserveBalance, setReserveBalance] = useState(null);
@@ -74,7 +74,7 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
         >
           <ArrowLeft size={15} className="text-dim" />
         </button>
-        <MusaLogo />
+        <MusaLogo onClick={onHome} />
         <div className="w-9" />
       </div>
 

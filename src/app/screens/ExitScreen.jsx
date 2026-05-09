@@ -29,7 +29,7 @@ function ExitScreen({ unit, onBack, onHome, onConfirm }) {
         >
           <X size={15} className="text-dim" />
         </button>
-        <MusaLogo />
+        <MusaLogo onClick={onHome} />
         <div className="w-9" />
       </div>
 

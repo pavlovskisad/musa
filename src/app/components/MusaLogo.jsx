@@ -1,7 +1,7 @@
 import React from 'react';
 
 function MusaLogo({ onClick, className = '' }) {
-  const handleClick = onClick || (() => { window.location.hash = '#/'; });
+  const handleClick = onClick || (() => {});
   const logo = (
     <div className={`text-[10px] uppercase tracking-[0.4em] musa-logo ${className}`}>
       <span className="musa-logo-text">musa</span>

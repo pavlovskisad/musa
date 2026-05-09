@@ -97,7 +97,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
               <ArrowLeft size={15} className="text-dim" />
             </button>
           </div>
-          <MusaLogo />
+          <MusaLogo onClick={onHome} />
           <div className="text-[10px] uppercase tracking-[0.3em] text-dim min-w-[60px] text-right">
             {isConstructing && 'Preparing'}
             {isActive && 'Mining'}
