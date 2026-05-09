@@ -1219,15 +1219,15 @@
         /* Wandering spirit glow — drifts, pauses, drifts again */
         .hero-ambient-glow {
           position: absolute;
-          width: 180px;
-          height: 180px;
+          width: 260px;
+          height: 260px;
           top: 50%;
           left: 30%;
-          margin-left: -90px;
-          margin-top: -90px;
+          margin-left: -130px;
+          margin-top: -130px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(201, 169, 97, 0.35) 0%, rgba(201, 169, 97, 0.12) 35%, transparent 65%);
-          filter: blur(16px);
+          background: radial-gradient(circle, rgba(201, 169, 97, 0.55) 0%, rgba(201, 169, 97, 0.22) 35%, transparent 65%);
+          filter: blur(20px);
           animation: spiritX 17s ease-in-out infinite, spiritY 23s ease-in-out infinite, spiritBreath 4s ease-in-out infinite;
           pointer-events: none;
           will-change: transform, opacity;
@@ -1247,7 +1247,7 @@
           100%     { top: 40%; }
         }
         @keyframes spiritBreath {
-          0%, 100% { opacity: 0.5; }
+          0%, 100% { opacity: 0.65; }
           50%      { opacity: 1; }
         }
         /* Spirit burst — quick warm pulse that fills the hero */
@@ -1255,13 +1255,13 @@
           position: absolute;
           inset: 0;
           pointer-events: none;
-          background: radial-gradient(ellipse 90% 80% at 50% 55%, rgba(201, 169, 97, 0.25) 0%, rgba(201, 169, 97, 0.08) 45%, transparent 75%);
+          background: radial-gradient(ellipse 90% 80% at 50% 55%, rgba(201, 169, 97, 0.35) 0%, rgba(201, 169, 97, 0.12) 45%, transparent 75%);
           opacity: 0;
-          animation: spiritBurst 10s ease-out infinite;
+          animation: spiritBurst 8s ease-out infinite;
         }
         @keyframes spiritBurst {
-          0%, 74%, 100% { opacity: 0; }
-          75.5% { opacity: 1; }
-          80%   { opacity: 0.25; }
-          85%   { opacity: 0; }
+          0%, 72%, 100% { opacity: 0; }
+          74% { opacity: 1; }
+          80% { opacity: 0.3; }
+          88% { opacity: 0; }
         }

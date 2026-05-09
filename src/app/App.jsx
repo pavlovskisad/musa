@@ -70,7 +70,11 @@ export default function App() {
         if (token) setAccessToken(token);
         fetchUnits().then(u => setUnits(u));
       });
-      if (screen === 'onboarding') setScreen('home');
+      if (screen === 'onboarding') {
+        const splashMs = 3200;
+        const remaining = Math.max(0, splashMs - performance.now());
+        setTimeout(() => setScreen('home'), remaining);
+      }
     }
   }, [ready, authenticated, user]);
 
