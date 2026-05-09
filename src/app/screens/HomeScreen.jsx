@@ -185,7 +185,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         <div className="relative px-6 pt-4 pb-4" style={{ zIndex: 2 }}>
           <div className="flex items-center justify-between mb-2">
             <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
-              {userName ? `musa ${userName}'s gold` : 'Your gold'}
+              {userName ? `${userName}'s gold` : 'musa'}
             </div>
             {canClaimAll && (
               <button
