@@ -76,11 +76,11 @@ Gold fell 36-37% from its record of $5,594.82 on 2026-01-29 to about $3,520 on 2
 | PAXG-XAUT liquidity pools (Ethereum) | gold | 0.2-2.3%, about 1.1% today | $2-3M | holds whichever token fails [7] |
 | Leased-gold tokens: PAXGy, GLDY, XAUE | gold | 2.2-3.7% | $1-3M | lessee default; exit is the issuer's queue; gated [13][14][15] |
 | Direct leases to jewellers and refiners | gold | 3-4% on secured books; 5-5.75% single-name | $5-30M over 12-24 months | default, seizure, no early exit [30][32][33] |
-| Pledge gold at 30-40% LTV, deploy the dollars | gold | -0.5% to +0.1% on the last year's rates | about $8M, XAUt on Ethereum only | liquidation costs 4.5-5.7% of the gold [8][9] |
+| Pledge gold at 30-40% LTV, deploy the dollars | gold | -0.5% to +0.1% on the last year's rates | about $8M, XAUt on Ethereum only | liquidation costs 4.5-5.7% of the gold; price feed closed at weekends [8][9][18] |
 | Covered calls on gold | gold | about 0 (model range -7% to +4%) | under $5M on-chain | loses grams in rallies [23] |
 | Dollars + long gold perp (synthetic gold) | gold | -3% to -6% | n/a | pays the funding others earn [20] |
 | T-bill tokens | USD | 3.5-3.9% | large | holder eligibility [25] |
-| Prime USDC vaults on Base | USD | 4.0-4.6% over 12 months | $10-25M | 93-100% in one market; multi-day exit freezes [9][26] |
+| Prime USDC vaults on Base | USD | 4.0-4.6% over 12 months | $10-25M | 93-100% in one market; multi-day exit freezes [9][26][27][28] |
 | Hold gold, short the perp (funding capture) | USD | about 5% on total capital | about $4M per venue at exitable size | hedge removed in a crash; deployer sets funding [20][21][22] |
 | Junior-miner gold credit | gold | 13-22% gross on the two known bonds | deal by deal | one of the two was restructured [34] |
 
@@ -98,7 +98,7 @@ Notes on the rows that look tempting:
 
 **Shape.** Every deposit buys PAXG at once. Nothing is promised that has not been bought. The bonus is acquisition spend that lands in the user's wallet as gold.
 
-**The welcome bonus.** Today's tier rates, until a person has received a fixed dollar amount of bonus in a year. Capping bonus dollars, not purchase dollars, makes the cost the same whichever tier people choose.
+**The welcome bonus.** Today's tier rates, until a person has received a fixed dollar amount of bonus in a year. Capping bonus dollars, not purchase dollars, makes the cost the same whichever tier people choose. Capped promotions are how the market already does this: Bybit boosts the first 0.1 XAUT, PhonePe paid 2% capped at Rs 2,000 [40][41].
 
 | Cap | Cost per user per year | Over a user's life | Who keeps today's numbers |
 |---|---|---|---|
@@ -216,7 +216,7 @@ Before musa's share. Each point of the rate musa keeps is $82K a year per $10M o
 1. **Buy gold on deposit.** Yes, for anything sold at the purchase-day price. It is the only hedge for a gram liability that costs nothing to carry.
 2. **Collateralise.** Borrowing dollars against gold cost 4.3-4.6% on Aave over the last year (3.6-4.1% at today's low) and takes XAUt on Ethereum only. The Base PAXG market is four weeks old, charges 5.7% and has $24K of idle liquidity [8][9].
 3. **Trade.** Three things "capturing delta" can mean:
-   - *Funding capture* (C3). About 5% in dollars against a 4.3-5.7% borrow cost. The spread is roughly zero.
+   - *Funding capture* (C3). About 5% in dollars against a 4.3-5.7% borrow cost. The spread is roughly zero. Exchange-listed gold perps paid 5-13% over the same period and some take gold tokens as margin, but they need an off-chain entity and exchange custody [24].
    - *Making markets in PAXG-USDC.* Pool fees show 10-15% a year on $1-3M [7], but the position is short volatility in gold terms and loses grams when gold trends. Not measured well enough to count as yield.
    - *Directional trading.* A bet, not a hedge. Nothing in the evidence supports funding a fixed liability from it.
 
@@ -228,7 +228,7 @@ Before musa's share. Each point of the rate musa keeps is $82K a year per $10M o
 
 **The stress test already happened, and it is not the reason to reject.** On this year's hourly prices, no loan opened at 45% LTV or below would have been liquidated in the 37% fall. A 50% loan opened at the January peak crosses the threshold in mid-November; across all entry days 2% of 50% loans and about half of 60% loans do. A managed 40% book needed three or four forced repayments totalling 29-39% of the debt, at the lows [17].
 
-**The reasons to reject are the return and the label.** The return is about zero. And pledged gold is no longer the customer's unencumbered gold: it cannot count as segregated customer assets, and describing it as backed without saying so is a misleading-marketing risk in every regime looked at. Some allow pledging with the customer's explicit consent [46][50], which is what the opt-in leased tier is for.
+**The reasons to reject are the return and the label.** The return is about zero. And pledged gold is no longer the customer's unencumbered gold: it cannot count as segregated customer assets, and describing it as backed without saying so is a misleading-marketing risk in every regime looked at [45][47][48][52]. Some allow pledging with the customer's explicit consent [46][50], which is what the opt-in leased tier is for.
 
 **Verdict: no borrowing against customer gold.** Funding capture stays available for musa's own capital under the limits in section 9.
 
@@ -393,7 +393,7 @@ Each is a yes or no. My answer is in brackets.
 ## 13. What is not verified
 
 - **Being researched now:** the legal treatment of holding waiting dollars and passing on interest (C1); which T-bill-grade assets a retail user may hold on Base; the cost of small scheduled conversions; how average-in buyers fared against day-one buyers historically; real payment costs and chargeback windows.
-- No counsel has seen any of this. The legal sections compare primary texts in five places; three of the five "unencumbered" rules bind token issuers or stakers and are used here by analogy. UAE consumer law on prepaid contracts and exit penalties could not be read.
+- No counsel has seen any of this. A fixed return can itself make a product an investment contract [56], so the tier rates and the welcome bonus need the same review as the yield tiers. The legal sections compare primary texts in five places; three of the five "unencumbered" rules bind token issuers or stakers and are used here by analogy. UAE consumer law on prepaid contracts and exit penalties could not be read.
 - Whether card processors will serve a prepaid 6-24 month gold product at all, and the chargeback window on it.
 - CME margin levels and official settlements (the curve is from Yahoo quotes). No public gold lease benchmark exists.
 - PAXG creation being free rests on Paxos's fee page as of August; the waiver is stated to end 2027-01-01 [12]. Whether creation and redemption are available directly on Base.
