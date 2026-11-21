@@ -143,3 +143,12 @@ for excess in (0.3, 1.0):
     y = excess * 0.05
     print(f"   excess {pct(excess, 0)} at 5% carry -> {pct(y, 2)}/yr ->",
           "  ".join(f"{n} {pct(fundable_bonus(y, L, 'linear'), 2)}" for n, L, d in TIERS))
+
+print("\n13. One-off cost versus annual yield: a 1% saving at purchase equals this much gold-terms yield per year")
+print("   ", "  ".join(f"{n} {pct(0.01 / avg_life(L, 'linear'), 2)}" for n, L, d in TIERS))
+print("   yield needed for today's tiers if a 2% processing cost is not recovered (k=0.98):",
+      "  ".join(f"{n} {pct(required_yield(L, d, 'linear', 0.98))}" for n, L, d in TIERS))
+
+print("\n14. Reserve as an engine: reserve R earning y funds bonus b on annual sales S only if R/S = b/y")
+for b, y in ((0.07, 0.03), (0.07, 0.05), (0.02, 0.03)):
+    print(f"   bonus {pct(b, 0)} at reserve yield {pct(y, 0)} -> reserve = {b / y:.2f}x annual sales")
