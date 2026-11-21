@@ -2,11 +2,11 @@
 
 Where the bonus can come from once nobody is assumed to pay for it. Options, numbers, a recommendation.
 
-> **Status: PROPOSAL, 2026-11-21, second draft. Nothing here is locked.** It does not change SPEC, ARCHITECTURE or BUSINESS until Pav approves. Section 11 lists the decisions, each a yes or no.
+> **Status: PROPOSAL, 2026-11-21. Nothing here is locked.** It does not change SPEC, ARCHITECTURE or BUSINESS until Pav approves. Section 11 lists the decisions, each a yes or no.
 >
-> **Numbers.** Every market figure is a dated snapshot with a source in the last section, not a forecast. Model figures come from `docs/research/treasury-model.py`, which reads the tiers in `src/app/lib/tiers.js` and the personas in `prototypes/musa-simulator.jsx` (the code, which differs from the older scenario table in BUSINESS.md). No simulator parameter has been changed. The draft was checked by independent re-derivation and three adversarial reviews; what they could not confirm is in section 13. Legal points are research, not advice.
+> **Numbers.** Every market figure is a dated snapshot with a source in the last section, not a forecast. Model figures come from `docs/research/treasury-model.py` and `docs/research/average-in-outcomes.py`. The model reads the tiers in `src/app/lib/tiers.js` and the personas in `prototypes/musa-simulator.jsx` (the code, which differs from the older scenario table in BUSINESS.md); no simulator parameter has been changed. The first draft was checked by independent re-derivation and three adversarial reviews and rewritten to their findings. The rewrite has not had a second independent review. What could not be confirmed is in section 13. Legal points are research, not advice.
 >
-> **Words.** "Bonus" is the `discount` in `tiers.js`. "Welcome bonus", "carry" and "leased gold" are working names for this document, not interface copy.
+> **Words.** "Bonus" is the `discount` in `tiers.js`. "Welcome bonus", "leased gold" and "waiting dollars" are working names for this document, not interface copy.
 
 ---
 
@@ -23,16 +23,16 @@ What each payer can fund, over the whole lock:
 |---|---|---|---|---|
 | Promised today | 2.5% | 7.0% | 18.8% | no payer exists |
 | Marketing: welcome bonus, capped per person | 2.5% | 7.0% | 18.8% | no |
-| Partner: gold first, paid later, waives the interest | 0 to 1.2% | 0 to 2.3% | 0 to 4.5% | no. Base case 0 |
-| User's waiting dollars earn until they become gold | 1.0-1.2% | 1.9-2.3% | 3.7-4.5% | yes. Price is each day's, not day one's |
-| Leased gold, delivered at the end of the lock | 1.1-1.9% | 2.3-3.9% | 4.7-8.0% | yes. Lessee credit risk |
+| Partner: gold first, paid later, waives the interest | 0 to 1.3% | 0 to 2.3% | 0 to 4.5% | no. Base case 0 |
+| Leased gold, delivered at the end of the lock | 1.1-1.9% | 2.3-3.9% | 4.7-8.0% | yes. Lessee credit risk on the user's gold |
+| User's waiting dollars earn until they become gold | 1.0-1.3% | 1.9-2.3% | 3.7-4.5% | yes. But gold is bought at each day's price, which since 2020 meant fewer grams than buying on day one two times in three |
 | Pledge the gold and trade (option D) | about 0 | about 0 | about 0 | rejected |
 
 **Recommendation.**
 
 - **Now:** make the contract refuse any position it does not already hold the gold for. Show card costs at checkout. Launch with gold at today's price and a welcome bonus at today's tier rates until a person has received $35 of bonus in a year. That is a marketing cost, about $11 per user per year at the simulator's mix, and it is not self-funding.
-- **Next:** build the one engine that needs nobody: waiting dollars in T-bill-grade assets, converted to gold on a schedule, the interest buying extra gold. The same engine pays a fixed-price tier whenever a partner delivers gold first and waits to be paid.
-- **Later, opt-in:** leased gold, the only self-generated source paid in grams.
+- **Next, opt-in:** leased gold. It is the only self-generated source that gives a day-one buyer more grams, at 2.3-3.9% a year. It is credit risk on the user's gold, it needs a lending licence, and it can never be called backed.
+- **Alongside, for lump-sum buyers who want to spread their entry:** waiting dollars in T-bills, converted to gold on a schedule, the interest buying extra gold. It needs nobody and risks no gold, but it is a different exposure and must not be sold as a bonus. The same rails pay a fixed-price tier if a partner delivers gold first and waits to be paid.
 - **Not doing:** borrowing against customer gold to trade. It returns about zero and the gold stops being the customer's unencumbered gold.
 
 Decisions are in section 11.
@@ -128,13 +128,13 @@ The partner's standing and cost are unknown, so the options are ranked by how mu
 | | Structure | Bonus it funds | Trust needed |
 |---|---|---|---|
 | B0 | Partner sells gold, paid on delivery | 0, plus any discount (my judgment: 0-0.3%) | none |
-| B1 | **Gold first, paid later.** Partner delivers at purchase-day price and is paid on a fixed calendar | 0 to 1.2% / 2.3% / 4.5% | none in their credit; all in their generosity |
+| B1 | **Gold first, paid later.** Partner delivers at purchase-day price and is paid on a fixed calendar | 0 to 1.3% / 2.3% / 4.5% | none in their credit; all in their generosity |
 | B2 | Money first, gold later. Partner takes the prepayment as working capital | its cost of funds: roughly 4-7% a year in gold terms for a sound borrower | full: this is unsecured credit to the partner |
 | B3 | Partner lends a gold reserve as first-loss | none by itself | they trust musa |
 
 **B0. Paid on delivery.** The cleanest, and the only one that needs nothing from anyone. Refined gold trades within about 0.1% of spot, and industrial dore sells at 99.8% of spot less refining [35], so a discount above 1% on deliverable metal is either a marketing subsidy or a provenance problem. What a gold business can give cheaply instead: waived minting fees, physical redemption, a buy-back bid. It also makes the footer true: real gold from a named source, delivered.
 
-**B1. Gold first, paid later.** The partner delivers PAXG into the contract at the purchase-day price. musa holds the purchase price in a T-bill ladder and pays the partner on a fixed calendar that matches vesting. musa keeps the interest: 1.0-1.2% / 1.9-2.3% / 3.7-4.5% at 3.5-4.3%.
+**B1. Gold first, paid later.** The partner delivers PAXG into the contract at the purchase-day price. musa holds the purchase price in a T-bill ladder and pays the partner on a fixed calendar that matches vesting. musa keeps the interest: 1.0-1.3% / 1.9-2.3% / 3.7-4.5% at 3.5-4.3%.
 
 - Every point of that is interest the partner agrees not to earn. A zero-interest deferral is worth 1.2% / 2.2% / 4.2% of the price to a seller whose money costs 4.2%, and 2.7% / 5.0% / 9.3% to one whose money costs 10%. That is 4 to 30 times a 0.3% discount. **Plan on zero until it is negotiated.**
 - It makes musa the partner's secured debtor. The payable must show in the solvency view, the partner's recourse must be limited to the T-bill ladder, and the contract must bar retention of title and set-off. Whether the held purchase price is client money needs counsel before this is offered.
@@ -155,7 +155,23 @@ The partner's standing and cost are unknown, so the options are ranked by how mu
 
 Two sources are large enough to matter. Both make musa a yield product.
 
-### C1. Waiting dollars earn until they become gold
+### C1. Leased gold
+
+**Shape.** Opt-in. The user's gold is lent to jewellers and refiners against collateral, and comes back with interest in grams.
+
+| | Spark | Flow | Vein |
+|---|---|---|---|
+| 2.3-3.9% a year, principal delivered at the end | 1.1-1.9% | 2.3-3.9% | 4.7-8.0% |
+| 2.3-3.9% a year, linear delivery | 0.7-1.1% | 1.2-2.1% | 2.4-4.0% |
+
+- It keeps the purchase-day price and pays in grams, and a longer lock earns more. It is the only self-generated source that leaves the product as specified, and it is real gold at work in the gold trade.
+- It is credit on the customer's own gold. The seizure in Turkey is the live example [32]. Losses fall on the holder unless someone stands first-loss.
+- It cannot be called backed, and it needs a lending licence. VARA's lending rulebook allows fixed or variable interest to clients and requires it to be quoted as an annual percentage yield [51].
+- Delivery has to wait: leases run 3-12 months with no early exit. The lock becomes real.
+- Route: PAXGy first, capped at a quarter of its size (about $1.4M today), then direct leases ($5-30M over 12-24 months). PAXGy sits on Ethereum, excludes US and EU holders and has a two-month record [13].
+- The partner could be the lessee. That is B2 again: only against a bank guarantee.
+
+### C2. Waiting dollars earn until they become gold
 
 **Shape.** The user pays up front. Dollars not yet converted sit in T-bill-grade assets. A fixed dollar slice becomes gold on a schedule, at that day's price, and goes to the user's wallet. The interest buys extra gold as it is earned.
 
@@ -165,41 +181,32 @@ Two sources are large enough to matter. Both make musa a yield product.
 | 3.9% (T-bills, 12-month average) | 1.1% | 2.1% | 4.1% |
 | 4.3% (3-month T-bill today) | 1.3% | 2.3% | 4.5% |
 
-Before musa's share. Each point of the rate musa keeps is $82K a year per $10M of sales and costs the user 0.3% / 0.5% / 1.0%.
+Before musa's share. If all sales went this way, each point of the rate musa keeps would be $82K a year per $10M of sales, and costs the user 0.3% / 0.5% / 1.0%.
 
-**Why this is the engine to build first.**
+**What it has going for it.**
 
 - It is where the on-chain yield is. Dollars earn 3.5-4.6%; gold earns zero.
 - It needs no partner, no reserve and no hedge. There is no gram liability, so there is nothing to be insolvent on. Nothing is advanced: the extra gold is bought when the interest exists.
 - Delivered gold is in the user's wallet and nobody else's. Nothing is pledged or lent.
 - Capacity is not a constraint at any size musa will reach.
-- An early exit costs the user nothing: they take their remaining dollars. No exit penalty is needed, which removes the weakest term in the current contract.
-- It gives musa a revenue line, a disclosed share of the interest.
-- B1 is the same engine. If a partner delivers gold first and waits, the user gets the purchase-day price and the same interest.
+- An early exit costs the user nothing: they take their remaining dollars. No exit penalty is needed.
+- B1 runs on the same rails. If a partner delivers gold first and waits, the user gets the purchase-day price and the same interest.
 
-**What it gives up.**
+**What it is not: a bonus.** The user's gold is bought at each day's price, and the price path is ten times larger than the interest. Every start date since August 2020, PAXG daily prices, interest at 3.9%:
 
-- **The purchase-day price.** The user's gold is bought at each day's price. In a year gold rises they end with fewer grams than a day-one buyer; in a year it falls, more. The interest does not close that gap in a strong year. This is interest on dollars that have not become gold yet, not a bonus on top of day-one gold. The interface must say so.
-- **The fixed gram total at purchase.** SPEC shows a fixed number of grams on the buy screen. Here it is an estimate.
-- **"Not a yield product."**
-
-**Open before it is built.** Whether holding the waiting dollars is client money or a deposit in the launch jurisdiction, and whether passing the interest to a retail user is allowed. Which T-bill-grade asset a retail user outside the US may hold. Cost of small scheduled conversions on Base. These are being researched now (section 13).
-
-### C2. Leased gold
-
-**Shape.** Opt-in. The user's gold is lent to jewellers and refiners against collateral, and comes back with interest in grams.
-
-| | Spark | Flow | Vein |
+| Lock | Median grams against a day-one buyer | Ended with more grams | Worst 5% / best 5% of start dates |
 |---|---|---|---|
-| 2.3-3.9% a year, principal delivered at the end | 1.1-1.9% | 2.3-3.9% | 4.7-8.0% |
-| 2.3-3.9% a year, linear delivery | 0.7-1.1% | 1.2-2.1% | 2.4-4.0% |
+| 6 months | 3% fewer | 36% of start dates | 15% fewer / 11% more |
+| 12 months | 5% fewer | 32% | 21% fewer / 9% more |
+| 24 months | 8% fewer | 38% | 28% fewer / 10% more |
 
-- It keeps the purchase-day price and pays in grams. Of everything here it is closest to the product as specified, and it is real gold at work in the gold trade.
-- It is credit on the customer's own gold. The seizure in Turkey is the live example [32]. Losses fall on the holder unless someone stands first-loss.
-- It cannot be called backed, and it needs a lending licence. VARA's lending rulebook allows fixed or variable interest to clients and requires it to be quoted as an annual percentage yield [51].
-- Delivery has to wait: leases run 3-12 months with no early exit. The lock becomes real.
-- Route: PAXGy first, capped at a quarter of its size (about $1.4M today), then direct leases ($5-30M over 12-24 months). PAXGy sits on Ethereum, excludes US and EU holders and has a two-month record [13].
-- The partner could be the lessee. That is B2 again: only against a bank guarantee.
+A 12-month plan started on 2025-01-01 ended with 22% fewer grams than buying that day. A 6-month plan started at the January 2026 peak ended with 24% more. Gold rose over most of the sample, so averaging in mostly lost.
+
+- It suits someone holding a lump sum who would rather spread their entry. It does nothing for a Saver buying monthly out of income: there are no waiting dollars.
+- The gram total on the buy screen becomes an estimate. SPEC shows a fixed number.
+- It is still a yield product.
+
+**Not researched.** Whether holding the waiting dollars is client money or a deposit in the launch jurisdiction, and whether the interest may be passed to a retail user. Which T-bill-grade asset a retail user outside the US may hold. The cost of small scheduled conversions on Base, where PAXG depth is about $1.75M.
 
 ### C3. Small sources
 
@@ -240,34 +247,34 @@ Before musa's share. Each point of the rate musa keeps is $82K a year per $10M o
 
 This makes musa solvent without anyone's help. It does not fund a bonus. It only guarantees that whatever is shown was bought first.
 
-**Three ways to buy, one rule.**
+**Ways to buy, one rule.**
 
 | | The user gets | The bonus is | Live when |
 |---|---|---|---|
-| Today's price | Gold bought at once | Welcome bonus only | Launch |
-| Over time (C1) | Gold bought each day; waiting dollars earn | The interest, as extra gold | After counsel clears it |
-| Today's price, partner-funded (B1) | Gold delivered first by the partner | The same interest | When a partner signs and delivers first |
-| Leased (C2), opt-in | Gold lent out, returned with interest | Lease income in grams | After a lending licence |
+| Today's price, held (the default) | Gold bought at once and never lent | Welcome bonus only | Launch |
+| Leased (C1), opt-in | Gold bought at once, lent out, returned with interest | Lease income in grams | After a lending licence |
+| Over time (C2), opt-in | Gold bought each day; waiting dollars earn | Interest, as extra gold. Not a bonus | After counsel clears it |
+| Today's price, partner-funded (B1) | Gold delivered first by the partner | The interest on the deferred payment | When a partner signs and delivers first |
 | Mine rate | Gold bought forward from a miner | The miner's discount | When a secured deal exists |
 
 **What a sponsor adds.** Marketing money, a partner discount or a miner discount each buys bonus grams into the contract before they are shown. Remove any one and nothing else changes.
 
-**What musa earns.** With the miner split gone, three lines remain: a disclosed share of the interest on waiting dollars, card costs passed through at checkout, and optionally a disclosed spread. Per $10M of annual sales at the simulator's tier mix, waiting dollars average $8.2M and earn $290-350K a year. Simulator overhead and marketing are $300K a year. Keeping one point of the rate covers that at about $37M of sales; keeping all of it would at about $9M, and leaves the user nothing. Phase 1 has no revenue and runs on equity.
+**What musa earns.** With the miner split gone, three lines remain: a disclosed share of what the self-funding tiers earn, card costs passed through at checkout, and optionally a disclosed spread. Each $1M that sits in a self-funding tier for a year earns $23-39K leased or $35-43K in T-bills, before it is split with the user. Simulator overhead and marketing are $300K a year. Keeping one point covers that only with about $30M sitting in those tiers. Phase 1 has no revenue and runs on equity.
 
 **Phasing.**
 
 | Phase | Live | What it costs or earns |
 |---|---|---|
 | 1. Mainnet, bounded exposure | Today's price, welcome bonus, rule zero on-chain, card cost shown | About $11 per user per year of bonus; no revenue |
-| 2. The engine | Over time (C1). B1 if a partner delivers first | 1.0-1.2 / 1.9-2.3 / 3.7-4.5 before musa's share; first revenue |
-| 3. Opt-in | Leased gold under a lending licence | 1.1-1.9 / 2.3-3.9 / 4.7-8.0 at the end of the lock |
+| 2. Self-funding, opt-in | Leased gold (C1) under a lending licence, sized to what the lease market can take | 1.1-1.9 / 2.3-3.9 / 4.7-8.0 at the end of the lock, before musa's share; first revenue |
+| 3. Alongside | Over time (C2) once counsel clears it. B1 if a partner delivers first | 1.0-1.3 / 1.9-2.3 / 3.7-4.5 of interest, before musa's share |
 | 4. Sponsors | Mine rate, partner discounts | Whatever is bought in advance |
 
 **Why not the alternatives.**
 
 - *Keep today's tiers and cover the gap with a partner reserve.* It burns 13.8% of sales a year. A fixed bonus at two to five times what secured gold borrowers pay is also the pattern regulators know from failed schemes.
-- *Run a yield engine on customer gold by default.* The only one of size is leasing. Making credit risk the default while calling the gold backed is the misrepresentation the legal review warns about.
-- *Launch on C1 alone.* It changes the core promise and has an open legal question. It should not block mainnet.
+- *Run a yield engine on customer gold by default.* The only one of size is leasing. Making credit risk the default while calling the gold backed is the misrepresentation the legal review warns about. Opt-in, labelled and capped is the only form that holds.
+- *Make averaging-in the main product.* It is the safest thing here and the least like musa: it gives up the purchase-day price, and since 2020 it left buyers with fewer grams two times in three.
 
 ---
 
@@ -284,8 +291,8 @@ Everything that funds a bonus earns on what is still inside. Later delivery mean
 Paying only the bonus at the end changes almost nothing, because the principal still leaves early.
 
 - **Shape only pays where something is earning.** For gold bought at today's price and held, it adds nothing and only keeps customer gold pooled in one address for longer. Deliver that gold promptly.
-- **For C1 and B1** the user can be offered the choice: slower conversion, more interest.
-- **For C2** delivery at the end is forced by the lease.
+- **For C1** delivery at the end is forced by the lease.
+- **For C2 and B1** the user can be offered the choice: slower conversion, more interest.
 - **The 30-day construction window** existed to deploy money to miners. Under rule zero it has one remaining use: the period in which a card payment can still be reversed before gold leaves.
 
 ---
@@ -296,11 +303,11 @@ Starting values. Each needs an owner, a data source and a breach action before m
 
 **Never.**
 - Create a position the contract does not already cover.
-- Pledge, lend or pool gold sold at today's price.
+- Pledge, lend or pool gold outside the opt-in leased tier.
 - Hold fewer net grams than users are owed, by any route. No hedge or overlay on gold that counts toward grams owed.
 - Count anything but PAXG in the contract as backing. No bars, no partner token, no off-chain asset.
 - Pay a bonus out of new deposits, an entry markup or a commission tree.
-- Quote a rate that includes assumed gold price growth. No "guaranteed" and no "safe" in copy; VARA's marketing rules bar implying either [53]. No per-year rate on gold sold at today's price.
+- Quote a rate that includes assumed gold price growth. No "guaranteed" and no "safe" in copy; VARA's marketing rules bar implying either [53]. No per-year rate on the default tier.
 - Offer a fixed cash buy-back price.
 - Prepay a partner unsecured, or accept deliver-later at a fixed price without a bank guarantee.
 
@@ -358,7 +365,7 @@ Not done in this proposal. Listed so the scope is visible.
 **Where this departs from BUSINESS.md and ARCHITECTURE.md.**
 - The bonus source: miner discount becomes later upside.
 - The 3% margin, 1% reserve contribution and $200-500K launch reserve go. Rule zero replaces the reserve.
-- "Not a yield product" is narrowed to gold sold at today's price, if decision 2 is yes.
+- "Not a yield product" is narrowed to the default tier, if decision 2 is yes.
 - ARCHITECTURE.md: Aave PAXG pays 0%, not 1-3% [8]. The bridge question is closed: Paxos issues PAXG natively on Base [10]; Base liquidity is about $1.75M, so buy through Paxos or Ethereum. Paxos now states custody by Paxos Trust Company, N.A. under OCC oversight, not NYDFS [11].
 - Jurisdiction: Dubai has a licence category for each activity, but nothing in VARA's rulebooks addresses a prepaid lock with a bonus, several licences are likely, and every incentive needs VARA's confirmation [51][52][53]. Switzerland fits only a fully backed version with no interest [49]. Singapore bars retail incentives and lending if the gold token is a payment token, which is not settled [54][55]. The EU's interest ban reaches time-linked discounts from third parties [44]. The US was not cleared.
 
@@ -369,14 +376,14 @@ Not done in this proposal. Listed so the scope is visible.
 Each is a yes or no. My answer is in brackets.
 
 1. The contract refuses any position it does not already hold the gold for. [yes]
-2. musa pays for its own bonus by becoming a yield product on the parts that fund themselves: waiting dollars first, leased gold later. "Not a yield product" then covers only gold sold at today's price. [yes]
-3. Card costs are shown and charged at checkout; bank and stablecoin deposits are free; every bonus is quoted after fees. [yes]
+2. musa adds opt-in tiers that fund themselves, and those tiers are yield products. "Not a yield product" then covers only the default tier, where gold is bought at once and held. [yes]
+3. Card costs are shown and charged at checkout; bank and stablecoin deposits are free; every bonus is quoted after fees. [yes, subject to real payment costs, which were not researched]
 4. Launch bonus: today's tier rates until a verified person has received $35 of bonus in a year, with a total weekly budget. [yes]
-5. On gold sold at today's price, leaving early forfeits only unvested bonus, never principal. [yes]
+5. In the default tier, leaving early forfeits only unvested bonus, never principal. [yes]
 6. Tier numbers in the app become what is funded that day. The "Per year" figure goes. [yes]
 7. The offer to the gold partner is B0 (paid on delivery) with B1 (gold first, paid later) on the table. No prepayment and no lending to them without a bank guarantee. [yes]
 8. The miner discount becomes later upside, not the base of the model. [yes]
-9. Scope the leased-gold tier now, for phase 3. [yes, scope only]
+9. The first self-funding tier to scope is leased gold, ahead of averaging-in, because it keeps the purchase-day price. [yes, scope only]
 10. Dubai first; block US, EU and Singapore residents at KYC until counsel clears each. [yes]
 
 ## 12. Questions for the partner
@@ -392,7 +399,8 @@ Each is a yes or no. My answer is in brackets.
 
 ## 13. What is not verified
 
-- **Being researched now:** the legal treatment of holding waiting dollars and passing on interest (C1); which T-bill-grade assets a retail user may hold on Base; the cost of small scheduled conversions; how average-in buyers fared against day-one buyers historically; real payment costs and chargeback windows.
+- **Not researched:** the legal treatment of holding waiting dollars and passing on interest (C2); which T-bill-grade assets a retail user may hold on Base; the cost of small scheduled conversions; real payment costs. BUSINESS.md assumes 2% for cards. Stripe's published US card price is 2.9% + $0.30, which is 3.4% on a $60 ticket, and its restricted-business list includes precious metals and crypto [59][60]. Neither was checked further.
+- The average-in comparison covers August 2020 to November 2026 only, a period in which gold mostly rose.
 - No counsel has seen any of this. A fixed return can itself make a product an investment contract [56], so the tier rates and the welcome bonus need the same review as the yield tiers. The legal sections compare primary texts in five places; three of the five "unencumbered" rules bind token issuers or stakers and are used here by analogy. UAE consumer law on prepaid contracts and exit penalties could not be read.
 - Whether card processors will serve a prepaid 6-24 month gold product at all, and the chargeback window on it.
 - CME margin levels and official settlements (the curve is from Yahoo quotes). No public gold lease benchmark exists.
@@ -467,3 +475,5 @@ Snapshot date 2026-11-21 unless stated. Per-claim sources for everything else ar
 56. SEC v. Edwards, 540 U.S. 389 (2004). https://www.law.cornell.edu/supct/html/02-1196.ZO.html
 57. Council Directive 93/13/EEC, unfair terms, Annex 1(e). https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:31993L0013
 58. CryptoSlate, PAXG on Base and Coinbase gold loans (2026-11-09). https://cryptoslate.com/tokenized-gold-can-now-back-a-coinbase-loan-the-price-feed-takes-weekends-off/
+59. Stripe pricing. https://stripe.com/pricing
+60. Stripe restricted businesses (updated 2026-09-22). https://stripe.com/legal/restricted-businesses
