@@ -57,7 +57,7 @@ We do not know your side of the business well enough to propose one deal. This p
 
 ## 4. Which gold
 
-**Route A: PAXG.** Users receive PAXG, redeemable for London good-delivery bars. Your metal reaches them either by becoming PAXG (Paxos takes good-delivery bars, 430 oz minimum) or through physical delivery.
+**Route A: PAXG.** Users receive PAXG, redeemable for London good-delivery bars. Your metal can become PAXG if Paxos accepts your bars: that needs the good-delivery standard and at least 430 oz, and the terms have to be confirmed with Paxos. Otherwise you sell your metal as you do today, users receive PAXG, and your own metal reaches them through physical delivery.
 
 **Route B: your gold.** Users receive a token you issue against your own metal. musa becomes the way people acquire and use it. For users to accept it in place of an established token, it needs:
 
