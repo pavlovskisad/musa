@@ -84,7 +84,7 @@ Bonuses set 2026-11-22 (were 2.5 / 7 / 18.8%). These are target rates: with deli
 
 - **Construction period:** none. Delivery starts on the first day (decided 2026-11-22; the contract and app already run with one minute). Earlier text here said 30 days.
 - **Daily delivery rate:** `total grams / (lockMonths × 30)` during delivery phase.
-- **Exit penalty:** decided 2026-11-22: leaving early forfeits only the unearned bonus, never principal. **Not built yet.** The app and contract still use the stepped penalty on the undelivered part (50 / 35 / 20 / 10% by quarter of the term, `getExitPenaltyPct(elapsedPct)`); see `TREASURY.md` section 11.
+- **Exit penalty:** decided 2026-11-22: the buyer keeps what was delivered, the unearned bonus is not paid, and 15% is withheld from the undelivered gold they paid for. **Not built yet.** The app and contract still use the stepped penalty on everything undelivered (50 / 35 / 20 / 10% by quarter of the term, `getExitPenaltyPct(elapsedPct)`); see `TREASURY.md` section 11.
 
 Tier bonuses are expressed as a discount to spot. Locking $100 Flow means paying for ~93.5% of the gold grams at spot price; user receives 100% grams. Sourced from miners' saved cost of capital — see `ARCHITECTURE.md` § "Where the discount comes from".
 
