@@ -4,6 +4,8 @@ This document describes the economic model of musa and the weekly simulator used
 
 See `SPEC.md` for product/UX. See `ARCHITECTURE.md` for technical and stack decisions.
 
+> **Proposal pending (2026-11-21):** `TREASURY.md` proposes changes to how the bonus is funded and lists corrections to this document. Nothing here changes until Pav approves it.
+
 ---
 
 ## The product in one paragraph

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Обзор musa для поставщика золота</title>
+<meta name="description" content="Как работает musa, что это даёт поставщику золота и три схемы работы на выбор.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0908">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  /* musa: near-black ground, warm off-white type, one gold. One narrow column, pictures first, exhibits sit on app-style cards. */
+  --bg:#0a0908;
+  --surface:#161513;
+  --text:#e8e6e0;
+  --dim:rgba(232,230,224,.6);
+  --faint:rgba(232,230,224,.36);
+  --gold:#c9a961;
+  --gold-light:#e4c57e;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.17);
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:616px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+p{margin:0}
+b,strong{font-weight:600}
+
+.logo{display:block;text-align:center;padding:26px 0 0;font:500 10px/1 var(--body);letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;color:rgba(232,218,188,.74)}
+
+.hero{position:relative;padding:52px 0 0}
+.hero::before{content:"";position:absolute;left:-16px;right:-16px;top:-70px;height:430px;background:radial-gradient(60% 58% at 26% 44%,rgba(201,169,97,.25),rgba(201,169,97,.07) 52%,transparent 76%);pointer-events:none}
+.hero>*{position:relative}
+h1{font:500 clamp(46px,13vw,68px)/.96 var(--display);letter-spacing:-.012em;margin:0}
+h1 em{display:block;font-style:italic;color:var(--gold-light)}
+.lead{font-size:19px;line-height:1.5;margin-top:28px;max-width:33em}
+.lead+.lead{margin-top:14px;color:var(--dim)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);margin:34px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts div{padding:14px 0 15px}
+.facts div+div{padding-left:14px;border-left:1px solid var(--line)}
+.facts dt{font:500 9.5px/1.2 var(--body);letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.facts dd{margin:8px 0 0;font-size:14.5px;line-height:1.25}
+.fine{font-size:13.5px;line-height:1.5;color:var(--dim);margin-top:16px}
+
+section{padding-top:60px}
+h2{font:500 clamp(34px,9.2vw,42px)/1.04 var(--display);letter-spacing:-.008em;margin:0;text-wrap:balance}
+.sub{color:var(--dim);margin-top:14px;max-width:35em}
+h3{font:600 17px/1.3 var(--body);margin:46px 0 0}
+h3+.sub{margin-top:8px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:26px}
+figure{margin:28px 0 0}
+figure.card{padding:24px 6px 20px}
+figure svg,.scheme svg{display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
+figcaption{font-size:14px;line-height:1.5;color:var(--dim);margin:18px 14px 0}
+.legend{display:flex;gap:26px;justify-content:center;margin:18px 0 0;font-size:13px;color:var(--dim)}
+.legend span{display:inline-flex;align-items:center;gap:9px}
+.legend svg{width:36px;height:10px;max-width:none;margin:0}
+
+.num{list-style:none;margin:30px 0 0;padding:0;counter-reset:n}
+.num li{counter-increment:n;display:grid;grid-template-columns:32px 1fr;padding:14px 0;border-top:1px solid var(--line)}
+.num li::before{content:counter(n);font:500 13px/2 var(--mono);color:var(--gold)}
+.num li:last-child{border-bottom:1px solid var(--line)}
+.num.big li{padding:17px 0}
+
+.screens{display:grid;gap:26px;margin:20px 0 0}
+.screen{margin:0;min-width:0}
+.shot{border:1px solid var(--line-strong);border-radius:22px;overflow:hidden;background:var(--bg)}
+.shot img{display:block;width:100%;height:auto}
+.shot img+img{border-top:1px solid var(--line)}
+.screen figcaption{margin:11px 4px 0;font-size:13.5px}
+.note{margin-top:22px;color:var(--dim)}
+
+.gives{list-style:none;margin:28px 0 0;padding:0}
+.gives li{padding:14px 0 15px;border-top:1px solid var(--line)}
+.gives li:last-child{border-bottom:1px solid var(--line)}
+.gives b{display:block;color:var(--gold-light)}
+.gives span{display:block;color:var(--dim);font-size:15.5px;line-height:1.45;margin-top:3px}
+
+.links{list-style:none;margin:14px 0 0;padding:0}
+.links li{border-top:1px solid var(--line)}
+.links li:last-child{border-bottom:1px solid var(--line)}
+.links a{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:13px 0;color:inherit;text-decoration:none}
+.links b{font-weight:500}
+.links span{flex:none;font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.links a:hover b{color:var(--gold-light)}
+a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.lbl{display:block;font:500 9.5px/1.2 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-top:20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.chip{font-size:14px;line-height:1.2;padding:8px 13px;border-radius:99px;border:1px solid var(--line-strong);color:var(--dim)}
+.chip.on{border-color:var(--gold);color:var(--gold-light);background:rgba(201,169,97,.08)}
+.scheme,.route{scroll-margin-top:16px}
+
+.route{margin-top:32px}
+.route h3{margin:0}
+.route p{margin-top:8px;color:var(--dim)}
+.checks{list-style:none;margin:16px 0 0;padding:0}
+.checks li{position:relative;padding:11px 0 11px 24px;border-top:1px solid var(--line);font-size:15.5px;line-height:1.45}
+.checks li:last-child{border-bottom:1px solid var(--line)}
+.checks li::before{content:"";position:absolute;left:3px;top:19px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.checks b{color:var(--text)}
+
+.scheme{margin-top:16px;padding:26px 18px 6px}
+.scheme .k{font:500 10px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.scheme h3{font:500 30px/1.06 var(--display);letter-spacing:-.005em;margin:10px 0 0;text-wrap:balance}
+.scheme .one{margin-top:12px;color:var(--dim);font-size:15.5px;line-height:1.5}
+.scheme svg{margin:24px auto 8px}
+.terms{margin:16px 0 0}
+.terms div{padding:13px 0 14px;border-top:1px solid var(--line)}
+.terms dt{font:500 9.5px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.terms dd{margin:7px 0 0;font-size:15.5px;line-height:1.45}
+
+.tbl{width:100%;border-collapse:collapse;margin:28px 0 0;font-variant-numeric:tabular-nums}
+.tbl th{font:500 9.5px/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right;padding:0 0 11px 12px;white-space:nowrap}
+.tbl th:first-child{text-align:left;padding-left:0}
+.tbl td{padding:14px 0 14px 12px;border-top:1px solid var(--line);vertical-align:top;text-align:right;font:400 13px/1.7 var(--mono);white-space:nowrap}
+.tbl td:first-child{text-align:left;font:400 15.5px/1.35 var(--body);white-space:normal;padding-left:0}
+.tbl tr:last-child td{border-bottom:1px solid var(--line)}
+.tbl small{display:block;color:var(--dim);font-size:13px;line-height:1.4;margin-top:4px}
+.tbl td.span{text-align:center;color:var(--dim);font:400 14.5px/1.5 var(--body)}
+.assume{font-size:14px;line-height:1.55;color:var(--dim);margin-top:18px}
+.earn{margin-top:18px}
+
+.path{list-style:none;margin:32px 0 0;padding:0}
+.path li{position:relative;padding:0 0 28px 48px}
+.path li::before{content:attr(data-n);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;font:500 13px/1 var(--mono);color:var(--gold-light);background:var(--bg)}
+.path li::after{content:"";position:absolute;left:16px;top:32px;bottom:0;width:1px;background:linear-gradient(var(--gold),rgba(201,169,97,.2))}
+.path li:last-child{padding-bottom:6px}
+.path li:last-child::after{display:none}
+.path b{display:block;line-height:1.3;padding-top:5px}
+.path span{display:block;color:var(--dim);font-size:15.5px;line-height:1.45;margin-top:4px}
+.along{margin-top:22px;padding:17px 18px 18px;border:1px dashed rgba(201,169,97,.6);border-radius:20px}
+.along b{display:block;color:var(--gold-light)}
+.along span{display:block;color:var(--dim);font-size:15.5px;line-height:1.45;margin-top:4px}
+
+footer{margin-top:88px;padding-top:26px;border-top:1px solid var(--line);text-align:center}
+footer .tag{font-size:11px;color:var(--dim)}
+footer .meta{font-size:12px;color:var(--faint);margin-top:10px}
+
+svg text{font-family:var(--body)}
+.bx{fill:#0e0d0b;stroke:var(--line-strong);stroke-width:1}
+.bx.you{fill:rgba(201,169,97,.11);stroke:var(--gold);stroke-width:1.4}
+.t-name{font-weight:600;font-size:14px;fill:var(--text)}
+.t-sub{font-size:10.8px;fill:var(--dim)}
+.t-what{font-weight:500;font-size:13px;fill:var(--text)}
+.t-what.g,.t-sub.g{fill:var(--gold-light)}
+.t-when{font-size:11.3px;fill:var(--dim)}
+.t-mono{font-family:var(--mono);font-weight:500;font-size:12.5px;fill:var(--gold-light)}
+.f-gold{fill:none;stroke:var(--gold);stroke-width:2.7;stroke-linecap:round;stroke-dasharray:.1 7.6;animation:flow 3.4s linear infinite}
+.f-money{fill:none;stroke:rgba(232,230,224,.76);stroke-width:1.3}
+.guide{stroke:var(--line-strong);stroke-width:1;fill:none}
+.track{stroke:var(--line);stroke-width:1;fill:none}
+.gold-fill{fill:var(--gold)}
+.cream-fill{fill:rgba(232,230,224,.86)}
+@keyframes flow{to{stroke-dashoffset:-7.7}}
+@media (prefers-reduced-motion:reduce){.f-gold{animation:none}}
+
+@media (min-width:720px){
+  .screens{grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
+  figure.card{padding:30px 16px 24px}
+  .scheme{padding:32px 30px 10px}
+  .terms div{display:grid;grid-template-columns:124px 1fr;gap:0 12px}
+  .terms dt{padding-top:6px}
+  .terms dd{margin:0}
+}
+
+/* concise version: app clips, benefit tiles, scheme cards in a side-scrolling row, folded detail */
+.pair{display:grid;gap:0}
+.sreel{display:flex;align-items:flex-start;gap:14px;margin:14px -16px 0;padding:0 16px 6px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.sreel::-webkit-scrollbar{display:none}
+.sreel .scheme{flex:0 0 86%;max-width:360px;margin-top:0;scroll-snap-align:center;min-width:0}
+.swipe{margin-top:22px}
+.reel{display:flex;gap:14px;margin:26px -16px 0;padding:0 16px 6px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.reel::-webkit-scrollbar{display:none}
+.reel figure{flex:0 0 68%;max-width:290px;margin:0;scroll-snap-align:center;min-width:0}
+.phone{border:1px solid var(--line-strong);border-radius:26px;overflow:hidden;background:var(--bg)}
+.phone img{display:block;width:100%;height:auto}
+.phone img+img{border-top:1px solid var(--line)}
+.reel figcaption{margin:12px 4px 0;font-size:14px;line-height:1.4;color:var(--dim)}
+.reel figcaption b{display:block;color:var(--text);font-weight:600}
+.tiles{display:grid;gap:12px;margin:28px 0 0;padding:0;list-style:none}
+.tiles li{padding:17px 18px 18px;background:var(--surface);border:1px solid var(--line);border-radius:20px;min-width:0}
+.tiles b{display:block;color:var(--gold-light);line-height:1.3}
+.tiles span{display:block;color:var(--dim);font-size:15px;line-height:1.45;margin-top:5px}
+.tiles li.own{border-color:rgba(201,169,97,.55);background:rgba(201,169,97,.06)}
+.six{list-style:none;margin:26px 0 0;padding:0}
+.six li{display:grid;grid-template-columns:34px 1fr;padding:15px 0 16px;border-top:1px solid var(--line)}
+.six li:last-child{border-bottom:1px solid var(--line)}
+.six i{font:500 13px/1.75 var(--mono);font-style:normal;color:var(--gold)}
+.six b{display:block;line-height:1.3}
+.six span{display:block;color:var(--dim);font-size:15px;line-height:1.45;margin-top:4px}
+.six em{font-style:normal;color:var(--text)}
+details{margin-top:18px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
+summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 20px/1 var(--mono);color:var(--gold)}
+details[open] summary::after{content:"\2212"}
+summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:20px}
+.fold{padding:0 18px 18px}
+.fold .checks{margin-top:0}
+.field{margin-top:18px}
+.field label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:15px;line-height:1.35}
+.field output{font:500 14px/1 var(--mono);color:var(--gold-light);white-space:nowrap;font-variant-numeric:tabular-nums}
+.field small{display:block;color:var(--dim);font-size:13px;line-height:1.4;margin-top:6px}
+input[type=range]{display:block;width:100%;margin:12px 0 0;accent-color:var(--gold)}
+input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.fold .tbl{margin-top:22px}
+.fold .tbl td:not(:first-child){color:var(--gold-light)}
+.ask{list-style:none;margin:26px 0 0;padding:0}
+.ask li{position:relative;padding:14px 0 14px 24px;border-top:1px solid var(--line)}
+.ask li:last-child{border-bottom:1px solid var(--line)}
+.ask li::before{content:"";position:absolute;left:3px;top:23px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+@media (min-width:720px){
+  .reel{overflow:visible;margin:28px 0 0;padding:0;gap:16px;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%);align-items:start}
+  .reel figure{flex:1 1 0;max-width:none}
+  .tiles{grid-template-columns:1fr 1fr}
+  .pair{grid-template-columns:1fr 1fr;gap:16px;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
+  .sreel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;overflow:visible;margin:26px 0 0;padding:0;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
+  .sreel .scheme{max-width:none;padding:26px 18px 6px}
+  .sreel .terms div{display:block}
+  .sreel .terms dd{margin:7px 0 0}
+  .swipe{display:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><marker id="ah-g" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7.5" markerHeight="7.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 .4L8 4L0 7.6z" fill="#e4c57e"/></marker><marker id="ah-m" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 .4L8 4L0 7.6z" fill="#d9d7d1"/></marker></defs></svg>
+<div class="wrap">
+<header>
+  <span class="logo">musa</span>
+  <div class="hero">
+    <h1>Обзор для поставщика <em>золота</em></h1>
+    <p class="lead">musa продаёт розничному покупателю золото с поставкой по граммам. Человек платит один раз и 6, 12 или 24 месяца получает золото в свой кошелёк, с бонусом сверх спота.</p>
+    <p class="lead">Продукт уже работает как демо. Экономику мы настраиваем вместе с поставщиком золота.</p>
+    <dl class="facts">
+      <div><dt>Статус</dt><dd>рабочее демо</dd></div>
+      <div><dt>Золото</dt><dd>PAXG или ваш токен</dd></div>
+      <div><dt>Цифры</dt><dd>на 21.11.2026</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main>
+<section id="how">
+  <h2>Как это работает</h2>
+  <div class="pair"><figure class="card"><svg viewBox="0 0 344 278" role="img" aria-label="Покупатель платит один раз, контракт musa выдаёт золото по граммам из резерва"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">приложение и свой кошелёк</text><rect class="bx" x="80" y="116" width="184" height="46" rx="14"/><text class="t-name" x="172" y="136.5" text-anchor="middle">musa</text><text class="t-sub" x="172" y="151.5" text-anchor="middle">смарт-контракт и резерв</text><rect class="bx" x="80" y="228" width="184" height="46" rx="14"/><text class="t-name" x="172" y="248.5" text-anchor="middle">Золото</text><text class="t-sub" x="172" y="263.5" text-anchor="middle">сегодня токен PAXG</text><path class="f-money" d="M152 56V109.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="81" text-anchor="end">один платёж</text><text class="t-when" x="141" y="97" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 110V56.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="81" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="97" text-anchor="start">6, 12 или 24 месяца</text><path class="f-gold" d="M192 222V168.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="193" text-anchor="start">золото в резерв</text><text class="t-when" x="203" y="209" text-anchor="start">резерв проверит любой</text></svg><div class="legend"><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-gold" d="M3 5H33"/></svg>золото</span><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-money" d="M2 5H34"/></svg>деньги</span></div></figure><figure class="card"><svg viewBox="0 0 344 180" role="img" aria-label="Золото приходит покупателю равными долями после короткого начального периода и до конца срока"><path d="M118 132L332 28V132Z" fill="rgba(201,169,97,.1)"/><path class="guide" d="M24 132H332M24 132v6M118 132v6M332 132v6"/><path d="M24 132H118" stroke="rgba(232,230,224,.8)" stroke-width="2" fill="none"/><path class="f-gold" d="M118 132L329 29.4"/><circle cx="332" cy="28" r="4.5" fill="#e4c57e"/><text class="t-what g" x="24" y="58">золото приходит</text><text class="t-what g" x="24" y="75">равными долями</text><text class="t-when" x="322" y="20" text-anchor="end">все граммы заказа</text><text class="t-when" x="24" y="154">оплата</text><text class="t-when" x="118" y="154" text-anchor="middle">начало выдачи</text><text class="t-when" x="332" y="154" text-anchor="end">конец срока</text><text class="t-sub" x="71.0" y="172" text-anchor="middle">начальный период</text></svg><figcaption>После короткого начального периода контракт выдаёт золото равными долями каждый день.</figcaption></figure></div>
+  <div class="reel">
+    <figure><div class="phone"><img src="/overview/assets/app-home.webp" alt="Главный экран приложения musa: общее количество граммов растёт, под ним список заказов с полосами выдачи" width="440" height="790"></div><figcaption><b>Один платёж, потом ожидание</b>Покупатель видит все свои заказы и золото, которое уже пришло.</figcaption></figure>
+    <figure><div class="phone"><img src="/overview/assets/app-mine.webp" alt="Экран одного заказа: счётчик полученных граммов растёт, ниже сумма оплаты, срок и выдача в день" width="440" height="677"></div><figcaption><b>Золото приходит каждый день</b>Всё, что пришло, он выводит в свой кошелёк одной кнопкой.</figcaption></figure>
+    <figure><div class="phone"><img src="/overview/assets/wallet.webp" alt="Кошелёк покупателя с балансом золотого токена" width="640" height="366"><img src="/overview/assets/reserve.webp" alt="Экран резерва: золото в контракте против граммов к выдаче" width="640" height="246"></div><figcaption><b>Резерв открыт</b>Любой видит, сколько золота держит контракт и сколько он должен.</figcaption></figure>
+  </div>
+  <p class="fine">Записи сделаны в работающем приложении, ускорено: одна секунда равна одному дню. Суммы и граммы в демо условные.</p>
+</section>
+
+<section id="gives">
+  <h2>Что это даёт вам</h2>
+  <ul class="tiles">
+    <li><b>Розничный сбыт по споту</b><span>Вы продаёте конечному покупателю по биржевой цене, без дилера.</span></li>
+    <li><b>Цена первого дня</b><span>Граммы и цена известны в момент оплаты. Вы закупаете сырьё в тот же день и не несёте ценового риска.</span></li>
+    <li><b>График на месяцы вперёд</b><span>Каждый заказ даёт известное число граммов в день.</span></li>
+    <li><b>Деньги раньше металла</b><span>В схеме с предоплатой вы получаете оплату в день заказа и поставляете постепенно.</span></li>
+    <li><b>Ваше имя как источник</b><span>Девиз musa: «Real gold · real mines · delivered». Настоящий поставщик за этими словами для нас ценнее скидки.</span></li>
+    <li class="own"><b>Готовый продукт для вашего токена</b><span>Если вы выпускаете свой золотой токен, через musa его покупают по граммам, хранят и используют.</span></li>
+  </ul>
+</section>
+
+<section id="gold">
+  <h2>Какое золото получает покупатель</h2>
+  <p class="sub">PAXG, ваш собственный токен или оба сразу. Токен в контракте можно заменить.</p>
+  <figure class="card"><svg viewBox="0 0 344 382" role="img" aria-label="Два пути металла к покупателю: через токен PAXG компании Paxos или через ваш собственный токен"><rect class="bx you" x="96" y="4" width="152" height="42" rx="14"/><text class="t-name" x="172" y="30" text-anchor="middle">Ваш металл</text><path class="f-gold" d="M172 47V64H85.0V87" marker-end="url(#ah-g)"/><path class="f-gold" d="M172 64H259.0V87" marker-end="url(#ah-g)"/><text class="t-what g" x="73.0" y="80" text-anchor="end">Путь А</text><text class="t-what g" x="271.0" y="80">Путь Б</text><rect class="bx" x="4" y="94" width="162" height="58" rx="14"/><text class="t-name" x="85.0" y="115" text-anchor="middle">Paxos</text><text class="t-sub" x="85.0" y="131" text-anchor="middle">слитки Good Delivery,</text><text class="t-sub" x="85.0" y="144" text-anchor="middle">от 430 унций</text><path class="f-gold" d="M85.0 153V175" marker-end="url(#ah-g)"/><rect class="bx" x="178" y="94" width="162" height="58" rx="14"/><text class="t-name" x="259.0" y="115" text-anchor="middle">Хранилище</text><text class="t-sub" x="259.0" y="131" text-anchor="middle">слитки под каждый токен,</text><text class="t-sub" x="259.0" y="144" text-anchor="middle">публичный список</text><path class="f-gold" d="M259.0 153V175" marker-end="url(#ah-g)"/><rect x="43.0" y="182" width="84" height="30" rx="15" fill="rgba(201,169,97,.12)" stroke="#c9a961" stroke-width="1.2"/><text class="t-mono" x="85.0" y="201.5" text-anchor="middle">PAXG</text><rect x="203.0" y="182" width="112" height="30" rx="15" fill="rgba(201,169,97,.12)" stroke="#c9a961" stroke-width="1.2"/><text class="t-mono" x="259.0" y="201.5" text-anchor="middle">ваш токен</text><path class="f-gold" d="M85.0 213V232H163V251" marker-end="url(#ah-g)"/><path class="f-gold" d="M259.0 213V232H181V251" marker-end="url(#ah-g)"/><rect class="bx" x="80" y="258" width="184" height="46" rx="14"/><text class="t-name" x="172" y="278.5" text-anchor="middle">Контракт musa</text><text class="t-sub" x="172" y="293.5" text-anchor="middle">выдаёт золото по граммам</text><path class="f-gold" d="M172 305V325" marker-end="url(#ah-g)"/><rect class="bx" x="80" y="332" width="184" height="46" rx="14"/><text class="t-name" x="172" y="360" text-anchor="middle">Кошелёк покупателя</text></svg></figure>
+</section>
+
+<section id="schemes">
+  <h2>Три схемы работы</h2>
+  <p class="sub">Они отличаются тем, что приходит раньше: деньги или металл. Вводить их можно по шагам.</p>
+  <figure class="card"><svg viewBox="0 0 344 268" role="img" aria-label="Что приходит раньше в схемах 1, 2 и 3: металл или деньги"><text class="t-when" x="78" y="12">день заказа</text><text class="t-when" x="336" y="12" text-anchor="end">конец срока</text><path class="guide" d="M78 20V262M336 20V262" stroke-dasharray="2 4"/><text class="t-name" x="0" y="44">Схема 1. Оплата при поставке</text><text class="t-when" x="0" y="72">металл</text><path class="f-gold" d="M78 68H335" marker-end="url(#ah-g)"/><text class="t-when" x="0" y="94">деньги</text><path class="f-money" d="M78 90H335" marker-end="url(#ah-m)"/><text class="t-name" x="0" y="130">Схема 2. Сначала поставка</text><text class="t-when" x="0" y="158">металл</text><path class="track" d="M78 154H336"/><circle class="gold-fill" cx="78" cy="154" r="8"/><text class="t-sub g" x="95" y="158">весь заказ сразу</text><text class="t-when" x="0" y="180">деньги</text><path class="f-money" d="M78 176H335" marker-end="url(#ah-m)"/><text class="t-name" x="0" y="216">Схема 3. Предоплата</text><text class="t-when" x="0" y="244">металл</text><path class="f-gold" d="M78 240H335" marker-end="url(#ah-g)"/><text class="t-when" x="0" y="266">деньги</text><path class="track" d="M78 262H336"/><rect class="cream-fill" x="71" y="255" width="14" height="14" rx="3.5"/><text class="t-sub" x="95" y="266">вся сумма сразу</text></svg><div class="legend"><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-gold" d="M3 5H33"/></svg>золото</span><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-money" d="M2 5H34"/></svg>деньги</span></div><figcaption>Схема 1: металл и деньги идут вместе. Схема 2: металл вперёд, деньги ждут вас в векселях США. Схема 3: деньги вперёд, металл по граммам.</figcaption></figure>
+  <p class="fine swipe">Три карточки, листайте вбок.</p>
+  <div class="sreel"><article class="scheme card" id="s1"><div class="k">Схема 1</div><h3>Оплата при поставке</h3><p class="one">Вы поставляете золото, когда подходит срок выдачи покупателям. Мы платим сразу, по споту.</p><svg viewBox="0 0 344 278" role="img" aria-label="Схема 1: вы поставляете золото к сроку выдачи, musa платит по споту при каждой поставке"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">платит один раз</text><rect class="bx" x="80" y="116" width="184" height="46" rx="14"/><text class="t-name" x="172" y="136.5" text-anchor="middle">musa</text><text class="t-sub" x="172" y="151.5" text-anchor="middle">контракт и резерв</text><rect class="bx you" x="80" y="228" width="184" height="46" rx="14"/><text class="t-name" x="172" y="248.5" text-anchor="middle">Вы</text><text class="t-sub" x="172" y="263.5" text-anchor="middle">поставщик золота</text><path class="f-money" d="M152 56V109.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="81" text-anchor="end">вся сумма</text><text class="t-when" x="141" y="97" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 110V56.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="81" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="97" text-anchor="start">весь срок</text><path class="f-money" d="M152 168V221.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="193" text-anchor="end">оплата по споту</text><text class="t-when" x="141" y="209" text-anchor="end">при каждой поставке</text><path class="f-gold" d="M192 222V168.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="193" text-anchor="start">золото партиями</text><text class="t-when" x="203" y="209" text-anchor="start">к сроку выдачи</text></svg><dl class="terms"><div><dt>Вы получаете</dt><dd>Постоянный розничный сбыт. Кредитного риска нет ни у вас, ни у нас.</dd></div><div><dt>Вы даёте</dt><dd>Металл. Скидка по вашему желанию.</dd></div></dl></article><article class="scheme card" id="s2"><div class="k">Схема 2</div><h3>Сначала поставка, оплата по графику</h3><p class="one">Вы поставляете весь заказ в первый день. Сумму покупки мы держим для вас в казначейских векселях США и выплачиваем по фиксированному календарю.</p><svg viewBox="0 0 344 278" role="img" aria-label="Схема 2: вы поставляете весь заказ в первый день, musa платит по календарю из казначейских векселей"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">платит один раз</text><rect class="bx" x="80" y="116" width="184" height="46" rx="14"/><text class="t-name" x="172" y="136.5" text-anchor="middle">musa</text><text class="t-sub" x="172" y="151.5" text-anchor="middle">деньги лежат в векселях США</text><rect class="bx you" x="80" y="228" width="184" height="46" rx="14"/><text class="t-name" x="172" y="248.5" text-anchor="middle">Вы</text><text class="t-sub" x="172" y="263.5" text-anchor="middle">поставщик золота</text><path class="f-money" d="M152 56V109.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="81" text-anchor="end">вся сумма</text><text class="t-when" x="141" y="97" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 110V56.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="81" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="97" text-anchor="start">весь срок</text><path class="f-money" d="M152 168V221.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="193" text-anchor="end">оплата по графику</text><text class="t-when" x="141" y="209" text-anchor="end">по мере выдачи золота</text><path class="f-gold" d="M192 222V168.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="193" text-anchor="start">весь заказ золотом</text><text class="t-when" x="203" y="209" text-anchor="start">в день заказа</text></svg><dl class="terms"><div><dt>Вы получаете</dt><dd>Полную спотовую цену, с первого дня обеспеченную векселями, и продажи, которые появляются благодаря бонусу.</dd></div><div><dt>Вы даёте</dt><dd>Время. Проценты по векселям идут покупателю бонусом.</dd></div></dl></article><article class="scheme card" id="s3"><div class="k">Схема 3</div><h3>Предоплата</h3><p class="one">Вы получаете всю сумму в день заказа и поставляете металл по граммам, с оговорённым запасом по времени.</p><svg viewBox="0 0 344 278" role="img" aria-label="Схема 3: вы получаете всю сумму в день заказа и поставляете золото по граммам с запасом по времени"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">платит один раз</text><rect class="bx" x="80" y="116" width="184" height="46" rx="14"/><text class="t-name" x="172" y="136.5" text-anchor="middle">musa</text><text class="t-sub" x="172" y="151.5" text-anchor="middle">контракт и резерв</text><rect class="bx you" x="80" y="228" width="184" height="46" rx="14"/><text class="t-name" x="172" y="248.5" text-anchor="middle">Вы</text><text class="t-sub" x="172" y="263.5" text-anchor="middle">гарантия, залог или лимит</text><path class="f-money" d="M152 56V109.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="81" text-anchor="end">вся сумма</text><text class="t-when" x="141" y="97" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 110V56.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="81" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="97" text-anchor="start">весь срок</text><path class="f-money" d="M152 168V221.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="193" text-anchor="end">вся сумма</text><text class="t-when" x="141" y="209" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 222V168.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="193" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="209" text-anchor="start">весь срок, с запасом</text></svg><dl class="terms"><div><dt>Вы получаете</dt><dd>Оборотные деньги в первый день. Цена заказа зафиксирована, металл в вашем распоряжении до каждой поставки.</dd></div><div><dt>Вы даёте</dt><dd>Бонус покупателю. По сути вы платите за деньги по ставке, которую назначаете сами.</dd></div><div><dt>Нужно</dt><dd>Обеспечение на непоставленную часть: банковская гарантия, залог или лимит, который растёт с историей работы.</dd></div></dl></article></div>
+</section>
+
+<section id="bonus">
+  <h2>Бонус покупателю</h2>
+  <p class="sub">Бонус приводит покупателей и не может быть больше того, что его оплачивает. За весь срок, в процентах от суммы покупки.</p>
+  <table class="tbl">
+    <thead><tr><th>Схема</th><th>6 мес</th><th>12 мес</th><th>24 мес</th></tr></thead>
+    <tbody>
+      <tr><td>1. Оплата при поставке<small>платите вы, если решите</small></td><td class="span" colspan="3">ваша скидка</td></tr>
+      <tr><td>2. Сначала поставка<small>платят проценты по векселям</small></td><td>1,0-1,3</td><td>1,9-2,3</td><td>3,7-4,5</td></tr>
+      <tr><td>3. Предоплата<small>платите вы, за пользование деньгами</small></td><td>1,2-2,0</td><td>2,2-3,8</td><td>4,2-7,3</td></tr>
+    </tbody>
+  </table>
+  <p class="assume">Допущения: векселя 3,5-4,3% годовых, ваши деньги 4-7% годовых в золотом выражении. Если ваши цифры другие, изменятся и строки.</p>
+  <details id="calc"><summary>Подставить свои ставки</summary><div class="fold">
+    <div class="field"><label for="r-bills">Ставка по векселям США <output id="o-bills" for="r-bills">3,9%</output></label><input type="range" id="r-bills" min="2" max="6" step="0.1" value="3.9"></div>
+    <div class="field"><label for="r-money">Сколько вам стоят деньги <output id="o-money" for="r-money">5,5%</output></label><input type="range" id="r-money" min="1" max="15" step="0.5" value="5.5"><small>Годовых, в золотом выражении.</small></div>
+    <table class="tbl">
+      <thead><tr><th>Схема</th><th>6 мес</th><th>12 мес</th><th>24 мес</th></tr></thead>
+      <tbody>
+        <tr><td>2. Сначала поставка</td><td id="c2-0"></td><td id="c2-1"></td><td id="c2-2"></td></tr>
+        <tr><td>3. Предоплата</td><td id="c3-0"></td><td id="c3-1"></td><td id="c3-2"></td></tr>
+      </tbody>
+    </table>
+  </div></details>
+</section>
+
+<section id="start">
+  <h2>С чего начать</h2>
+  <p class="sub">По шагам: от схемы без риска к схемам, которым нужны история работы и обеспечение.</p>
+  <ol class="path">
+    <li data-n="1"><b>Оплата при поставке</b><span>Риска нет ни у одной стороны. Шаг проверяет сам процесс.</span></li>
+    <li data-n="2"><b>Сначала поставка, оплата по графику</b><span>Покупатель получает бонус из процентов по векселям, вы обеспечены с первого дня.</span></li>
+    <li data-n="3"><b>Предоплата</b><span>Объём растёт с историей работы и обеспечением.</span></li>
+  </ol>
+  <div class="along"><b>Параллельно с любым шагом</b><span>Ваш собственный золотой токен, когда он готов.</span></div>
+</section>
+
+<section id="questions">
+  <h2>Что обсудить</h2>
+  <ul class="ask">
+    <li>Какие схемы подходят под то, как вы закупаете, аффинируете и продаёте?</li>
+    <li>Сколько вам сегодня стоят деньги и сколько раз в год оборачивается капитал?</li>
+    <li>Где ваш металл и в какой форме: слитки Good Delivery, килограммовые слитки, сплав Доре?</li>
+    <li>Планируете ли вы свой золотой токен, и на каких условиях?</li>
+  </ul>
+</section>
+</main>
+
+<footer>
+  <div class="tag">Real gold · real mines · delivered</div>
+  <div class="meta">musa, обзор для обсуждения, 21 ноября 2026 года. Без оферты и обязательств, лицензии и юридическая проверка впереди.</div>
+</footer>
+</div>
+
+<script>
+(function(){
+  var A=[(30/360+0.5)/2,(30/360+1)/2,(30/360+2)/2], L=[0.5,1,2];
+  function pct(x){return (x*100).toFixed(1).replace('.',',')+'%'}
+  function rate(v){return String(v).replace('.',',')+'%'}
+  var rb=document.getElementById('r-bills'), rm=document.getElementById('r-money');
+  function calc(){
+    var b=rb.value/100, m=rm.value/100;
+    document.getElementById('o-bills').textContent=rate(rb.value);
+    document.getElementById('o-money').textContent=rate(rm.value);
+    for(var i=0;i<3;i++){
+      document.getElementById('c2-'+i).textContent=pct(b*A[i]);
+      document.getElementById('c3-'+i).textContent=pct(m*A[i]);
+    }
+  }
+  [rb,rm].forEach(function(el){el.addEventListener('input',calc)});
+  calc();
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,8 @@
 
 This document captures the architectural decisions and reasoning from the design session that followed prototype completion. Read alongside `SPEC.md` (product/UX spec) and `BUSINESS.md` (economic model, scenarios, simulator results).
 
+> **Proposal pending (2026-11-21):** `TREASURY.md` proposes changes to how the bonus is funded and lists corrections to this document. Nothing here changes until Pav approves it.
+
 ---
 
 ## Core architectural decision
