@@ -21,14 +21,23 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-.wrap{max-width:616px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{position:relative;z-index:1;max-width:616px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 p{margin:0}
 b,strong{font-weight:600}
 
 .logo{display:block;text-align:center;padding:26px 0 0;font:500 10px/1 var(--body);letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;color:rgba(232,218,188,.74)}
 
 .hero{position:relative;padding:52px 0 0}
-.hero::before{content:"";position:absolute;left:-16px;right:-16px;top:-70px;height:430px;background:radial-gradient(60% 58% at 26% 44%,rgba(201,169,97,.25),rgba(201,169,97,.07) 52%,transparent 76%);pointer-events:none}
+/* the app's wandering glow (drifts, pauses, drifts again; same 17s / 23s / 4s cycles), here across the whole viewport behind the text */
+.spirit{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.spirit i{position:absolute;inset:0;display:block;will-change:transform}
+.spirit .sx{animation:spiritX 17s ease-in-out infinite}
+.spirit .sy{animation:spiritY 23s ease-in-out infinite}
+.spirit b{position:absolute;left:0;top:0;width:clamp(300px,74vw,560px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.38) 0%,rgba(201,169,97,.16) 34%,rgba(201,169,97,.05) 56%,transparent 70%);animation:spiritBreath 4s ease-in-out infinite;will-change:opacity}
+@keyframes spiritX{0%,12%{transform:translateX(20%)}30%,42%{transform:translateX(60%)}58%,68%{transform:translateX(35%)}82%,90%{transform:translateX(70%)}100%{transform:translateX(20%)}}
+@keyframes spiritY{0%,15%{transform:translateY(40%)}28%,40%{transform:translateY(65%)}52%,62%{transform:translateY(30%)}78%,88%{transform:translateY(55%)}100%{transform:translateY(40%)}}
+@keyframes spiritBreath{0%,100%{opacity:.65}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.spirit .sx,.spirit .sy,.spirit b{animation:none}.spirit .sx{transform:translateX(26%)}.spirit .sy{transform:translateY(30%)}}
 .hero>*{position:relative}
 h1{font:400 clamp(44px,12.4vw,66px)/1 var(--display);letter-spacing:-.012em;margin:0}
 h1 em{display:block;font-style:italic;color:var(--gold-light)}
@@ -226,6 +235,7 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
 .bx.todo{stroke-dasharray:4 4}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><marker id="ah-g" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7.5" markerHeight="7.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 .4L8 4L0 7.6z" fill="#e4c57e"/></marker><marker id="ah-m" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 .4L8 4L0 7.6z" fill="#d9d7d1"/></marker></defs></svg>
+<div class="spirit" aria-hidden="true"><i class="sx"><i class="sy"><b></b></i></i></div>
 <div class="wrap">
 <header>
   <span class="logo">musa</span>
