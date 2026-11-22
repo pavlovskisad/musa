@@ -113,7 +113,7 @@ Pending items from the last session, not yet in other docs:
 - **KYC flow**: Persona or Sumsub. Not started.
 - **Smart contracts**: Solidity on Base. Not started. See ARCHITECTURE § "Build sequence".
 - **Device testing**: prototype is optimized for 390×844, verify safe-area on other iOS sizes.
-- **Early exit rule**: decided 2026-11-22 (forfeit only the unearned bonus), shown on `/overview`, not yet in `Musa.sol` or the app. Needs principal and bonus grams tracked separately and a redeploy. See `docs/TREASURY.md` section 11.
+- **Early exit rule**: decided 2026-11-22 (keep what was delivered, no unearned bonus, 5% withheld from the undelivered paid gold; the 5% awaits confirmation), shown on `/overview`, not yet in `Musa.sol` or the app. Can be one fixed rate per tier on the undelivered total; needs a redeploy. See `docs/TREASURY.md` section 11.
 - **Bonus funding**: proposal in `docs/TREASURY.md` (2026-11-21) with the model and evidence in `docs/research/`. Awaiting Pav's decisions (its section 11). Until approved, SPEC, ARCHITECTURE and BUSINESS stand as written.
 
 ## Continuation discipline
