@@ -16,6 +16,19 @@ Russian is the text in the page. English is a table at the bottom of the file, k
 
 When Russian text changes, change its key in that table as well, or the string stays Russian in English mode. A string with no entry is left as it is.
 
+## Layout
+
+- Up to 1023px: one column, 616px at most, with the app clips and scheme cards as swipeable rows on a phone.
+- From 1024px: a 1160px page with a sticky bar (logo, section links, language switch). Each section has its heading in a left column that stays in view, and its content on the right. The clip row and the three scheme cards run the full width.
+
+Each section is `sec-h` (heading), `sec-b` (content) and, where needed, `sec-w` (full-width row).
+
+## The name section
+
+The facts about Mansa Musa are stated as the sources give them, with the disputed ones marked as disputed (the twelve-year effect on Cairo's gold price rests on al-Umari alone). No dollar figure for his wealth is given.
+
+The image is a detail of the Catalan Atlas (1375), Bibliothèque nationale de France, public domain, taken from Wikimedia Commons (`Catalan_Atlas_BNF_Sheet_6_Mansa_Musa.jpg`).
+
 ## App recordings
 
 Four clips (sign-in, new order, home, one position) and one still (profile with the reserve). 30 fps, 780 x 1520.
