@@ -14,8 +14,8 @@ function Stat({ label, value, accent }) {
 
 function BrowseScreen({ onBack, onHome, onSelect }) {
   return (
-    <div className="h-full flex flex-col anim-slide-right">
-      <div className="px-6 pt-3 pb-4 flex items-center justify-between">
+    <div className="h-full flex flex-col anim-slide-right scr scr-browse">
+      <div className="px-6 pt-3 pb-4 flex items-center justify-between scr-head">
         <button
           onClick={onBack}
           className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
@@ -27,10 +27,10 @@ function BrowseScreen({ onBack, onHome, onSelect }) {
         <div className="w-9" />
       </div>
 
-      <div className="px-6 pt-2 pb-7">
+      <div className="px-6 pt-2 pb-7 scr-title">
         <h1
           className="font-display text-app"
-          style={{ fontWeight: 300, fontSize: '44px', lineHeight: '1' }}
+          style={{ fontWeight: 300, fontSize: 'var(--scr-h1, 44px)', lineHeight: '1' }}
         >
           Pick your
           <br />
@@ -41,7 +41,7 @@ function BrowseScreen({ onBack, onHome, onSelect }) {
         </p>
       </div>
 
-      <div className="flex-1 px-6 space-y-3 overflow-auto scrollable pb-8">
+      <div className="flex-1 px-6 space-y-3 overflow-auto scrollable pb-8 browse-list">
         {Object.values(TIERS).map((tier, i) => (
           <button
             key={tier.id}

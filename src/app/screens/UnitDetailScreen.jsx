@@ -27,10 +27,10 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
   };
 
   return (
-    <div className="h-full relative anim-slide-right overflow-hidden">
+    <div className="h-full relative anim-slide-right overflow-hidden scr scr-detail">
       {/* Scrollable content — padded to start below floating hero */}
       <div className="absolute inset-0 overflow-auto scrollable">
-        <div className="px-6 pb-12" style={{ paddingTop: isConstructing ? '310px' : '290px' }}>
+        <div className="px-6 pb-12 detail-body" style={{ paddingTop: isConstructing ? 'var(--detail-pad-c, 310px)' : 'var(--detail-pad, 290px)' }}>
           <div className="bg-surface border border-app rounded-2xl p-5 space-y-2.5">
             <Row label="Paid" value={formatUSD(unit.pricePaid)} />
             <Row label="Total gold" value={`${formatGold(unit.gramsTotal, goldUnit)}${goldUnitLabel(goldUnit)}`} />
@@ -79,7 +79,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
       </div>
 
       {/* Floating hero glass overlay */}
-      <div className="hero-glass absolute top-0 left-0 right-0 z-10">
+      <div className="hero-glass absolute top-0 left-0 right-0 z-10 detail-hero">
         {/* Wandering spirit glow */}
         <div className="hero-ambient-glow" />
 
@@ -87,7 +87,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
         <div className="hero-spirit-burst" />
 
         {/* Header */}
-        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
+        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between scr-head scr-head-back" style={{ zIndex: 2 }}>
           <div className="min-w-[60px]">
             <button
               onClick={onBack}
@@ -109,7 +109,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
         <div className="relative px-6 pb-3" style={{ zIndex: 2 }}>
           <h1
             className="font-display text-app flex items-center gap-3"
-            style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
+            style={{ fontWeight: 300, fontSize: 'var(--scr-h1, 48px)', lineHeight: '1' }}
           >
             {tier.name}
             {isActive && (
@@ -154,7 +154,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
               <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">Mined</div>
               <div
                 className={`font-display font-num text-app ${isActive ? 'pulse-gold' : ''}`}
-                style={{ fontWeight: 300, fontSize: '48px', lineHeight: '1' }}
+                style={{ fontWeight: 300, fontSize: 'var(--scr-h1, 48px)', lineHeight: '1' }}
               >
                 {formatGold(unit.gramsDelivered, goldUnit, 6)}
                 <span

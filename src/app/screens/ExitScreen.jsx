@@ -20,8 +20,8 @@ function ExitScreen({ unit, onBack, onHome, onConfirm }) {
   const totalReceived = unit.gramsDelivered + refundGrams;
 
   return (
-    <div className="h-full flex flex-col anim-slide-up-big">
-      <div className="px-6 pt-3 pb-4 flex items-center justify-between">
+    <div className="h-full flex flex-col anim-slide-up-big scr scr-exit">
+      <div className="px-6 pt-3 pb-4 flex items-center justify-between scr-head scr-head-back">
         <button
           onClick={onBack}
           className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
@@ -67,7 +67,7 @@ function ExitScreen({ unit, onBack, onHome, onConfirm }) {
         </div>
       </div>
 
-      <div className="flex-1" />
+      <div className="flex-1 exit-spacer" />
 
       <div className="p-6 pb-12 space-y-2">
         <button

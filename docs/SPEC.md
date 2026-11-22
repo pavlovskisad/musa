@@ -287,7 +287,15 @@ Used by Pav to test time-based delivery progression without waiting weeks.
 - Persona or Sumsub KYC flow
 - Smart contract design + Solidity implementation (see `ARCHITECTURE.md` § "Build sequence")
 - Split prototype into component modules for production
-- **Desktop stage (2026-11-22):** on screens from 600px wide the app runs in a centred 390px phone frame (height up to 844px); from 900px a brand panel sits to its left with the couplet "from mine / to your wallet", the line "directly, gram by gram" and the footer line, over a drifting glow. No screen has a separate wide layout. Checked at 700×900, 1024×768, 1366×700, 1920×1080.
+- **Wider screens (2026-11-22).** Phone under 600px; tablet 600 to 1023px shows the phone layout centred in a 390px frame; desktop from 1024px wide and 600px tall has its own layouts:
+  - **Shell:** a 232px left rail with the logo (returns to onboarding), Mines, New mine, Profile, the signed-in name and the footer line. The per-screen logo rows are hidden; a back button stays on Buy, a mine, and Exit.
+  - **Home:** the balance across the top (counter 1.5x), New mine as a button beside it, mines in a grid of two columns (three from 1500px) scrolling under the glass hero.
+  - **Pick a tier:** title left and tiers stacked right; from 1280px the title sits above three tiers side by side.
+  - **Buy:** tier, amount and chips left; what you receive and the Buy button right.
+  - **A mine:** name, counter and progress in the left half; terms, Claim and Exit in the right half.
+  - **Exit:** one centred column. **Profile:** cards in two columns.
+  - **Onboarding:** each scene fills the window with copy on the left and its picture on the right; the first scene is a single left-set column and the last stays centred because the particle river flanks the musa mark. The drifting glow shows through all scenes.
+  - Checked at 1024×768, 1440×900 and 1920×1080, including the buy flow from an empty account. A wide window under 600px tall falls back to the framed phone.
 - Test on actual mobile devices beyond 390×844 (iPhone mini, Max, Android)
 - Safe-area verification for various iOS device sizes
 - **Tier 2**: junior miner pitch deck (separate deliverable)

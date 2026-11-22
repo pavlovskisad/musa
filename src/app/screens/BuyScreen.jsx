@@ -15,8 +15,8 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
   const dailyGrams = grams / (tier.lockMonths * 30 - CONSTRUCTION_DAYS);
 
   return (
-    <div className="h-full flex flex-col anim-slide-right">
-      <div className="px-6 pt-3 pb-4 flex items-center justify-between">
+    <div className="h-full flex flex-col anim-slide-right scr scr-buy">
+      <div className="px-6 pt-3 pb-4 flex items-center justify-between scr-head scr-head-back">
         <button
           onClick={onBack}
           className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
@@ -28,16 +28,16 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
         <div className="w-9" />
       </div>
 
-      <div className="flex-1 overflow-auto scrollable">
+      <div className="flex-1 overflow-auto scrollable buy-body">
         {/* Tier name + amount on one row to save vertical space */}
-        <div className="px-6 pb-5 flex items-end justify-between gap-4">
+        <div className="px-6 pb-5 flex items-end justify-between gap-4 buy-top">
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-2">
               {tier.lockMonths} month lock
             </div>
             <h1
               className="font-display text-app"
-              style={{ fontWeight: 300, fontSize: '44px', lineHeight: '1' }}
+              style={{ fontWeight: 300, fontSize: 'var(--scr-h1, 44px)', lineHeight: '1' }}
             >
               {tier.name}
             </h1>
@@ -53,7 +53,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
           </div>
         </div>
 
-        <div className="px-6 pb-5">
+        <div className="px-6 pb-5 buy-chips">
           <div className="grid grid-cols-5 gap-2">
             {PRESET_AMOUNTS.map(a => (
               <button
@@ -71,7 +71,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
           </div>
         </div>
 
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-6 buy-receive">
           <div className="bg-surface border border-app rounded-2xl p-5">
             <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3">You'll receive</div>
             <div
@@ -100,7 +100,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
         </div>
       </div>
 
-      <div className="p-6 pb-12">
+      <div className="p-6 pb-12 buy-cta">
         <button
           onClick={onConfirm}
           className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide"
