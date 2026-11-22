@@ -1,12 +1,13 @@
-// Bonuses set 2026-11-22 to what about 4% a year can fund when gold is delivered evenly from day one:
-// bonus = rate x average wait (0.25, 0.5, 1 year). See docs/TREASURY.md section 11.
+// Target bonuses (2026-11-22): 1.5 / 4 / 10%. With gold delivered evenly from day one the money is held for
+// half the term on average, so these cost whoever funds them 6 / 8 / 10% a year. T-bill-level yield funds about
+// 1 / 2 / 4%; the rest needs a supplier paying for prepaid money. See docs/TREASURY.md section 11.
 export const TIERS = {
   spark: {
     id: 'spark',
     name: 'Spark',
     lockMonths: 6,
-    discount: 0.01,
-    annualized: 0.04,
+    discount: 0.015,
+    annualized: 0.06,
     description: 'Six months. Light commitment.',
     cancellable: false,
   },
@@ -14,8 +15,8 @@ export const TIERS = {
     id: 'flow',
     name: 'Flow',
     lockMonths: 12,
-    discount: 0.02,
-    annualized: 0.04,
+    discount: 0.04,
+    annualized: 0.08,
     description: 'A year of patient accumulation.',
     cancellable: true,
   },
@@ -23,8 +24,8 @@ export const TIERS = {
     id: 'vein',
     name: 'Vein',
     lockMonths: 24,
-    discount: 0.04,
-    annualized: 0.04,
+    discount: 0.10,
+    annualized: 0.10,
     description: 'Two years. Maximum reward.',
     cancellable: true,
   },

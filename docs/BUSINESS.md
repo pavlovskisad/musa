@@ -33,7 +33,7 @@ musa offers miners capital at effective 8-12% cost — competitive for them, pro
 
 ## Tier economics (Tier 1 — locked)
 
-> **2026-11-22:** the app's tier bonuses were changed to 1% / 2% / 4% (see `SPEC.md`). The table below and the model in this document still use the earlier 2.5% / 7% / 18.8%.
+> **2026-11-22:** the app's tier bonuses were changed to 1.5% / 4% / 10% (see `SPEC.md`). The table below and the model in this document still use the earlier 2.5% / 7% / 18.8%.
 
 | Tier | Lock period | User discount vs spot | Lock weight | Cancellable |
 |---|---|---|---|---|
