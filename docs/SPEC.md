@@ -52,7 +52,7 @@ Container: `scroll-snap-type: y mandatory`. Each screen is one viewport tall. Th
 2. **Lore** — Mansa Musa Q&A block. Radar pulse background (three heartbeat rings emanating from below the text).
 3. **Better than money** — gold-vs-dollar SVG chart drawing on screen entry. Caption directly under headline: "$1 in 1971 buys 4¢ of gold today".
 4. **From mine to your wallet** — falling gold grains accumulate into a soft pile at the bottom. Caption: "directly, gram by gram".
-5. **More than you paid for** — three vertical tier columns (Spark / Flow / Vein). Base section is 240px fixed height across all three. Bonus sections are TRUE proportional to discount %: Spark 6px (2.5%), Flow 17px (7%), Vein 45px (18.8%). Caption: "lock longer for better".
+5. **More than you paid for** — three vertical tier columns (Spark / Flow / Vein). Base section is 240px fixed height across all three. Bonus sections are TRUE proportional to discount %: Spark 3.6px (1.5%), Flow 9.6px (4%), Vein 24px (10%), to scale. Caption: "lock longer for better".
 6. **Safe and sound** — entire screen is a gold ingot (uses the `unit-card-complete` gradient). Slides up from below when active (prevents snap-seam bleed). Deep brown-black text. Italic cream accent. Assay mark at top "AU · 999.9 FINE". Heater shield + checkmark icon pops in with elastic curve (shield at 1.05s, checkmark draws at 1.75s). Shimmer sweep across the ingot starts at 0.9s. Caption: "audited custody, yours to claim, anytime".
 7. **Connect the dots** — the closing CTA. See § "Connect-the-dots physics system" below. Tapping the circle = enter the app.
 
@@ -76,13 +76,15 @@ All non-onboarding screens have back arrow on left, centered logo (identity mark
 
 | Tier | Lock | Bonus | Cancellable | Notes |
 |---|---|---|---|---|
-| Spark | 26 weeks (6 mo) | 2.5% | No — committed | Entry-level |
-| Flow | 52 weeks (12 mo) | 7% | Yes — with penalty | Core tier |
-| Vein | 104 weeks (24 mo) | 18.8% | Yes — with penalty | HNW tier |
+| Spark | 26 weeks (6 mo) | 1.5% | No — committed | Entry-level |
+| Flow | 52 weeks (12 mo) | 4% | Yes — with penalty | Core tier |
+| Vein | 104 weeks (24 mo) | 10% | Yes — with penalty | HNW tier |
 
-- **Construction period:** 30 days (4 weeks) after purchase before delivery begins.
+Bonuses set 2026-11-22 (were 2.5 / 7 / 18.8%). These are target rates: with delivery from day one they cost whoever funds them 6 / 8 / 10% a year, which the Browse screen shows as "Per year". T-bill-level yield alone funds about 1 / 2 / 4%; the rest needs a supplier paying for prepaid money (`TREASURY.md` section 11).
+
+- **Construction period:** none. Delivery starts on the first day (decided 2026-11-22; the contract and app already run with one minute). Earlier text here said 30 days.
 - **Daily delivery rate:** `total grams / (lockMonths × 30)` during delivery phase.
-- **Exit penalty:** depends on % elapsed at exit time. Earlier exit = bigger penalty. Helper: `getExitPenaltyPct(elapsedPct)`.
+- **Exit penalty:** decided 2026-11-22: leaving early forfeits only the unearned bonus, never principal. **Not built yet.** The app and contract still use the stepped penalty on the undelivered part (50 / 35 / 20 / 10% by quarter of the term, `getExitPenaltyPct(elapsedPct)`); see `TREASURY.md` section 11.
 
 Tier bonuses are expressed as a discount to spot. Locking $100 Flow means paying for ~93.5% of the gold grams at spot price; user receives 100% grams. Sourced from miners' saved cost of capital — see `ARCHITECTURE.md` § "Where the discount comes from".
 
@@ -119,7 +121,7 @@ Falling gold grains accumulate into a pile at the bottom. Animations only run wh
 
 ### Screen 5 tier columns
 
-Three vertical columns. Base section 240px fixed. Bonus section heights are **proportional to discount %**: Spark 6px (2.5%), Flow 17px (7%), Vein 45px (18.8%). Heights transition in when `activeScreen === 4`.
+Three vertical columns. Base section 240px fixed. Bonus section heights are **proportional to discount %**: Spark 3.6px (1.5%), Flow 9.6px (4%), Vein 24px (10%), to scale. Heights transition in when `activeScreen === 4`.
 
 ### Screen 6 "Safe and sound" gold ingot
 

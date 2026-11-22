@@ -35,7 +35,7 @@ Four clips (sign-in, new order, home, one position) and one still (profile with 
 
 - Recorded from the real app screens, frame by frame, with the page clock frozen and stepped.
 - One second in a clip is one day in the app.
-- Tier numbers are samples (1.1 / 2.1 / 4.4%) so the clips agree with the bonus table on the page.
+- Tier numbers are the app's own (1.5 / 4 / 10%), the target row of the bonus table on the page.
 - The sign-in sheet and the card sheet are mock-ups drawn for the recording. The app signs in through Privy and has no payment provider connected. The note under the reel says so.
 
 The recording scripts and how to run them are in `tools/overview-capture/`.

@@ -180,7 +180,7 @@ function OnboardingScreen({ onContinue }) {
     for (let m = 1; m <= 60; m++) {
       const price = startPrice * Math.pow(1 + r, m);
       inv += 100;
-      gold += 118.8 / price;
+      gold += 110 / price; // $100 a month into Vein, with its 10% bonus
       pts.push({ m, inv, val: gold * price, g: gold });
     }
     const last = pts[pts.length - 1];
@@ -710,9 +710,9 @@ function OnboardingScreen({ onContinue }) {
 
         <div className="relative flex items-end justify-around gap-6 onb-visual onb-bars" style={{ zIndex: 4, height: '320px' }}>
           {[
-            { pct: 2.5,  months: 6,  delay: 0.05 },
-            { pct: 7,    months: 12, delay: 0.18 },
-            { pct: 18.8, months: 24, delay: 0.34 },
+            { pct: 1.5, months: 6,  delay: 0.05 },
+            { pct: 4,   months: 12, delay: 0.18 },
+            { pct: 10,  months: 24, delay: 0.34 },
           ].map((tier, i) => {
             const baseHeight = 240;
             const bonusHeight = baseHeight * (tier.pct / 100);
