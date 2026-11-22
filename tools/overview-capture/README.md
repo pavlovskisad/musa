@@ -4,7 +4,7 @@ Scripts that produce the clips and the still on the supplier overview page. Noth
 
 ## How it works
 
-- `vite.capture.config.js` serves the real app with four stand-ins: sign-in (`privy-stub.js`), the clock (`simtime-stub.js`, one second is one day), chain reads (`chain-stub.js`, fixed reserve figures) and tier numbers (`tiers-stub.js`, samples of 1.1 / 2.1 / 4.4%).
+- `vite.capture.config.js` serves the real app with three stand-ins: sign-in (`privy-stub.js`), the clock (`simtime-stub.js`, one second is one day) and chain reads (`chain-stub.js`, fixed reserve figures). Tier numbers are the app's own.
 - The recorders freeze the page clock, step it one frame at a time, and place every CSS animation by hand. The frame rate of the result does not depend on how fast screenshots are taken.
 - Each frame is captured until two captures in a row are identical, which removes frames where a layer had not finished painting.
 - `demo-ui.js` draws the tap marks, the sign-in sheet and the card sheet. Those two sheets are mock-ups: the app signs in through Privy and has no payment provider connected.

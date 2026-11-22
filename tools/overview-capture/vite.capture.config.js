@@ -1,4 +1,4 @@
-// Serves the app for recording only: sign-in, the clock, chain reads and tier numbers are swapped for stand-ins.
+// Serves the app for recording only: sign-in, the clock and chain reads are swapped for stand-ins.
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
@@ -17,7 +17,6 @@ export default defineConfig({
       { find: '@privy-io/react-auth', replacement: stub('privy-stub.js') },
       { find: /^\.\/hooks\/useSimTime\.js$/, replacement: stub('simtime-stub.js') },
       { find: /^\.\.\/lib\/chain\.js$/, replacement: stub('chain-stub.js') },
-      { find: /^\.{1,2}\/(lib\/)?tiers\.js$/, replacement: stub('tiers-stub.js') },
     ],
   },
   server: { port: 5179, strictPort: true },

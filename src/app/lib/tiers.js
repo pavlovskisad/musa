@@ -1,10 +1,12 @@
+// Bonuses set 2026-11-22 to what about 4% a year can fund when gold is delivered evenly from day one:
+// bonus = rate x average wait (0.25, 0.5, 1 year). See docs/TREASURY.md section 11.
 export const TIERS = {
   spark: {
     id: 'spark',
     name: 'Spark',
     lockMonths: 6,
-    discount: 0.025,
-    annualized: 0.05,
+    discount: 0.01,
+    annualized: 0.04,
     description: 'Six months. Light commitment.',
     cancellable: false,
   },
@@ -12,8 +14,8 @@ export const TIERS = {
     id: 'flow',
     name: 'Flow',
     lockMonths: 12,
-    discount: 0.07,
-    annualized: 0.07,
+    discount: 0.02,
+    annualized: 0.04,
     description: 'A year of patient accumulation.',
     cancellable: true,
   },
@@ -21,8 +23,8 @@ export const TIERS = {
     id: 'vein',
     name: 'Vein',
     lockMonths: 24,
-    discount: 0.188,
-    annualized: 0.09,
+    discount: 0.04,
+    annualized: 0.04,
     description: 'Two years. Maximum reward.',
     cancellable: true,
   },
