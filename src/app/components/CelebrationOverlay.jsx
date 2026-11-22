@@ -38,7 +38,7 @@ function CelebrationOverlay({ unit, onDismiss }) {
           style={{ fontWeight: 300, fontSize: '42px', lineHeight: '1' }}
         >
           {formatGold(unit.gramsTotal, goldUnit)}
-          <span className="text-xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>
+          <span className="text-xl text-dim ml-2" style={{ fontFamily: "'Old Standard TT', serif" }}>
             {goldUnitLabel(goldUnit)}
           </span>
         </div>

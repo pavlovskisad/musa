@@ -105,7 +105,7 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
             style={{ fontWeight: 300, fontSize: '36px', lineHeight: '1' }}
           >
             {paxgBalance != null ? paxgBalance.toFixed(6) : '—'}
-            <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>PAXG</span>
+            <span className="text-lg text-dim ml-2" style={{ fontFamily: "'Old Standard TT', serif" }}>PAXG</span>
           </div>
           {paxgBalance != null && (
             <div className="text-xs text-dim font-num mt-2">{formatUSD(paxgBalance * goldPrice * GRAMS_PER_TROY_OZ)}</div>

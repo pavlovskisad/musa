@@ -13,7 +13,7 @@ const STATS = [
 ];
 
 const DIGIT_HEIGHT = 60;
-const MONO = '"Geist Mono", ui-monospace, monospace';
+const MONO = '"IBM Plex Mono", ui-monospace, monospace';
 
 function RollingChar({ char, index }) {
   const isDigit = char >= '0' && char <= '9';
@@ -210,7 +210,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
                 style={{ fontWeight: 300, fontSize: '60px', lineHeight: '1' }}
               >
                 <RollingCounter value={displayValue} />
-                <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Fraunces', serif" }}>
+                <span className="text-2xl text-dim ml-2" style={{ fontFamily: "'Old Standard TT', serif" }}>
                   {isUsd ? '$' : goldUnitLabel(goldUnit)}
                 </span>
               </div>

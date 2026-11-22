@@ -81,7 +81,7 @@ function BuyScreen({ tierId, amount, setAmount, onBack, onHome, onConfirm }) {
               {formatGold(grams, goldUnit)}
               <span
                 className="text-xl text-dim ml-1.5"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                style={{ fontFamily: "'Old Standard TT', serif" }}
               >
                 {goldUnitLabel(goldUnit)}
               </span>

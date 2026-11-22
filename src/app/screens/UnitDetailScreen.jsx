@@ -159,7 +159,7 @@ function UnitDetailScreen({ unit, onBack, onHome, onExit, onClaim }) {
                 {formatGold(unit.gramsDelivered, goldUnit, 6)}
                 <span
                   className="text-2xl text-dim ml-2"
-                  style={{ fontFamily: "'Fraunces', serif" }}
+                  style={{ fontFamily: "'Old Standard TT', serif" }}
                 >
                   {goldUnitLabel(goldUnit)}
                 </span>
