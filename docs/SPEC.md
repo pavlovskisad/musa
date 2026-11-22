@@ -287,6 +287,7 @@ Used by Pav to test time-based delivery progression without waiting weeks.
 - Persona or Sumsub KYC flow
 - Smart contract design + Solidity implementation (see `ARCHITECTURE.md` § "Build sequence")
 - Split prototype into component modules for production
+- **Desktop stage (2026-11-22):** on screens from 600px wide the app runs in a centred 390px phone frame (height up to 844px); from 900px a brand panel sits to its left with the couplet "from mine / to your wallet", the line "directly, gram by gram" and the footer line, over a drifting glow. No screen has a separate wide layout. Checked at 700×900, 1024×768, 1366×700, 1920×1080.
 - Test on actual mobile devices beyond 390×844 (iPhone mini, Max, Android)
 - Safe-area verification for various iOS device sizes
 - **Tier 2**: junior miner pitch deck (separate deliverable)

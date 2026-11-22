@@ -17,6 +17,7 @@ import CreationOverlay from './components/CreationOverlay.jsx';
 import CelebrationOverlay from './components/CelebrationOverlay.jsx';
 
 import OnboardingScreen from './screens/OnboardingScreen.jsx';
+import DesktopSide from './components/DesktopSide.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import BrowseScreen from './screens/BrowseScreen.jsx';
 import BuyScreen from './screens/BuyScreen.jsx';
@@ -303,9 +304,14 @@ export default function App() {
   return (
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
-      className="w-full"
+      className="w-full app-stage"
       style={{ background: 'var(--bg)', color: 'var(--text)', height: '100dvh', overflow: 'hidden', paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
+      {/* wide screens only: a drifting glow and a brand panel around the phone-sized frame */}
+      <div className="stage-spirit" aria-hidden="true"><i><i><b /></i></i></div>
+      <div className="stage-inner">
+      <DesktopSide />
+      <div className="app-frame">
       <div className="relative" style={{ height: '100%' }}>
             {screen === 'onboarding' && (
               <OnboardingScreen
@@ -396,6 +402,8 @@ export default function App() {
               />
             )}
           </div>
+      </div>
+      </div>
     </div>
     </GoldContext.Provider>
   );

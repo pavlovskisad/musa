@@ -1267,3 +1267,86 @@
           80% { opacity: 0.3; }
           88% { opacity: 0; }
         }
+
+        /* === Desktop stage ===
+           The app is a phone design (390 x 844). On wider screens it keeps that shape inside a frame
+           instead of stretching: centred alone from 600px, with a brand panel beside it from 900px.
+           Its own glow system, separate from the hero glow inside the app. */
+        .stage-inner, .app-frame { height: 100%; }
+        .stage-side, .stage-spirit { display: none; }
+        @media (min-width: 600px) and (min-height: 560px) {
+          .app-stage { position: relative; }
+          .stage-inner {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+          }
+          .app-frame {
+            position: relative;
+            flex: 0 0 auto;
+            width: 390px;
+            height: min(844px, calc(100dvh - 56px));
+            border-radius: 44px;
+            overflow: hidden;
+            background: var(--bg);
+            border: 1px solid var(--border-strong);
+            box-shadow: 0 0 0 9px rgba(255, 255, 255, 0.022), 0 50px 120px rgba(0, 0, 0, 0.65), 0 0 110px rgba(201, 169, 97, 0.07);
+            /* makes the frame the containing block for fixed-position parts (onboarding dots) */
+            transform: translateZ(0);
+          }
+          .stage-spirit { display: block; position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+          .stage-spirit i { position: absolute; inset: 0; display: block; will-change: transform; }
+          .stage-spirit > i { animation: stageX 17s ease-in-out infinite; }
+          .stage-spirit > i > i { animation: stageY 23s ease-in-out infinite; }
+          .stage-spirit b {
+            position: absolute; left: 0; top: 0;
+            width: clamp(420px, 46vw, 760px); aspect-ratio: 1;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201, 169, 97, 0.30) 0%, rgba(201, 169, 97, 0.12) 34%, rgba(201, 169, 97, 0.04) 56%, transparent 70%);
+            animation: stageBreath 4s ease-in-out infinite;
+            will-change: opacity;
+          }
+        }
+        @keyframes stageX {
+          0%, 12%  { transform: translateX(18%); }
+          30%, 42% { transform: translateX(46%); }
+          58%, 68% { transform: translateX(28%); }
+          82%, 90% { transform: translateX(54%); }
+          100%     { transform: translateX(18%); }
+        }
+        @keyframes stageY {
+          0%, 15%  { transform: translateY(40%); }
+          28%, 40% { transform: translateY(66%); }
+          52%, 62% { transform: translateY(30%); }
+          78%, 88% { transform: translateY(56%); }
+          100%     { transform: translateY(40%); }
+        }
+        @keyframes stageBreath {
+          0%, 100% { opacity: 0.65; }
+          50%      { opacity: 1; }
+        }
+        @media (min-width: 900px) and (min-height: 560px) {
+          .stage-inner { justify-content: space-between; gap: clamp(40px, 6vw, 110px); max-width: 1120px; margin: 0 auto; padding: 0 56px; }
+          .stage-side {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1 1 0;
+            min-width: 0;
+            height: min(844px, calc(100dvh - 56px));
+            padding: 34px 0 30px;
+          }
+          .stage-logo { font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: rgba(232, 218, 188, 0.74); }
+          .stage-head { font-size: clamp(54px, 6.2vw, 88px); line-height: 0.96; color: var(--text); }
+          .stage-sub { font-size: 17px; color: var(--text-dim); margin-top: 22px; }
+          .stage-foot { font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .stage-spirit i, .stage-spirit b { animation: none; }
+          .stage-spirit > i { transform: translateX(26%); }
+          .stage-spirit > i > i { transform: translateY(44%); }
+        }

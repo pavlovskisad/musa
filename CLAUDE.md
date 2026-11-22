@@ -63,6 +63,7 @@ Old Standard TT italic is wide: onboarding couplets are 46px so the longest line
 - Phone frame: 390×844 (iPhone 14 Pro). Test here first.
 - `scroll-snap-type: y mandatory` on onboarding container. Screens are full-viewport `scrollSnapAlign: start`.
 - Safe areas: top padding typically `pt-20` on onboarding screens, `pt-4` on app screens (phone has a notch).
+- Wider screens (added 2026-11-22): the app keeps its phone shape and never stretches. From 600px wide it sits centred in a 390px frame; from 900px a brand panel (`DesktopSide.jsx`) and a drifting glow sit beside it. Rules are under `Desktop stage` in `app.css`. The frame has a transform so fixed-position parts stay inside it.
 
 ## State management
 

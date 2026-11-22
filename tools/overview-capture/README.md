@@ -41,5 +41,3 @@ ffmpeg -framerate 30 -i film/home/f%04d.png -vf "scale=520:-2:flags=lanczos" \
 ```
 
 Clip names on the page: `app-login`, `app-order`, `app-home`, `app-mine` (the `detail` recording), each with an `-poster.jpg`, and `app-profile.webp`.
-
-The brand section uses one more still, `app-lore.webp`: the top 880 px of the frame from `node tools/overview-capture/lore.cjs`.
