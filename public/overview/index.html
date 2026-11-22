@@ -219,7 +219,8 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
 .ask li::before{content:"";position:absolute;left:3px;top:23px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
 @media (min-width:720px){
   .reel{overflow:visible;margin:28px 0 0;padding:0;gap:16px;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%);align-items:start}
-  .reel figure{flex:1 1 0;max-width:none}
+  .reel{flex-wrap:wrap;justify-content:center;row-gap:30px}
+  .reel figure{flex:0 0 calc((100% - 32px)/3);max-width:none}
   .tiles{grid-template-columns:1fr 1fr}
   .pair{grid-template-columns:1fr 1fr;gap:16px;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
   .sreel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;overflow:visible;margin:26px 0 0;padding:0;width:min(880px,calc(100vw - 48px));margin-left:50%;transform:translateX(-50%)}
@@ -255,11 +256,13 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
   <h2>Как это работает</h2>
   <div class="pair"><figure class="card"><svg viewBox="0 0 344 278" role="img" aria-label="Покупатель платит один раз, контракт musa выдаёт золото по граммам из резерва"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">приложение и свой кошелёк</text><rect class="bx" x="80" y="116" width="184" height="46" rx="14"/><text class="t-name" x="172" y="136.5" text-anchor="middle">musa</text><text class="t-sub" x="172" y="151.5" text-anchor="middle">смарт-контракт и резерв</text><rect class="bx" x="80" y="228" width="184" height="46" rx="14"/><text class="t-name" x="172" y="248.5" text-anchor="middle">Золото</text><text class="t-sub" x="172" y="263.5" text-anchor="middle">сегодня токен PAXG</text><path class="f-money" d="M152 56V109.5" marker-end="url(#ah-m)"/><text class="t-what" x="141" y="81" text-anchor="end">один платёж</text><text class="t-when" x="141" y="97" text-anchor="end">в день заказа</text><path class="f-gold" d="M192 110V56.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="81" text-anchor="start">золото по граммам</text><text class="t-when" x="203" y="97" text-anchor="start">6, 12 или 24 месяца</text><path class="f-gold" d="M192 222V168.5" marker-end="url(#ah-g)"/><text class="t-what g" x="203" y="193" text-anchor="start">золото в резерв</text><text class="t-when" x="203" y="209" text-anchor="start">резерв проверит любой</text></svg><div class="legend"><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-gold" d="M3 5H33"/></svg>золото</span><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-money" d="M2 5H34"/></svg>деньги</span></div></figure><figure class="card"><svg viewBox="0 0 344 180" role="img" aria-label="Золото приходит покупателю равными долями после короткого начального периода и до конца срока"><path d="M118 132L332 28V132Z" fill="rgba(201,169,97,.1)"/><path class="guide" d="M24 132H332M24 132v6M118 132v6M332 132v6"/><path d="M24 132H118" stroke="rgba(232,230,224,.8)" stroke-width="2" fill="none"/><path class="f-gold" d="M118 132L329 29.4"/><circle cx="332" cy="28" r="4.5" fill="#e4c57e"/><text class="t-what g" x="24" y="58">золото приходит</text><text class="t-what g" x="24" y="75">равными долями</text><text class="t-when" x="322" y="20" text-anchor="end">все граммы заказа</text><text class="t-when" x="24" y="154">оплата</text><text class="t-when" x="118" y="154" text-anchor="middle">начало выдачи</text><text class="t-when" x="332" y="154" text-anchor="end">конец срока</text><text class="t-sub" x="71.0" y="172" text-anchor="middle">начальный период</text></svg><figcaption>После короткого начального периода контракт выдаёт золото равными долями каждый день.</figcaption></figure></div>
   <div class="reel">
-    <figure><div class="phone"><video autoplay muted loop playsinline preload="auto" poster="/overview/assets/app-home-poster.jpg" width="780" height="1520" aria-label="Главный экран приложения musa: общее количество граммов растёт, под ним список заказов с полосами выдачи"><source src="/overview/assets/app-home.mp4" type="video/mp4"></video></div><figcaption><b>Один платёж, потом ожидание</b>Покупатель видит все свои заказы и золото, которое уже пришло.</figcaption></figure>
-    <figure><div class="phone"><video autoplay muted loop playsinline preload="auto" poster="/overview/assets/app-mine-poster.jpg" width="780" height="1240" aria-label="Экран одного заказа: счётчик полученных граммов растёт, ниже сумма оплаты, срок и выдача в день"><source src="/overview/assets/app-mine.mp4" type="video/mp4"></video></div><figcaption><b>Золото приходит каждый день</b>Всё, что пришло, он выводит в свой кошелёк одной кнопкой.</figcaption></figure>
+    <figure><div class="phone"><video autoplay muted loop playsinline preload="metadata" poster="/overview/assets/app-login-poster.jpg" width="780" height="1520" aria-label="Вход в приложение: почта, код из письма, затем пустой главный экран"><source src="/overview/assets/app-login.mp4" type="video/mp4"></video></div><figcaption><b>Вход по почте</b>Почта и код из письма. Кошелёк создаётся при входе, ставить ничего не нужно.</figcaption></figure>
+    <figure><div class="phone"><video autoplay muted loop playsinline preload="metadata" poster="/overview/assets/app-order-poster.jpg" width="780" height="1520" aria-label="Новый заказ: выбор срока и суммы, оплата картой, заказ появляется на главном экране"><source src="/overview/assets/app-order.mp4" type="video/mp4"></video></div><figcaption><b>Срок, сумма, оплата</b>Покупатель выбирает срок и сумму и платит картой. Заказ появляется сразу.</figcaption></figure>
+    <figure><div class="phone"><video autoplay muted loop playsinline preload="metadata" poster="/overview/assets/app-home-poster.jpg" width="780" height="1520" aria-label="Главный экран приложения musa: общее количество граммов растёт, под ним список заказов с полосами выдачи"><source src="/overview/assets/app-home.mp4" type="video/mp4"></video></div><figcaption><b>Один платёж, потом ожидание</b>Покупатель видит все свои заказы и золото, которое уже пришло.</figcaption></figure>
+    <figure><div class="phone"><video autoplay muted loop playsinline preload="metadata" poster="/overview/assets/app-mine-poster.jpg" width="780" height="1240" aria-label="Экран одного заказа: счётчик полученных граммов растёт, ниже сумма оплаты, срок и выдача в день"><source src="/overview/assets/app-mine.mp4" type="video/mp4"></video></div><figcaption><b>Золото приходит каждый день</b>Всё, что пришло, он выводит в свой кошелёк одной кнопкой.</figcaption></figure>
     <figure><div class="phone"><img src="/overview/assets/wallet.webp" alt="Кошелёк покупателя с балансом золотого токена" width="780" height="464"><img src="/overview/assets/reserve.webp" alt="Экран резерва: золото в контракте против граммов к выдаче" width="780" height="322"></div><figcaption><b>Резерв открыт</b>Любой видит, сколько золота держит контракт и сколько он должен.</figcaption></figure>
   </div>
-  <p class="fine">Записи сделаны в работающем приложении, ускорено: одна секунда равна одному дню. Суммы и граммы в демо условные.</p>
+  <p class="fine">Записи сделаны в работающем приложении, ускорено: одна секунда равна одному дню. Суммы и граммы в демо условные. Вход и оплата картой показаны макетом: в приложении вход идёт через Privy, платёжный провайдер ещё не подключён.</p>
 </section>
 
 <section id="parts">
@@ -351,6 +354,20 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
 </footer>
 </div>
 
+<script>
+(function(){
+  var vids=[].slice.call(document.querySelectorAll('.phone video'));
+  if(!vids.length) return;
+  function play(v){ v.muted=true; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ e.target._off=!e.isIntersecting; if(e.isIntersecting) play(e.target); else e.target.pause(); }); },{threshold:0.2});
+    vids.forEach(function(v){ io.observe(v); });
+  } else vids.forEach(play);
+  /* a phone in low power mode refuses autoplay until the first touch */
+  function kick(){ vids.forEach(function(v){ if(!v._off&&v.paused) play(v); }); }
+  ['touchend','click','keydown'].forEach(function(ev){ document.addEventListener(ev,kick,{passive:true}); });
+})();
+</script>
 <script>
 (function(){
   var A=[(30/360+0.5)/2,(30/360+1)/2,(30/360+2)/2], L=[0.5,1,2];
