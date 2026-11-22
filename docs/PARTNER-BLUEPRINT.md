@@ -71,6 +71,14 @@ We do not know your side of the business well enough to propose one deal. This p
 
 **Both.** The two can run side by side, and the user chooses.
 
+**A staged path (added 2026-11-22).** The order we would propose:
+
+1. **Launch on PAXG.** An established token, redeemable for bars. Buyers and a track record build from day one.
+2. **Your token alongside PAXG.** When it is ready, the user chooses which gold to receive. Your token arrives to an audience that already exists.
+3. **Your token as the default,** once redemption works and there is a market and a track record.
+
+"Ready" should be agreed up front: the list above, plus a redemption for metal that we have tested ourselves. On our side this is separate work: the contract today is deployed for one gold token, so a second token means a second deployment or a contract that holds two.
+
 ---
 
 ## 5. Supply configurations
