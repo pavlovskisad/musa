@@ -51,6 +51,7 @@ We do not know your side of the business well enough to propose one deal. This p
 | Sell back | A standing bid, so users always have an exit | to build; needs a bidder |
 | Take it physical | Delivery in bars or coins | to build; needs a mint |
 | Monthly plan | Fixed instalments, with a bonus instalment at the end | to build |
+| Jewellery store | Your pieces sold in the app. A better price for paying with gold received here. Pre-order: the buyer pays up front and gets a position that accumulates gold toward the order, bulk orders included | idea, 2026-11-22; not designed |
 | A market for the gold token | A liquidity pool against dollars, and one against a reference gold token to hold the price to gold | to build; matters most for a new token |
 
 ---
