@@ -228,6 +228,9 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
   .sreel .terms dd{margin:7px 0 0}
   .swipe{display:none}
 }
+
+/* architecture diagram: a part that is not connected yet */
+.bx.todo{stroke-dasharray:4 4}
 </style>
 </head>
 <body>
@@ -257,6 +260,12 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
     <figure><div class="phone"><img src="/overview/assets/wallet.webp" alt="Кошелёк покупателя с балансом золотого токена" width="640" height="366"><img src="/overview/assets/reserve.webp" alt="Экран резерва: золото в контракте против граммов к выдаче" width="640" height="246"></div><figcaption><b>Резерв открыт</b>Любой видит, сколько золота держит контракт и сколько он должен.</figcaption></figure>
   </div>
   <p class="fine">Записи сделаны в работающем приложении, ускорено: одна секунда равна одному дню. Суммы и граммы в демо условные.</p>
+</section>
+
+<section id="parts">
+  <h2>Из чего это состоит</h2>
+  <p class="sub">Что стоит за экраном приложения. Покупателю не нужна криптовалюта: кошелёк создаётся при входе, комиссию сети платит musa.</p>
+  <figure class="card"><svg viewBox="0 0 344 506" role="img" aria-label="Из чего состоит musa: приложение, вход и кошелёк, оплата, сервер, смарт-контракт с резервом, открытый резерв и поставщик золота"><rect class="bx" x="80" y="4" width="184" height="46" rx="14"/><text class="t-name" x="172" y="24.5" text-anchor="middle">Покупатель</text><text class="t-sub" x="172" y="39.5" text-anchor="middle">телефон или браузер</text><path class="f-money" d="M172 56V79.5" marker-end="url(#ah-m)"/><rect class="bx" x="80" y="86" width="184" height="46" rx="14"/><text class="t-name" x="172" y="106.5" text-anchor="middle">Приложение musa</text><text class="t-sub" x="172" y="121.5" text-anchor="middle">покупка, заказы, вывод золота</text><path class="f-money" d="M172 138V152H85V167.5" marker-end="url(#ah-m)"/><path class="f-money" d="M172 152H259V167.5" marker-end="url(#ah-m)"/><rect class="bx" x="4" y="174" width="162" height="60" rx="14"/><text class="t-name" x="85" y="195" text-anchor="middle">Вход и кошелёк</text><text class="t-sub" x="85" y="210.5" text-anchor="middle">Privy: почта или passkey,</text><text class="t-sub" x="85" y="223.5" text-anchor="middle">кошелёк создаётся сам</text><rect class="bx todo" x="178" y="174" width="162" height="60" rx="14"/><text class="t-name" x="259" y="195" text-anchor="middle">Оплата</text><text class="t-sub" x="259" y="210.5" text-anchor="middle">платёжный провайдер:</text><text class="t-sub" x="259" y="223.5" text-anchor="middle">карта, банк, стейблкоин</text><path class="f-money" d="M259 240V256H196V271.5" marker-end="url(#ah-m)"/><text class="t-when" x="186" y="266" text-anchor="end">оплата прошла</text><rect class="bx" x="80" y="278" width="184" height="46" rx="14"/><text class="t-name" x="172" y="298.5" text-anchor="middle">Сервер musa</text><text class="t-sub" x="172" y="313.5" text-anchor="middle">учёт заказов и платежей</text><path class="f-money" d="M172 330V357.5" marker-end="url(#ah-m)"/><text class="t-what" x="183" y="349">создаёт позицию</text><rect class="bx" x="80" y="364" width="184" height="60" rx="14"/><text class="t-name" x="172" y="385" text-anchor="middle">Смарт-контракт</text><text class="t-sub" x="172" y="400.5" text-anchor="middle">сеть Base: держит резерв,</text><text class="t-sub" x="172" y="413.5" text-anchor="middle">выдаёт золото по графику</text><path class="f-gold" d="M74 394H40V240.5" marker-end="url(#ah-g)"/><text class="t-what g" x="48" y="349" text-anchor="start">золото в кошелёк</text><rect class="bx" x="4" y="456" width="162" height="46" rx="14"/><text class="t-name" x="85" y="476.5" text-anchor="middle">Открытый резерв</text><text class="t-sub" x="85" y="491.5" text-anchor="middle">проверит любой</text><path class="guide" d="M132 424V440H85V456"/><rect class="bx you" x="178" y="456" width="162" height="46" rx="14"/><text class="t-name" x="259" y="476.5" text-anchor="middle">Вы</text><text class="t-sub" x="259" y="491.5" text-anchor="middle">поставщик золота</text><path class="f-gold" d="M259 450V440H212V430.5" marker-end="url(#ah-g)"/><text class="t-what g" x="270" y="445">в резерв</text></svg><div class="legend"><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-gold" d="M3 5H33"/></svg>золото</span><span><svg viewBox="0 0 36 10" aria-hidden="true"><path class="f-money" d="M2 5H34"/></svg>деньги и команды</span></div><figcaption>Сплошная рамка: работает в демо, в тестовой сети. Пунктир: подключается к запуску.</figcaption></figure>
 </section>
 
 <section id="gives">
@@ -321,13 +330,16 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
   <div class="along"><b>Параллельно с любым шагом</b><span>Ваш собственный золотой токен, когда он готов.</span></div>
 </section>
 
-<section id="questions">
-  <h2>Что обсудить</h2>
-  <ul class="ask">
-    <li>Какие схемы подходят под то, как вы закупаете, аффинируете и продаёте?</li>
-    <li>Сколько вам сегодня стоят деньги и сколько раз в год оборачивается капитал?</li>
-    <li>Где ваш металл и в какой форме: слитки Good Delivery, килограммовые слитки, сплав Доре?</li>
-    <li>Планируете ли вы свой золотой токен, и на каких условиях?</li>
+<section id="addons">
+  <h2>Что можно добавить</h2>
+  <p class="sub">Дополнения, которые расширяют бизнес и для вас, и для нас. Пока не построены.</p>
+  <ul class="tiles">
+    <li><b>Заём под золото</b><span>Покупатель берёт доллары под своё золото, не продавая его. Золото остаётся на платформе, musa получает комиссию.</span></li>
+    <li><b>Золото взаймы</b><span>Покупатели по желанию дают золото в заём на срок. Вы получаете финансирование металлом, они проценты в граммах.</span></li>
+    <li><b>Выкуп</b><span>Ваша постоянная цена выкупа. Покупателю всегда есть выход, вам металл и маржа.</span></li>
+    <li><b>Металл на руки</b><span>Выдача вашими слитками и монетами. Розничный сбыт вашей продукции.</span></li>
+    <li><b>Ежемесячный план</b><span>Равные взносы и бонусный взнос в конце. Постоянный поток заказов вместо разовых покупок.</span></li>
+    <li><b>Рынок для золотого токена</b><span>Пулы ликвидности к доллару и к известному золотому токену. Вашему токену рынок, нам комиссия с оборота.</span></li>
   </ul>
 </section>
 </main>
