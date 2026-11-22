@@ -373,6 +373,14 @@ Not done in this proposal. Listed so the scope is visible.
 
 ## 11. Decisions for Pav
 
+> **Decided by Pav, 2026-11-22** (the rest of this section is still open):
+>
+> 1. **Delivery starts on the first day.** The 30-day opening period is dropped, which is also how the contract runs today (`CONSTRUCTION_SECONDS` = 60). Every figure in this document was computed with 30 days. With delivery from day one the average gram waits 0.25 / 0.50 / 1.00 years (was 0.29 / 0.54 / 1.04), so each 1% a year of yield funds a 0.25 / 0.50 / 1.00% bonus. The overview page and both blueprint docs use the new figures; the tables in this document do not yet.
+> 2. **Decision 5 is yes: leaving early forfeits only the unearned bonus, never principal.** Example: $100 paid, 2% bonus, exit at 60% of the term. The buyer keeps the $61.20 already delivered and receives the remaining $40.00 of their own gold at once; the $0.80 of bonus not yet earned stays in the reserve. The contract and the app still apply the old stepped penalty (50 / 35 / 20 / 10% of the undelivered part) until they are changed, which needs principal and bonus grams tracked separately (section 10) and a new deployment.
+>
+> Open consequence of 2: it is cheap only where the gold is already in the reserve (PAXG bought on day one, or the supplier delivering the whole order up front). Under prepaid supply the undelivered gold has not arrived yet, so early exit there needs its own rule: paid out as the supplier delivers, or limited to what the reserve holds.
+
+
 Each is a yes or no. My answer is in brackets.
 
 1. The contract refuses any position it does not already hold the gold for. [yes]

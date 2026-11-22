@@ -139,8 +139,8 @@ The extra gold is what brings users in. It can only be as large as what funds it
 | Configuration | 6 months | 12 months | 24 months | Paid by |
 |---|---|---|---|---|
 | 5.1 Sell on delivery | your discount | your discount | your discount | you, if you choose |
-| 5.2 Deliver first, paid on schedule | 1.0-1.3% | 1.9-2.3% | 3.7-4.5% | interest on the held payment |
-| 5.3 Prepaid supply | 1.2-2.0% | 2.2-3.8% | 4.2-7.3% | you, for the use of the money |
+| 5.2 Deliver first, paid on schedule | 0.9-1.1% | 1.8-2.2% | 3.5-4.3% | interest on the held payment |
+| 5.3 Prepaid supply | 1.0-1.8% | 2.0-3.5% | 4.0-7.0% | you, for the use of the money |
 | 5.4 Borrow users' gold (paid at the end) | 1.1-1.9% | 2.3-3.9% | 4.7-8.0% | you, as lease interest |
 
 Row 5.2 assumes T-bill rates of 3.5-4.3%. Row 5.3 assumes your money costs 4-7% a year in gold terms; if your real figure is different, so is the row. Row 5.4 assumes 2.3-3.9% a year.

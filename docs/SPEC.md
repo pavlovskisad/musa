@@ -80,9 +80,9 @@ All non-onboarding screens have back arrow on left, centered logo (identity mark
 | Flow | 52 weeks (12 mo) | 7% | Yes — with penalty | Core tier |
 | Vein | 104 weeks (24 mo) | 18.8% | Yes — with penalty | HNW tier |
 
-- **Construction period:** 30 days (4 weeks) after purchase before delivery begins.
+- **Construction period:** none. Delivery starts on the first day (decided 2026-11-22; the contract and app already run with one minute). Earlier text here said 30 days.
 - **Daily delivery rate:** `total grams / (lockMonths × 30)` during delivery phase.
-- **Exit penalty:** depends on % elapsed at exit time. Earlier exit = bigger penalty. Helper: `getExitPenaltyPct(elapsedPct)`.
+- **Exit penalty:** decided 2026-11-22: leaving early forfeits only the unearned bonus, never principal. **Not built yet.** The app and contract still use the stepped penalty on the undelivered part (50 / 35 / 20 / 10% by quarter of the term, `getExitPenaltyPct(elapsedPct)`); see `TREASURY.md` section 11.
 
 Tier bonuses are expressed as a discount to spot. Locking $100 Flow means paying for ~93.5% of the gold grams at spot price; user receives 100% grams. Sourced from miners' saved cost of capital — see `ARCHITECTURE.md` § "Where the discount comes from".
 
