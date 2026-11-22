@@ -65,8 +65,8 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
     : 'No wallet';
 
   return (
-    <div className="h-full flex flex-col anim-slide-right">
-      <div className="px-6 pt-3 pb-4 flex items-center justify-between">
+    <div className="h-full flex flex-col anim-slide-right scr scr-profile">
+      <div className="px-6 pt-3 pb-4 flex items-center justify-between scr-head">
         <button
           onClick={onBack}
           className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
@@ -78,7 +78,7 @@ function ProfileScreen({ totals, mineCount, maxDaysRemaining, walletAddress, gol
         <div className="w-9" />
       </div>
 
-      <div className="flex-1 overflow-auto scrollable px-6 pb-12">
+      <div className="flex-1 overflow-auto scrollable px-6 pb-12 profile-body">
         {/* Wallet address */}
         <button onClick={copyAddress} className="press flex items-center gap-3 mb-6 w-full text-left">
           <div

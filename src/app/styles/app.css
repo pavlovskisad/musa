@@ -1268,21 +1268,16 @@
           88% { opacity: 0; }
         }
 
-        /* === Desktop stage ===
-           The app is a phone design (390 x 844). On wider screens it keeps that shape inside a frame
-           instead of stretching: centred alone from 600px, with a brand panel beside it from 900px.
-           Its own glow system, separate from the hero glow inside the app. */
+        /* === Wider screens ===
+           Phone (under 600px): the layout as designed, 390 x 844.
+           Tablet (600 to 1023px): the same layout, centred in a phone-sized frame.
+           Desktop (1024px and up, at least 600px tall): real wide layouts, rules under "Desktop app" below.
+           The drifting glow here is its own system, separate from the hero glow inside the app. */
         .stage-inner, .app-frame { height: 100%; }
-        .stage-side, .stage-spirit { display: none; }
+        .desk-rail, .stage-spirit { display: none; }
         @media (min-width: 600px) and (min-height: 560px) {
           .app-stage { position: relative; }
-          .stage-inner {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 40px;
-          }
+          .stage-inner { position: relative; display: flex; align-items: center; justify-content: center; padding: 0 40px; }
           .app-frame {
             position: relative;
             flex: 0 0 auto;
@@ -1305,17 +1300,17 @@
             width: clamp(420px, 46vw, 760px); aspect-ratio: 1;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(201, 169, 97, 0.30) 0%, rgba(201, 169, 97, 0.12) 34%, rgba(201, 169, 97, 0.04) 56%, transparent 70%);
+            background: radial-gradient(circle, rgba(201, 169, 97, 0.26) 0%, rgba(201, 169, 97, 0.10) 34%, rgba(201, 169, 97, 0.035) 56%, transparent 70%);
             animation: stageBreath 4s ease-in-out infinite;
             will-change: opacity;
           }
         }
         @keyframes stageX {
-          0%, 12%  { transform: translateX(18%); }
-          30%, 42% { transform: translateX(46%); }
-          58%, 68% { transform: translateX(28%); }
-          82%, 90% { transform: translateX(54%); }
-          100%     { transform: translateX(18%); }
+          0%, 12%  { transform: translateX(22%); }
+          30%, 42% { transform: translateX(62%); }
+          58%, 68% { transform: translateX(36%); }
+          82%, 90% { transform: translateX(74%); }
+          100%     { transform: translateX(22%); }
         }
         @keyframes stageY {
           0%, 15%  { transform: translateY(40%); }
@@ -1328,25 +1323,151 @@
           0%, 100% { opacity: 0.65; }
           50%      { opacity: 1; }
         }
-        @media (min-width: 900px) and (min-height: 560px) {
-          .stage-inner { justify-content: space-between; gap: clamp(40px, 6vw, 110px); max-width: 1120px; margin: 0 auto; padding: 0 56px; }
-          .stage-side {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex: 1 1 0;
-            min-width: 0;
-            height: min(844px, calc(100dvh - 56px));
-            padding: 34px 0 30px;
-          }
-          .stage-logo { font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: rgba(232, 218, 188, 0.74); }
-          .stage-head { font-size: clamp(54px, 6.2vw, 88px); line-height: 0.96; color: var(--text); }
-          .stage-sub { font-size: 17px; color: var(--text-dim); margin-top: 22px; }
-          .stage-foot { font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); }
-        }
         @media (prefers-reduced-motion: reduce) {
           .stage-spirit i, .stage-spirit b { animation: none; }
-          .stage-spirit > i { transform: translateX(26%); }
+          .stage-spirit > i { transform: translateX(30%); }
           .stage-spirit > i > i { transform: translateY(44%); }
+        }
+
+        /* === Desktop app ===
+           Selectors start with .app-stage so they outrank the Tailwind utilities on the same elements. */
+        @media (min-width: 1024px) and (min-height: 600px) {
+          /* shell: no frame; a rail on the left, the screen on the right */
+          .app-stage .stage-inner { display: grid; grid-template-columns: 232px minmax(0, 1fr); align-items: stretch; padding: 0; }
+          .app-stage[data-screen="onboarding"] .stage-inner { grid-template-columns: minmax(0, 1fr); }
+          .app-stage .app-frame { width: auto; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; background: transparent; transform: none; }
+          .app-stage[data-screen="onboarding"] .desk-rail { display: none; }
+
+          .app-stage .desk-rail {
+            position: relative; z-index: 30;
+            display: flex; flex-direction: column;
+            height: 100dvh; padding: 30px 18px 26px;
+            border-right: 1px solid var(--border);
+            background: rgba(10, 9, 8, 0.6);
+            -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+          }
+          .desk-rail-logo { align-self: flex-start; background: none; border: 0; cursor: pointer; padding: 8px 12px; font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: rgba(232, 218, 188, 0.8); }
+          .desk-rail-items { display: flex; flex-direction: column; gap: 4px; margin-top: 46px; }
+          .desk-rail-item { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 12px; border-radius: 12px; border: 1px solid transparent; background: none; cursor: pointer; font-size: 14px; color: var(--text-dim); text-align: left; transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+          .desk-rail-item:hover { color: var(--text); background: rgba(255, 255, 255, 0.03); }
+          .desk-rail-item.is-active { color: var(--gold-bright); border-color: rgba(201, 169, 97, 0.28); background: rgba(201, 169, 97, 0.06); }
+          .desk-rail-foot { margin-top: auto; padding: 0 12px; font-size: 10.5px; line-height: 1.5; color: var(--text-dim); }
+          .desk-rail-user { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: var(--text); margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        }
+
+        /* --- Desktop app: screens --- */
+        @media (min-width: 1024px) and (min-height: 600px) {
+          .app-stage {
+            /* side padding that grows on very wide windows, so content stays within about 1180px */
+            --pad: max(56px, calc((100vw - 232px - 1180px) / 2));
+            --scr-h1: 60px;
+          }
+          .app-stage .scr .px-6, .app-stage .scr .p-6 { padding-left: var(--pad); padding-right: var(--pad); }
+          /* card rows are set for a phone held close; a little larger at arm's length */
+          .app-stage .scr .text-\[11px\] { font-size: 13px; }
+          /* the rail replaces each screen's own logo row; a back button stays where it leads somewhere the rail does not */
+          .app-stage .scr-head { display: none; }
+          .app-stage .scr-head.scr-head-back { display: flex; padding-top: 34px; padding-bottom: 10px; }
+          .app-stage .scr-head-back .musa-logo, .app-stage .scr-head-back > button[aria-label="Go home"] { display: none; }
+
+          /* Home: hero across the top, mines in a grid under it, New mine as a button in the hero */
+          .app-stage .scr-home { --home-pad: 300px; }
+          .app-stage .home-hero-body { padding-top: 48px; padding-bottom: 30px; }
+          .app-stage .home-counter { zoom: 1.5; width: auto; margin-bottom: 14px; }
+          .app-stage .home-stats { max-width: 560px; }
+          .app-stage .home-list { padding-bottom: 72px; }
+          .app-stage .home-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+          .app-stage .home-grid > * { margin-top: 0; }
+          .app-stage .home-grid-label { grid-column: 1 / -1; margin-bottom: 0; }
+          .app-stage .home-empty { padding-top: 96px; }
+          .app-stage .home-cta { top: 104px; bottom: auto; left: auto; right: 0; width: auto; padding-bottom: 0; z-index: 12; }
+          .app-stage .home-cta button { width: 208px; height: 52px; }
+
+          /* Pick a tier: title on the left, the three tiers stacked on the right (side by side from 1280px, below) */
+          .app-stage .scr-browse { flex-direction: row; align-items: center; }
+          .app-stage .scr-title { flex: 1 1 0; padding-top: 0; padding-bottom: 0; padding-right: 0; }
+          .app-stage .scr-title p { font-size: 15px; max-width: 420px; }
+          .app-stage .browse-list { flex: 0 0 46%; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; overflow: visible; padding-bottom: 0; padding-left: 40px; }
+          .app-stage .browse-list > * { margin-top: 0; }
+
+          /* Buy: amount on the left, what you receive on the right */
+          .app-stage .buy-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 56px; align-content: center; padding: 0 var(--pad); }
+          .app-stage .buy-body > .px-6 { padding-left: 0; padding-right: 0; }
+          .app-stage .buy-top { grid-column: 1; grid-row: 1; padding-bottom: 34px; }
+          .app-stage .buy-chips { grid-column: 1; grid-row: 2; }
+          .app-stage .buy-chips button { height: 52px; font-size: 14px; }
+          .app-stage .buy-receive { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+          .app-stage .buy-receive > div { padding: 30px; }
+          .app-stage .scr-buy { justify-content: center; }
+          .app-stage .scr-buy > .scr-head-back { position: absolute; top: 0; left: 0; right: 0; }
+          .app-stage .buy-body { flex: 0 0 auto; }
+          .app-stage .buy-cta { display: flex; justify-content: flex-end; padding-top: 22px; padding-bottom: 0; }
+          .app-stage .buy-cta button { width: calc(50% - 28px); }
+
+          /* One mine: the counter on the left, terms and actions on the right */
+          .app-stage .scr-detail { --detail-pad: 132px; --detail-pad-c: 132px; }
+          .app-stage .detail-hero { right: 50%; bottom: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 0; border-right: 1px solid var(--border); }
+          .app-stage .detail-hero::after { display: none; }
+          .app-stage .detail-hero .px-6 { padding-right: 48px; }
+          .app-stage .detail-hero h1 { margin-top: 26px; margin-bottom: 26px; }
+          .app-stage .detail-body { margin-left: 50%; padding-left: 48px; }
+
+          /* Exit: a single centred column */
+          .app-stage .scr-exit { max-width: 620px; margin: 0 auto; justify-content: center; --pad: 40px; }
+          .app-stage .scr-exit .exit-spacer { flex: 0 0 34px; }
+          .app-stage .scr-exit .p-6 { padding-bottom: 24px; }
+
+          /* Profile: cards in two columns */
+          .app-stage .profile-body { column-count: 2; column-gap: 24px; padding-top: 56px; padding-bottom: 56px; }
+          .app-stage .profile-body > * { break-inside: avoid; }
+
+          /* overlays cover the whole window, rail included */
+          .app-stage .creation-overlay, .app-stage .celebration-overlay { position: fixed; }
+        }
+        @media (min-width: 1280px) and (min-height: 600px) {
+          .app-stage { --scr-h1: 76px; }
+          .app-stage .scr-browse { flex-direction: column; align-items: stretch; justify-content: center; }
+          .app-stage .scr-title { flex: 0 0 auto; padding-bottom: 44px; padding-right: var(--pad); }
+          .app-stage .browse-list { flex: 0 0 auto; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding-left: var(--pad); }
+          .app-stage .browse-list > * { padding: 28px 26px; }
+        }
+        @media (min-width: 1500px) and (min-height: 600px) {
+          .app-stage .home-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        /* --- Desktop onboarding: each scene is copy on the left, its picture on the right --- */
+        @media (min-width: 1024px) and (min-height: 600px) {
+          .app-stage .onb {
+            --onb-pad: max(72px, calc((100vw - 1240px) / 2));
+            --onb-h1: clamp(104px, 9.4vw, 156px);
+            --onb-h2: clamp(54px, 6vw, 100px);
+            --onb-chart-h: 300px;
+            --radar-x: 72%;
+            --radar-y: 52%;
+          }
+          /* let the drifting glow behind the app show through the scenes (the inline background is opaque) */
+          .app-stage .onb { background: transparent !important; }
+          .app-stage .onb-screen { flex-direction: row; align-items: center; gap: clamp(48px, 6vw, 110px); padding: 0 var(--onb-pad); }
+          .app-stage .onb-screen > .onb-copy { flex: 1 1 0; min-width: 0; padding: 0; }
+          .app-stage .onb-screen > .onb-visual { flex: 0 0 clamp(360px, 40vw, 580px); min-width: 0; }
+          .app-stage .onb-spacer { display: none; }
+          .app-stage .onb-sub { font-size: 19px; max-width: 560px; }
+          .app-stage .onb-lead { font-size: 19px; max-width: 480px; }
+
+          /* 1: the hero stays a single column, set left */
+          .app-stage .onb-s1 { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; }
+          .app-stage .onb-s1 > .onb-copy { flex: 0 0 auto; }
+          .app-stage .onb-logo { position: absolute; top: 34px; left: var(--onb-pad); padding: 0; }
+          .app-stage .onb-begin { width: 320px; margin-top: 52px; padding-bottom: 0; }
+          .app-stage .onb-begin p { text-align: left; padding-left: 4px; }
+
+          /* 4: grains fall the full height of the right column */
+          .app-stage .onb-screen > .onb-grains { align-self: stretch; margin-top: 0; }
+          /* 6: the shield reads at this size only when enlarged */
+          .app-stage .onb-vault .vault-shield { zoom: 1.9; }
+          /* 8: the river flanks the musa mark, so this scene stays centred */
+          .app-stage .onb-s8 { flex-direction: column; align-items: stretch; gap: 0; padding-top: 11vh; }
+          .app-stage .onb-s8 > .onb-copy { flex: 0 0 auto; text-align: center; }
+          .app-stage .onb-s8 .onb-sub { max-width: none; }
+          .app-stage .onb-s8 > .onb-vortex { flex: 1 1 0; zoom: 1.25; }
         }

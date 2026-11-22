@@ -63,7 +63,11 @@ Old Standard TT italic is wide: onboarding couplets are 46px so the longest line
 - Phone frame: 390×844 (iPhone 14 Pro). Test here first.
 - `scroll-snap-type: y mandatory` on onboarding container. Screens are full-viewport `scrollSnapAlign: start`.
 - Safe areas: top padding typically `pt-20` on onboarding screens, `pt-4` on app screens (phone has a notch).
-- Wider screens (added 2026-11-22): the app keeps its phone shape and never stretches. From 600px wide it sits centred in a 390px frame; from 900px a brand panel (`DesktopSide.jsx`) and a drifting glow sit beside it. Rules are under `Desktop stage` in `app.css`. The frame has a transform so fixed-position parts stay inside it.
+- Wider screens (2026-11-22). Three ranges, all in `app.css`:
+  - Phone, under 600px: the layout as designed.
+  - Tablet, 600 to 1023px: the same layout centred in a 390px frame. The frame has a transform so fixed-position parts stay inside it.
+  - Desktop, 1024px and up (and at least 600px tall): real wide layouts. A left rail (`DeskRail.jsx`) replaces each screen's logo row; onboarding scenes are copy on the left, picture on the right.
+- Desktop is done with CSS only: screens carry class hooks (`scr`, `scr-home`, `onb-screen`, ...) and sizes that differ are CSS variables with the phone value as fallback (`fontSize: 'var(--onb-h2, 46px)'`). Desktop rules start with `.app-stage` so they outrank Tailwind utilities. Do not add desktop-only markup inside a screen; change the rules.
 
 ## State management
 

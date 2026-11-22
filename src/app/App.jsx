@@ -17,7 +17,7 @@ import CreationOverlay from './components/CreationOverlay.jsx';
 import CelebrationOverlay from './components/CelebrationOverlay.jsx';
 
 import OnboardingScreen from './screens/OnboardingScreen.jsx';
-import DesktopSide from './components/DesktopSide.jsx';
+import DeskRail from './components/DeskRail.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import BrowseScreen from './screens/BrowseScreen.jsx';
 import BuyScreen from './screens/BuyScreen.jsx';
@@ -305,12 +305,13 @@ export default function App() {
     <GoldContext.Provider value={{ price: goldPrice, unit: goldUnit, priceSource }}>
     <div
       className="w-full app-stage"
+      data-screen={screen}
       style={{ background: 'var(--bg)', color: 'var(--text)', height: '100dvh', overflow: 'hidden', paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
-      {/* wide screens only: a drifting glow and a brand panel around the phone-sized frame */}
+      {/* wider screens only: a drifting glow behind the app, and on desktop a left rail (see app.css) */}
       <div className="stage-spirit" aria-hidden="true"><i><i><b /></i></i></div>
       <div className="stage-inner">
-      <DesktopSide />
+      <DeskRail screen={screen} onNav={setScreen} userName={userName} />
       <div className="app-frame">
       <div className="relative" style={{ height: '100%' }}>
             {screen === 'onboarding' && (

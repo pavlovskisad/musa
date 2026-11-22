@@ -114,12 +114,12 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
   };
 
   return (
-    <div className="h-full relative anim-fade overflow-hidden">
+    <div className="h-full relative anim-fade overflow-hidden scr scr-home">
       {/* Scrollable area fills the whole screen — content padded so it starts below the floating hero */}
       <div className="absolute inset-0 overflow-auto scrollable">
-        <div className="px-6 pb-32" style={{ paddingTop: '232px' }}>
+        <div className="px-6 pb-32 home-list" style={{ paddingTop: 'var(--home-pad, 232px)' }}>
           {!hasUnits ? (
-            <div className="flex flex-col items-center justify-center text-center pt-12">
+            <div className="flex flex-col items-center justify-center text-center pt-12 home-empty">
               <div
                 className="w-14 h-14 rounded-full border border-app flex items-center justify-center mb-5"
                 style={{ background: 'rgba(201,169,97,0.05)' }}
@@ -134,8 +134,8 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3 flex items-center justify-between">
+            <div className="space-y-3 home-grid">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-3 flex items-center justify-between home-grid-label">
                 <span>Active mines</span>
                 <span className="font-num">{units.length}</span>
               </div>
@@ -153,7 +153,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
       </div>
 
       {/* Floating hero glass overlay — mines scroll under this */}
-      <div className="hero-glass absolute top-0 left-0 right-0 z-10">
+      <div className="hero-glass absolute top-0 left-0 right-0 z-10 home-hero">
         {/* Wandering spirit glow */}
         <div className="hero-ambient-glow" />
 
@@ -161,7 +161,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         <div className="hero-spirit-burst" />
 
         {/* Header */}
-        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between" style={{ zIndex: 2 }}>
+        <div className="relative px-6 pt-4 pb-2 flex items-center justify-between scr-head" style={{ zIndex: 2 }}>
           <button
             onClick={onHome}
             className="press w-9 h-9 rounded-full border border-app flex items-center justify-center"
@@ -182,7 +182,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
         </div>
 
         {/* Hero */}
-        <div className="relative px-6 pt-4 pb-4" style={{ zIndex: 2 }}>
+        <div className="relative px-6 pt-4 pb-4 home-hero-body" style={{ zIndex: 2 }}>
           <div className="flex items-center justify-between mb-2">
             <div className="text-[10px] uppercase tracking-[0.3em] text-dim">
               {userName ? `${userName}'s gold` : 'musa'}
@@ -201,7 +201,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           {/* Big rolling counter — tap to toggle gold ↔ USD */}
           <button
             onClick={() => setDisplayMode(m => m === 'gold' ? 'usd' : 'gold')}
-            className="press-soft block w-full text-left bg-transparent border-0 p-0 mb-3"
+            className="press-soft block w-full text-left bg-transparent border-0 p-0 mb-3 home-counter"
             aria-label="Toggle between gold and USD"
           >
             <div style={{ height: `${DIGIT_HEIGHT}px`, overflow: 'hidden' }}>
@@ -218,7 +218,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
           </button>
 
           {/* Stat pills */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 home-stats">
             {STATS.map(s => (
               <button
                 key={s.key}
@@ -238,7 +238,7 @@ function HomeScreen({ units, totals, recentlyPurchased, onBuy, onUnit, onHome, o
 
       {/* Floating CTA */}
       <div
-        className="absolute bottom-0 left-0 right-0 px-6 z-10 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 px-6 z-10 pointer-events-none home-cta"
         style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
       >
         <button

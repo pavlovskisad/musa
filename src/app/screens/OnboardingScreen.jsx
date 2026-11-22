@@ -305,7 +305,7 @@ function OnboardingScreen({ onContinue }) {
   return (
     <div
       ref={scrollRef}
-      className="h-full overflow-y-auto overflow-x-hidden scrollable anim-fade"
+      className="h-full overflow-y-auto overflow-x-hidden scrollable anim-fade onb"
       style={{
         background: '#0a0908',
         scrollSnapType: 'y mandatory',
@@ -360,7 +360,7 @@ function OnboardingScreen({ onContinue }) {
 
       {/* === SCREEN 1 — Mine real gold === */}
       <div
-        className="h-full flex flex-col relative"
+        className="h-full flex flex-col relative onb-screen onb-s1"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -380,7 +380,7 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="px-6 pt-4 pb-2 flex justify-center onboard-label-in" style={{ zIndex: 4 }}>
+        <div className="px-6 pt-4 pb-2 flex justify-center onboard-label-in onb-logo" style={{ zIndex: 4 }}>
           <button
             onClick={onContinue}
             className="press"
@@ -393,10 +393,10 @@ function OnboardingScreen({ onContinue }) {
           </button>
         </div>
 
-        <div className="relative px-8 pt-14" style={{ zIndex: 4 }}>
+        <div className="relative px-8 pt-14 onb-copy" style={{ zIndex: 4 }}>
           <h1
             className="font-display text-app mb-6 onboard-headline-in"
-            style={{ fontWeight: 300, fontSize: '64px', lineHeight: '0.92' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h1, 64px)', lineHeight: '0.92' }}
           >
             Mine real
             <br />
@@ -404,14 +404,14 @@ function OnboardingScreen({ onContinue }) {
               gold
             </span>
           </h1>
-          <p className="text-dim text-sm leading-relaxed max-w-[280px] onboard-subtitle-in">
+          <p className="text-dim text-sm leading-relaxed max-w-[280px] onboard-subtitle-in onb-lead">
             Forward purchase contracts on physical gold from working mines. Delivered to your wallet, gram by gram, as it's mined.
           </p>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
-        <div className={`pb-8 relative snap-button ${activeScreen === 0 ? 'snap-button-in' : 'snap-button-hidden'}`} style={{ zIndex: 4 }}>
+        <div className={`pb-8 relative onb-begin snap-button ${activeScreen === 0 ? 'snap-button-in' : 'snap-button-hidden'}`} style={{ zIndex: 4 }}>
           <button
             onClick={onContinue}
             className="press w-full h-14 rounded-full bg-gold text-black font-medium tracking-wide flex items-center justify-center gap-2"
@@ -432,15 +432,15 @@ function OnboardingScreen({ onContinue }) {
 
       {/* === SCREEN 2 — Lore === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden onb-screen onb-s2"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div
           className={`radar-stage ${activeScreen === 1 ? 'radar-on' : ''}`}
           style={{
             position: 'absolute',
-            left: '50%',
-            top: '68%',
+            left: 'var(--radar-x, 50%)',
+            top: 'var(--radar-y, 68%)',
             zIndex: 1,
           }}
         >
@@ -484,10 +484,10 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-6"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             the richest
             <br />
@@ -495,22 +495,22 @@ function OnboardingScreen({ onContinue }) {
               man in history
             </span>
           </h2>
-          <div className={`text-dim text-[13px] leading-relaxed italic mb-5 font-display float-lore-q ${contentFloated ? 'floated-lore-q' : ''}`} style={{ fontWeight: 300 }}>
+          <div className={`text-dim text-[13px] leading-relaxed onb-sub italic mb-5 font-display float-lore-q ${contentFloated ? 'floated-lore-q' : ''}`} style={{ fontWeight: 300 }}>
             did you know that Musa is claimed to be the richest man in history?
           </div>
 
-          <div className={`text-app text-[13px] leading-relaxed font-display float-lore-a ${contentFloated ? 'floated-lore-a' : ''}`} style={{ fontWeight: 300 }}>
+          <div className={`text-app text-[13px] leading-relaxed onb-sub font-display float-lore-a ${contentFloated ? 'floated-lore-a' : ''}`} style={{ fontWeight: 300 }}>
             Ha — yes, Mansa Musa, 14th century emperor of Mali. The one who made his pilgrimage to Mecca in 1324 and distributed so much gold along the way that he reportedly crashed the price of gold across the entire Mediterranean and Middle East for over a decade. Cairo's economy allegedly didn't recover for 12 years.
           </div>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
       </div>
 
       {/* === SCREEN 3 — Better than money === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative"
+        className="h-full flex flex-col px-8 pt-20 relative onb-screen onb-s3"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -530,10 +530,10 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             better than
             <br />
@@ -541,14 +541,14 @@ function OnboardingScreen({ onContinue }) {
               money
             </span>
           </h2>
-          <p className="text-dim text-[13px] leading-relaxed mt-4 font-display italic" style={{ fontWeight: 300 }}>
+          <p className="text-dim text-[13px] leading-relaxed onb-sub mt-4 font-display italic" style={{ fontWeight: 300 }}>
             $1 in 1971 buys 4¢ of gold today
           </p>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
-        <div className="relative" style={{ zIndex: 4, height: '180px' }}>
+        <div className="relative onb-visual" style={{ zIndex: 4, height: 'var(--onb-chart-h, 180px)' }}>
           <svg
             viewBox="0 0 320 160"
             preserveAspectRatio="none"
@@ -612,19 +612,19 @@ function OnboardingScreen({ onContinue }) {
           </svg>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
       </div>
 
       {/* === SCREEN 4 — From mine to your wallet === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden onb-screen onb-s4"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             from mine
             <br />
@@ -632,12 +632,12 @@ function OnboardingScreen({ onContinue }) {
               to your wallet
             </span>
           </h2>
-          <p className="text-dim text-[13px] leading-relaxed mt-4 font-display italic" style={{ fontWeight: 300 }}>
+          <p className="text-dim text-[13px] leading-relaxed onb-sub mt-4 font-display italic" style={{ fontWeight: 300 }}>
             directly, gram by gram
           </p>
         </div>
 
-        <div className={`flex-1 relative mt-6 grains-stage ${activeScreen === 3 ? 'grains-on' : ''}`}>
+        <div className={`flex-1 relative mt-6 onb-visual onb-grains grains-stage ${activeScreen === 3 ? 'grains-on' : ''}`}>
           {[
             { left: 38, dur: 2.8, delay: 0.0 },
             { left: 52, dur: 3.2, delay: 0.4 },
@@ -669,7 +669,7 @@ function OnboardingScreen({ onContinue }) {
 
       {/* === SCREEN 5 — More than you paid for === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden onb-screen onb-s5"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -689,10 +689,10 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-4"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             more than
             <br />
@@ -701,14 +701,14 @@ function OnboardingScreen({ onContinue }) {
             </span>
           </h2>
 
-          <p className="text-dim text-[13px] leading-relaxed font-display italic" style={{ fontWeight: 300 }}>
+          <p className="text-dim text-[13px] leading-relaxed onb-sub font-display italic" style={{ fontWeight: 300 }}>
             lock longer for better
           </p>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
-        <div className="relative flex items-end justify-around gap-6" style={{ zIndex: 4, height: '320px' }}>
+        <div className="relative flex items-end justify-around gap-6 onb-visual onb-bars" style={{ zIndex: 4, height: '320px' }}>
           {[
             { pct: 2.5,  months: 6,  delay: 0.05 },
             { pct: 7,    months: 12, delay: 0.18 },
@@ -766,17 +766,17 @@ function OnboardingScreen({ onContinue }) {
           })}
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
       </div>
 
       {/* === SCREEN 6 — Safe and sound === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden vault-screen"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden vault-screen onb-screen onb-s6"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className={`vault-screen-bg ${activeScreen === 5 ? 'vault-screen-bg-in' : ''}`} />
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <div
             className="font-num text-[10px] tracking-[0.25em] mb-8"
             style={{ color: 'rgba(26, 18, 8, 0.55)' }}
@@ -786,7 +786,7 @@ function OnboardingScreen({ onContinue }) {
 
           <h2
             className="font-display"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98', color: '#1a1208' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98', color: '#1a1208' }}
           >
             safe
             <br />
@@ -795,16 +795,16 @@ function OnboardingScreen({ onContinue }) {
             </span>
           </h2>
           <p
-            className="text-[13px] leading-relaxed mt-4 font-display italic"
+            className="text-[13px] leading-relaxed onb-sub mt-4 font-display italic"
             style={{ fontWeight: 300, color: 'rgba(26, 18, 8, 0.7)' }}
           >
             audited custody, yours to claim, anytime
           </p>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
-        <div className="relative flex items-center justify-center" style={{ zIndex: 4 }}>
+        <div className="relative flex items-center justify-center onb-visual onb-vault" style={{ zIndex: 4 }}>
           <div className={`vault-shield ${activeScreen === 5 ? 'vault-shield-on' : ''}`}>
             <svg
               width="92"
@@ -834,14 +834,14 @@ function OnboardingScreen({ onContinue }) {
           </div>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
         <div className={`vault-screen-shimmer ${activeScreen === 5 ? 'vault-screen-shimmer-on' : ''}`} />
       </div>
 
       {/* === SCREEN 7 — Accumulation === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden onb-screen onb-s7"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -861,10 +861,10 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             accumulation
             <br />
@@ -872,19 +872,19 @@ function OnboardingScreen({ onContinue }) {
               is a good habit
             </span>
           </h2>
-          <p className="text-dim text-[13px] leading-relaxed mt-4 font-display italic" style={{ fontWeight: 300 }}>
+          <p className="text-dim text-[13px] leading-relaxed onb-sub mt-4 font-display italic" style={{ fontWeight: 300 }}>
             anybody can
           </p>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-visual" style={{ zIndex: 4 }}>
           <div className="text-[10px] uppercase tracking-[0.3em] text-dim mb-4">
             $100/mo · Vein · 5 years
           </div>
 
-          <div style={{ height: '180px', paddingTop: '16px' }}>
+          <div style={{ height: 'var(--onb-chart-h, 180px)', paddingTop: '16px' }}>
             <svg viewBox="0 0 280 160" overflow="visible" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
               <line
                 x1="0" y1="130" x2="280" y2="130"
@@ -1003,12 +1003,12 @@ function OnboardingScreen({ onContinue }) {
           </div>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 onb-spacer" />
       </div>
 
       {/* === SCREEN 8 — Connect the dots === */}
       <div
-        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden"
+        className="h-full flex flex-col px-8 pt-20 relative overflow-hidden onb-screen onb-s8"
         style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -1029,10 +1029,10 @@ function OnboardingScreen({ onContinue }) {
           ))}
         </div>
 
-        <div className="relative" style={{ zIndex: 4 }}>
+        <div className="relative onb-copy" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-3"
-            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
+            style={{ fontWeight: 300, fontSize: 'var(--onb-h2, 46px)', lineHeight: '0.98' }}
           >
             connect
             <br />
@@ -1040,12 +1040,12 @@ function OnboardingScreen({ onContinue }) {
               the dots
             </span>
           </h2>
-          <p className="text-dim text-[13px] leading-relaxed font-display italic" style={{ fontWeight: 300 }}>
+          <p className="text-dim text-[13px] leading-relaxed onb-sub font-display italic" style={{ fontWeight: 300 }}>
             touch the musa
           </p>
         </div>
 
-        <div className="relative flex-1 flex items-center justify-center" style={{ zIndex: 3 }}>
+        <div className="relative flex-1 flex items-center justify-center onb-visual onb-vortex" style={{ zIndex: 3 }}>
           <style>{vortexKeyframes}</style>
           <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
             <div className="relative" style={{ width: 0, height: 0 }}>
