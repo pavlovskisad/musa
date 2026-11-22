@@ -25,4 +25,4 @@ Four clips (sign-in, new order, home, one position) and one still (profile with 
 - Tier numbers are samples (1.1 / 2.1 / 4.4%) so the clips agree with the bonus table on the page.
 - The sign-in sheet and the card sheet are mock-ups drawn for the recording. The app signs in through Privy and has no payment provider connected. The note under the reel says so.
 
-The recording scripts are not in the repository yet.
+The recording scripts and how to run them are in `tools/overview-capture/`.
