@@ -15,9 +15,11 @@
           --text-dim: #8c8a82;
         }
 
-        * { font-family: 'Geist', system-ui, sans-serif; }
-        .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
-        .font-num { font-family: 'Geist Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+        * { font-family: 'Jost', system-ui, sans-serif; }
+        .font-display { font-family: 'Old Standard TT', Georgia, serif; }
+        /* the universal rule above would otherwise put nested spans (the italic gold line) back in the body font */
+        .font-display * { font-family: inherit; }
+        .font-num { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
 
         .text-gold { color: var(--gold); }
         .bg-gold { background-color: var(--gold); }

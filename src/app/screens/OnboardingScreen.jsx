@@ -487,7 +487,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-6"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             the richest
             <br />
@@ -533,7 +533,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             better than
             <br />
@@ -592,7 +592,7 @@ function OnboardingScreen({ onContinue }) {
               x="4" y="158"
               fill="rgba(255,255,255,0.25)"
               fontSize="8"
-              fontFamily="'Geist Mono', monospace"
+              fontFamily="'IBM Plex Mono', monospace"
               style={{
                 opacity: activeScreen === 2 ? 1 : 0,
                 transition: 'opacity 0.5s ease-out 1.6s',
@@ -603,7 +603,7 @@ function OnboardingScreen({ onContinue }) {
               textAnchor="end"
               fill="rgba(255,255,255,0.25)"
               fontSize="8"
-              fontFamily="'Geist Mono', monospace"
+              fontFamily="'IBM Plex Mono', monospace"
               style={{
                 opacity: activeScreen === 2 ? 1 : 0,
                 transition: 'opacity 0.5s ease-out 1.7s',
@@ -624,7 +624,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             from mine
             <br />
@@ -692,7 +692,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-4"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             more than
             <br />
@@ -786,7 +786,7 @@ function OnboardingScreen({ onContinue }) {
 
           <h2
             className="font-display"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95', color: '#1a1208' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98', color: '#1a1208' }}
           >
             safe
             <br />
@@ -864,7 +864,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             accumulation
             <br />
@@ -936,7 +936,7 @@ function OnboardingScreen({ onContinue }) {
                 x="0" y="148"
                 fill="rgba(255,255,255,0.25)"
                 fontSize="8"
-                fontFamily="'Geist Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 style={{
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.6s',
@@ -947,7 +947,7 @@ function OnboardingScreen({ onContinue }) {
                 textAnchor="end"
                 fill="rgba(255,255,255,0.25)"
                 fontSize="8"
-                fontFamily="'Geist Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 style={{
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.7s',
@@ -959,7 +959,7 @@ function OnboardingScreen({ onContinue }) {
                 textAnchor="end"
                 fill="#C9A961"
                 fontSize="9"
-                fontFamily="'Geist Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 style={{
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.8s',
@@ -970,7 +970,7 @@ function OnboardingScreen({ onContinue }) {
                 textAnchor="end"
                 fill="rgba(180,180,170,0.5)"
                 fontSize="9"
-                fontFamily="'Geist Mono', monospace"
+                fontFamily="'IBM Plex Mono', monospace"
                 style={{
                   opacity: activeScreen === 6 ? 1 : 0,
                   transition: 'opacity 0.5s ease-out 1.9s',
@@ -1032,7 +1032,7 @@ function OnboardingScreen({ onContinue }) {
         <div className="relative" style={{ zIndex: 4 }}>
           <h2
             className="font-display text-app mb-3"
-            style={{ fontWeight: 300, fontSize: '52px', lineHeight: '0.95' }}
+            style={{ fontWeight: 300, fontSize: '46px', lineHeight: '0.98' }}
           >
             connect
             <br />

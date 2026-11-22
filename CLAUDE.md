@@ -19,7 +19,7 @@ Builder-founder. Has shipped products with 10-20 person teams. Knows his stuff a
 
 - `musa` is **always lowercase**. Never "Musa", never "MUSA" except inside the musa-logo class span where it's styled as a small-caps tracked label.
 - **No trailing periods** on hero copy. Examples: "Mine real / gold", "better than / money", "more than / you paid for", "touch the musa". Lore prose (Mansa Musa Q&A block) uses natural punctuation.
-- **Italic gold second line** on hero couplets — the stressed word ("gold", "money", "you paid for", "the dots") in Fraunces italic, gold color. Cream italic on the gold "safe and sound" screen.
+- **Italic gold second line** on hero couplets — the stressed word ("gold", "money", "you paid for", "the dots") in Old Standard TT italic, gold color. Cream italic on the gold "safe and sound" screen.
 - **"Real gold · real mines · delivered"** is the persistent footer. Don't reword.
 - Tone: confident, declarative, minimal. No marketing-speak. No exclamation points. Copy doesn't hedge.
 - Animations: slow, breathing, subtle. Cycles in the 3-6s range. Never aggressive, never attention-grabbing. Real physics and real math over exaggerated curves.
@@ -40,9 +40,13 @@ Warmer cream tones for flashes/highlights: `#F4DE9D`, `rgba(255, 248, 220, 1)`.
 
 ## Fonts (Google Fonts, imported in the CSS block)
 
-- **Geist** — default UI sans-serif. Everything unless overridden.
-- **Fraunces** — display serif (`.font-display`). Variable, optical sizing. Used for headlines.
-- **Geist Mono** — monospace (`.font-num`). Tabular numerals. Used for numbers and micro-labels.
+Changed 2026-11-22 (was Geist / Fraunces / Geist Mono). Same three everywhere: app, onboarding, `/overview`, admin.
+
+- **Jost** — default UI sans-serif. Everything unless overridden.
+- **Old Standard TT** — display serif (`.font-display`). Weights 400 and 400 italic only; a lighter weight in code renders as 400. Used for headlines.
+- **IBM Plex Mono** — monospace (`.font-num`). Tabular numerals. Used for numbers and micro-labels.
+
+Old Standard TT italic is wide: onboarding couplets are 46px so the longest line ("man in history") fits a 360px phone. `prototypes/` keep the old fonts.
 
 ## Code conventions
 

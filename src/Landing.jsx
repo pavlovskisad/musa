@@ -2,7 +2,7 @@
 // Sits above the app: one path into the prototype, one into the simulator.
 // Type treatments mirror the prototype exactly — same MusaLogo (10px,
 // 0.4em tracking, warm cream dim, breathing glow + shimmer sweep),
-// same Fraunces italic gold for hero text, same plain footer.
+// same Old Standard TT italic gold for hero text, same plain footer.
 // See CLAUDE.md § "Voice & brand rules".
 
 import React from 'react';

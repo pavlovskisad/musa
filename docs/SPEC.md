@@ -13,7 +13,7 @@ See `ARCHITECTURE.md` for technical decisions (PAXG, Privy, Base L2, contracts).
 - Name is always **lowercase** `musa`. Never capitalized except inside the `.musa-logo` small-caps tracked label.
 - Reference anchor: **Mansa Musa**, 14th-century emperor of Mali, often cited as the wealthiest person in history. The name carries ancient, real, physical gold wealth.
 - **No trailing periods** on hero copy: "Mine real / gold", "better than / money", "more than / you paid for", "safe and / sound", "touch the musa". Lore prose uses natural punctuation.
-- Second line of each hero couplet is **italic gold** (Fraunces italic) — the stressed word: "gold", "money", "you paid for", "the dots". On the gold "safe and sound" screen, accent is **cream italic**.
+- Second line of each hero couplet is **italic gold** (Old Standard TT italic) — the stressed word: "gold", "money", "you paid for", "the dots". On the gold "safe and sound" screen, accent is **cream italic**.
 - **"Real gold · real mines · delivered"** is a persistent footer across screens.
 - Tone: confident, declarative, minimal. No marketing-speak. No exclamation points.
 - Animations: slow, breathing, subtle. 3-6s cycles. Physical plausibility > exaggeration.
@@ -22,9 +22,9 @@ See `ARCHITECTURE.md` for technical decisions (PAXG, Privy, Base L2, contracts).
 
 | Font | Usage | Class |
 |---|---|---|
-| **Geist** | Default UI sans-serif — body text, UI chrome | (default) |
-| **Fraunces** | Display serif — big headlines, italic accents | `.font-display` |
-| **Geist Mono** | Numerical values, micro labels. Tabular numerals enabled | `.font-num` |
+| **Jost** | Default UI sans-serif — body text, UI chrome | (default) |
+| **Old Standard TT** | Display serif — big headlines, italic accents | `.font-display` |
+| **IBM Plex Mono** | Numerical values, micro labels. Tabular numerals enabled | `.font-num` |
 
 ## Color palette
 

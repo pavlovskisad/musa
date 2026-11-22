@@ -16,9 +16,9 @@ export default {
         'gold-light': '#e4c57e',
       },
       fontFamily: {
-        sans: ['Geist', 'system-ui', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
-        num: ['"Geist Mono"', 'ui-monospace', 'monospace'],
+        sans: ['Jost', 'system-ui', 'sans-serif'],
+        display: ['Old Standard TT', 'Georgia', 'serif'],
+        num: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
     },
   },
