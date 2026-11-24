@@ -145,7 +145,7 @@ The extra gold is what brings users in. It can only be as large as what funds it
 
 Row 5.2 assumes T-bill rates of 3.5-4.3%. Row 5.3 assumes your money costs 4-7% a year in gold terms; if your real figure is different, so is the row. Row 5.4 assumes 2.3-3.9% a year.
 
-**The target (added 2026-11-22).** For the retail product to sell, the buyer needs about 1.5% on 6 months, 4% on 12 and 10% on 24. With prepaid supply that means the money costs you 6, 8 and 10% a year on those terms. Whatever is above your usual cost of money is what you pay for the customer: on a $1,000 two-year order, $30-60.
+**The target (added 2026-11-22).** For the retail product to sell, the buyer needs about 1.5% on 6 months, 4% on 12 and 10% on 24. With prepaid supply that means the money costs you 6, 8 and 10% a year on those terms. Whatever is above your usual cost of money is what you pay for the customer: on a $1,000 two-year order, $30-60. You pay it in grams of your own metal, so at your cost of metal it is lower by your margin.
 
 musa's own income is a share of these, a fee on lending, and the spread on buy-back.
 
