@@ -27,6 +27,8 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+/* parts of the page switched off for now (the bonus section): kept in the markup, shown again by removing the attribute */
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .wrap{position:relative;z-index:1;max-width:616px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -308,7 +310,7 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
 <div class="wrap">
 <div class="bar">
   <span class="logo">musa</span>
-  <nav class="topnav" aria-label="Разделы"><a href="#how">Как работает</a><a href="#brand">Имя</a><a href="#parts">Устройство</a><a href="#gives">Выгода</a><a href="#gold">Золото</a><a href="#schemes">Схемы</a><a href="#bonus">Бонус</a><a href="#addons">Дополнения</a></nav>
+  <nav class="topnav" aria-label="Разделы"><a href="#how">Как работает</a><a href="#brand">Имя</a><a href="#parts">Устройство</a><a href="#gives">Выгода</a><a href="#gold">Золото</a><a href="#schemes">Схемы</a><a href="#bonus" hidden>Бонус</a><a href="#addons">Дополнения</a></nav>
   <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-pressed="true">RU</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
 </div>
 <header>
@@ -416,7 +418,7 @@ input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:3px
   </div>
 </section>
 
-<section id="bonus">
+<section id="bonus" hidden>
   <div class="sec-h">
   <h2>Бонус покупателю</h2>
   <p class="sub">Бонус приводит покупателей и не может быть больше того, что его оплачивает. За весь срок, в процентах от суммы покупки.</p>
