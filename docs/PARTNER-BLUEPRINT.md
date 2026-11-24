@@ -52,6 +52,7 @@ We do not know your side of the business well enough to propose one deal. This p
 | Take it physical | Delivery in bars or coins | to build; needs a mint |
 | Monthly plan | Fixed instalments, with a bonus instalment at the end | to build |
 | Jewellery store | Your pieces sold in the app. A better price for paying with gold received here. Pre-order: the buyer pays up front and gets a position that accumulates gold toward the order, bulk orders included | idea, 2026-11-22; not designed |
+| Pilgrimage | A seasonal caravan after Mansa Musa's pilgrimage. Buyers join a season by opening a mine and earn generosity status by gifting grams, bringing friends, staying to term and playing small games; top ranks get the supplier's jewellery and closed tiers. Referral programme and marketing in one; the game mechanics can seed a bonus system on the supplier's token | idea, 2026-11-24; not designed. Games must not change how much gold anyone receives without a legal review |
 | A market for the gold token | A liquidity pool against dollars, and one against a reference gold token to hold the price to gold | to build; matters most for a new token |
 
 ---
