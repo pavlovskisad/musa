@@ -8,6 +8,8 @@ See `SPEC.md` for product/UX. See `ARCHITECTURE.md` for technical and stack deci
 
 ---
 
+> **2026-11-26:** deal outline with the gold supplier (license first, then a joint company; our contribution and running costs) is in `docs/PARTNER-TERMS.md` and `docs/PARTNER-TERMS.ru.md`. Draft, not agreed.
+
 ## The product in one paragraph
 
 User pays $100 in fiat (Stripe / Apple Pay / bank transfer). Behind the scenes, a Privy embedded wallet is created silently. A smart contract on Base L2 issues a vesting position backed by PAXG in the platform's treasury. After a 30-day construction window, the contract releases gold gram-by-gram to the user's wallet over the lock period (6, 12, or 24 months). At completion, the user holds PAXG — tokenized, redeemable physical gold from LBMA-certified refined bars stored at Brinks and audited monthly by Paxos. The user paid $100 and received gold worth more than $100 at spot. The difference — the "discount" — is the product's core promise.
