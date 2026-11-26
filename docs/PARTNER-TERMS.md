@@ -26,7 +26,6 @@
 | Brand (name, `musa.gold`, identity, design language, story) | $30–60k |
 | Research and partner materials (bonus and treasury model, schemes, overview page) | $15–30k |
 | **Total brought in** | **~$150–275k** |
-| Founders' time, at market value | $12–20k a month, ~$150–240k in the first year |
 
 Their own token, when it is ready: an add-on of about $20–40k.
 
@@ -36,7 +35,7 @@ Their own token, when it is ready: an add-on of about $20–40k.
 
 | Role | Monthly |
 |---|---|
-| Full-stack engineer, main (half to full time) | $4–8k, or market value |
+| Full-stack engineer, main (half to full time) | $4–8k |
 | Senior part-timer: security, tech review, backup on call | $3–5k |
 | Buyer support (part-time) | $0.5–1.5k |
 | Accountant | $0.3–0.8k |
